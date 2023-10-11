@@ -1,0 +1,7 @@
+server:
+  #  默认 0.0.0.0
+  ip: '0.0.0.0'
+  #  默认 5500
+  port: '5500'
+  token: '114514'
+  HeartbeatInterval: 8
