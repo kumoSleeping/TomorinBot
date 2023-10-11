@@ -1,0 +1,2 @@
+# TomorinBot
+Red/Satori/... Bot
