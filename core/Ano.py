@@ -9,7 +9,7 @@ from .Tomorin import Main
 from server import TOKEN, IP, PORT, Heartbeat_cd
 
 '''
-Ano.py
+Ano.py · receive
 程序启动入口
 对「satori」协议进行连接 / session获取 / 心跳保活
 为每个 session 启动 Main(data)
@@ -30,7 +30,7 @@ class SatoriBot:
         self.websocket = None
         self.token = TOKEN
         self.ws_url = f"ws://{IP}:{PORT}/v1/events"
-        self.session = aiohttp.ClientSession()
+        # self.session = aiohttp.ClientSession()
 
     async def while_send_ping_packet(self):
         while True:
@@ -75,7 +75,7 @@ class SatoriBot:
                 break
 
     async def handle_message(self, data):
-        print("Dev中信息：", data)
+        # print("Dev中信息：", data)
         if data['op'] == 4:
             platform = data['body']['logins'][0]['platform']
             bot_name = data['body']['logins'][0]['user']['name']
@@ -94,11 +94,15 @@ class SatoriBot:
             await self.connect()
             await self.receive_message()
         finally:
-            await self.session.close()
+            exit()
+        #     await self.session.close()
 
 
 satori_bot = SatoriBot()
 asyncio.get_event_loop().run_until_complete(satori_bot.run())
+
+
+
 
 
 

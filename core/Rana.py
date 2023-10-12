@@ -3,6 +3,7 @@ import re
 '''
 Rana.py
 对「satori」协议进行基础消息抽象 / 日志显示
+提供平台包装元素的 API
 '''
 
 
@@ -28,7 +29,9 @@ class RanaUtils:
 
         user_id = session.user.id
         try:
-            member = session.member.name
+            member = session.user.name
+            if not member:
+                member = f'QQ用户{user_id}'
         except:
             # 为什么是QQ用户，因为就QQ可能拿不到成员name...
             member = f'QQ用户{user_id}'
@@ -93,5 +96,8 @@ def process_satori_message(body_data):
 
     # try:
     # 控制台输出
-    RanaUtils.show_log(session)
+    try:
+        RanaUtils.show_log(session)
+    except Exception as e:
+        print(f'[Error] Rana 抛出 {e}')
     return session

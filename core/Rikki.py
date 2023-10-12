@@ -4,7 +4,7 @@ from server import TOKEN, IP, PORT
 
 
 '''
-Rikki.py
+Rikki.py · send
 处理「satori」协议的信息发送 / API上报
 '''
 
