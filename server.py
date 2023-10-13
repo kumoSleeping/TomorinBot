@@ -1,21 +1,18 @@
-import yaml
-import os, inspect
+import os,\
+    inspect,\
+    yaml
 
-# 获取当前代码所在文件的位置（包括文件名）
-current_file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
-# 获取当前代码所在文件的目录
-current_file_directory = os.path.dirname(current_file_path)
-
+# os.path.abspath(inspect.getfile(inspect.currentframe())) 获取当前代码所在文件的位置（包括文件名）
+# os.path.dirname()获取当前代码所在文件的目录
 # 读取YAML文件
-with open(current_file_directory + '/config.yml', 'r') as file:
-    config = yaml.safe_load(file)
+config = yaml.safe_load(open(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+                             + '/config.yml', 'r'))
 
-IP = config['server']["ip"]
-PORT = config['server']["port"]
-TOKEN = config['server']["token"]
-Heartbeat_cd: int = config['server']["HeartbeatInterval"]
-administrator: list = config['user']["administrator"]
+IP, PORT, TOKEN, Heartbeat_cd, ADMINISTRATOR_list = config['server']["ip"], config['server']["port"],\
+    config['server']["token"], config['server']["HeartbeatInterval"], config['user']["administrator"]
 
 import core
 
 print('Tomorin-core 导入成功\nBGM: 人間になりたいうた')
+
+

@@ -1,9 +1,7 @@
-import json
-import re
-from .Rana import process_satori_message
-from .Rikki import send, send_message
-from .Soyorin import check_before_plugin, check_before_send, save_ban_dict_to_file, all_ban_dicts, delete_ban_dict_item
-from server import administrator
+from .Rana import Rana
+from .Rikki import Rikki, send
+from .Soyorin import Soyorin, ALL_BAN_DICTS
+from server import ADMINISTRATOR_list
 '''
 Tmorin.py
 处理所有插件
@@ -18,12 +16,12 @@ def plugin(func):
     plugin_configurations.append(func)
 
 
-def Main(data):
-    session = process_satori_message(data)
+def main(data):
+    session = Rana.process_satori_message(data)
     # 插件管理 / 黑名单审查
 
     for plugin in plugin_configurations:
-        if not check_before_plugin(session, str(plugin).split()[1]):
+        if not Soyorin.check_before_plugin(session, str(plugin).split()[1]):
             print('[WARNING] 消息被soyorin拦截...')
             continue
         plugin(session)
@@ -76,7 +74,7 @@ def _soyorin(session):
         return
     # 忽略
     if session.message.content.startswith('ign '):
-        if session.user.id not in administrator:
+        if session.user.id not in ADMINISTRATOR_list:
             print('[!] 权限不足～')
             return
         ele_list = session.message.content.strip().split()
@@ -86,13 +84,13 @@ def _soyorin(session):
         ban_dict = {part[0]: part[1:] if part[1:] else replacement_values.get(part[0], 'Default') for part in
                     ele_list if part[0] in replacement_values}
 
-        save_ban_dict_to_file(ban_dict)
+        Soyorin.save_ban_config(ban_dict)
         # send(f'<at id="{session.user.id}"/> 喵喵，ban_dict测试结果为{str(ban_dict)}', session)
 
     # 按顺序展示忽略了哪些
     if session.message.content.startswith('ignwhat'):
         output_lines = []
-        for i, ban_dict in enumerate(all_ban_dicts, start=0):
+        for i, ban_dict in enumerate(ALL_BAN_DICTS, start=0):
             output_line = f"Item {i}: "
             output_line += ', '.join([f"{key}: {value}" for key, value in ban_dict.items()])
             output_lines.append(output_line)
@@ -103,10 +101,10 @@ def _soyorin(session):
     # 按照顺序移除忽略
     if session.message.content.startswith('-ign'):
 
-        if session.user.id not in administrator:
+        if session.user.id not in ADMINISTRATOR_list:
             print('[!] 权限不足～')
             return
         item_index = session.message.content.replace("-ign", "").strip()
         item_index = int(item_index)
-        delete_ban_dict_item(item_index)
+        Soyorin.delete_ban_config(item_index)
 
