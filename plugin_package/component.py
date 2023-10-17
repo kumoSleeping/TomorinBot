@@ -21,35 +21,10 @@ def hello(session):
 
 @component
 def test(session):
-    if session.message.content == '测试':
+    if session.message.content == '测试混合元素':
         image = Image.new('RGB', (50, 50), color='red')
         send(f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image_pil(image)}', session)
 
-
-# from plugin_package._plugin_data.zmngu import get_result
-#
-# component
-# def tsugulp(session):
-#     if not session.message.content:
-#         return
-#     rpl = get_result(session.message.content, session.user.id, session.guild.id)
-#     if not rpl:
-#         pass
-#     else:
-#         modified_results = []
-#         for item in rpl:
-#             if item['type'] == 'string':
-#                 # 处理字符串类型的结果，可能是文本消息
-#                 text_message = item['string']
-#                 modified_results.append(text_message)
-#             elif item['type'] == 'base64':
-#                 # 处理Base64编码的图像数据
-#                 base64_data = item['string']
-#                 # 将Base64数据包裹在^IMG=xxx^中并添加到文本中
-#                 image_tag = f''
-#                 modified_results.append(image_tag)
-#         result_string = ''.join(modified_results)
-#         send(result_string, session)
 
 # 随便规范 _开头表示 框架内置插件 也可以不用
 @component
