@@ -3,9 +3,10 @@ import json
 import websockets
 import threading
 
-from .Tomorin import main
-from server import TOKEN, IP, PORT, Heartbeat_cd
-from .utils.utils import Utils
+from core.Tomorin import main
+print('Tomorin.py 导入插件结束\n当前 Tomorin 框架版本：[ 人間になりたいうた ]')
+from core.Soyorin import TOKEN, IP, PORT, Heartbeat_cd
+from core.Soyorin import Utils
 
 '''
 Ano.py · receive
@@ -18,9 +19,12 @@ Ano.py · receive
 async def handle_data(data):
     # print("Dev中信息：", data)
     if data['op'] == 4:
-        platform = data['body']['logins'][0]['platform']
-        bot_name = data['body']['logins'][0]['user']['name']
-        print(f"Satori驱动器连接成功，{bot_name} 已上线 [{platform}] ！")
+        print("Satori驱动器连接成功！")
+        for login_info in data['body']['logins']:
+            platform = login_info['platform']
+            bot_name = login_info['user']['name']
+            print(f"[{bot_name}] 已上线平台 [{platform}]!")
+
     if data['op'] == 0:
         # 这里开了一个线程，用于处理消息，process_message在隔壁c_p.py里面，相当于利用外部文件劫持了本线程的函数，本身不影响ws线程整体运行
         # 当收到 消息类event，调用 ./Tmorin.py 的 Main() 并传入 data
@@ -66,28 +70,35 @@ class SatoriBot:
             }
         }
         await self.websocket.send(json.dumps(identify_packet))
-        print("尝试连接到Satori驱动器...")
+        print("尝试连接到 Satori 驱动器...")
 
     async def receive_message(self):
         while True:
             try:
                 message = await self.websocket.recv()
-                # data = json.loads(message)
-                # 这里直接unescape_special_characters可能会导致混淆
                 data = json.loads(Utils.unescape_special_characters(message))
-                # handle_data在上面
                 await handle_data(data)
-            except websockets.ConnectionClosed:
-                print("WebSocket connection closed.")
+            except websockets.ConnectionClosed as e:
+                print(f"WebSocket connection closed. Reason: {e.reason}")
+                print("Trying to reconnect...")
                 break
+                # await asyncio.sleep(5)
 
     async def run(self):
+        # while True:
+        #     try:
+        #         await self.connect()
+        #         await self.receive_message()
+        #     except Exception as e:
+        #         print(f"An error occurred: {str(e)}")
+        #         # 延时后尝试重新连接
+        #         await asyncio.sleep(5)
+
         try:
             await self.connect()
             await self.receive_message()
         finally:
             exit()
-        #     await self.session.close()
 
 
 satori_bot = SatoriBot()

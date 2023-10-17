@@ -1,7 +1,7 @@
 import requests
 import json
 
-from server import TOKEN, IP, PORT
+from core.Soyorin import TOKEN, IP, PORT
 
 
 '''
@@ -60,7 +60,7 @@ class Rikki:
 
 # send是最常用的消息，被单独导入
 def send(message_content, session):
-    Rikki.send_message(message_content=message_content, platform=session.platform, channel_id=session.guild.id,
+    Rikki.send_message(message_content=message_content, platform=session.platform, channel_id=session.channel.id,
                  self_id=session.self_id)
 
 

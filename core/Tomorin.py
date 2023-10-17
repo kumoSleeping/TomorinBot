@@ -1,19 +1,33 @@
-from .Rana import Rana
-from .Rikki import Rikki, send
-from .Soyorin import Soyorin, ALL_BAN_DICTS
-from server import ADMINISTRATOR_list
+import os
+import importlib
+
+from core.Rana import Rana
+from core.Soyorin import BanManager
+from core.Soyorin import Utils
+
 '''
 Tmorin.py
 处理所有插件
 核心处理调度 data 和 发送
 '''
 
-plugin_configurations = []
+import sys
+sys.path.append("..")  # 添加上一级目录到模块搜索路径
 
 
-def plugin(func):
-    print(f'插件[{str(func).split()[1]}]加载成功')
-    plugin_configurations.append(func)
+from plugin_package.plugin import plugin_configurations
+
+package_name = 'plugin_package'
+
+package_path = package_name.replace('.', '/')
+
+# 获取目标包下的所有文件夹
+subdirectories = [d for d in os.listdir(package_path) if os.path.isdir(os.path.join(package_path, d)) and not d.startswith('_')]
+
+formatted_subdirectories = ['插件包[' + folder + ']加载成功！' for folder in subdirectories]
+
+notice = '\n'.join(formatted_subdirectories)
+print(notice)
 
 
 def main(data):
@@ -21,90 +35,22 @@ def main(data):
     # 插件管理 / 黑名单审查
 
     for plugin in plugin_configurations:
-        if not Soyorin.check_before_plugin(session, str(plugin).split()[1]):
-            print('[WARNING] 消息被soyorin拦截...')
+        if not BanManager.check_before_plugin(session, str(plugin).split()[1]):
+            # print('[WARNING] 消息被soyorin拦截...')
             continue
         plugin(session)
 
+    for folder in subdirectories:
+        try:
+            # 使用importlib动态导入模块
+            module = importlib.import_module(f'plugin_package.{folder}.index')
 
-@plugin
-def hello(session):
-    if session.message.content == '你好':
-        send(f'你好喵（ <at id="{session.user.id}"/>', session)
-
-
-@plugin
-def photo_(session):
-    if session.message.content == '喵喵':
-        send(f'<at id="{session.user.id}"/> 喵喵', session)
-
-
-
-from .plugin.tsugu.tsuguLP import tsugu_main
-
-@plugin
-def tsugulp(session):
-    if not session.message.content:
-        return
-    rpl = tsugu_main(session.message.content, session.user.id, session.guild.id)
-    if not rpl:
-        pass
-    else:
-        modified_results = []
-        for item in rpl:
-            if item['type'] == 'string':
-                # 处理字符串类型的结果，可能是文本消息
-                text_message = item['string']
-                modified_results.append(text_message)
-            elif item['type'] == 'base64':
-                # 处理Base64编码的图像数据
-                base64_data = item['string']
-                # 将Base64数据包裹在^IMG=xxx^中并添加到文本中
-                image_tag = f'^[图片:等satori支持发图]^'
-                modified_results.append(image_tag)
-        result_string = ''.join(modified_results)
-        send(result_string, session)
+            # 调用模块中的src函数
+            module.src(session)
+        except ImportError as e:
+            print(f"Failed to import module {folder}: {str(e)}")
+        except AttributeError:
+            print(f"Module {folder} does not have a src() function.")
 
 
-@plugin
-def _soyorin(session):
-    if session.message.content.strip() == 'ign':
-        send(f'<at id="{session.user.id}"/> 目前支持的保留字有: G、U、P、M、F\n分别表示 Guild User Message Platform Func',
-             session)
-        return
-    # 忽略
-    if session.message.content.startswith('ign '):
-        if session.user.id not in ADMINISTRATOR_list:
-            print('[!] 权限不足～')
-            return
-        ele_list = session.message.content.strip().split()
-
-        replacement_values = {'G': session.guild.id, 'U': 'Default', 'P': session.platform,
-                              'M': session.message.content, 'F': 'Default'}
-        ban_dict = {part[0]: part[1:] if part[1:] else replacement_values.get(part[0], 'Default') for part in
-                    ele_list if part[0] in replacement_values}
-
-        Soyorin.save_ban_config(ban_dict)
-        # send(f'<at id="{session.user.id}"/> 喵喵，ban_dict测试结果为{str(ban_dict)}', session)
-
-    # 按顺序展示忽略了哪些
-    if session.message.content.startswith('ignwhat'):
-        output_lines = []
-        for i, ban_dict in enumerate(ALL_BAN_DICTS, start=0):
-            output_line = f"Item {i}: "
-            output_line += ', '.join([f"{key}: {value}" for key, value in ban_dict.items()])
-            output_lines.append(output_line)
-
-        rpl = '\n'.join(output_lines)
-        send(rpl, session)
-
-    # 按照顺序移除忽略
-    if session.message.content.startswith('-ign'):
-
-        if session.user.id not in ADMINISTRATOR_list:
-            print('[!] 权限不足～')
-            return
-        item_index = session.message.content.replace("-ign", "").strip()
-        item_index = int(item_index)
-        Soyorin.delete_ban_config(item_index)
 
