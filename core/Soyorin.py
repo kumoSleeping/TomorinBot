@@ -1,6 +1,6 @@
 import json
-import os,\
-    inspect,\
+import os, \
+    inspect, \
     yaml
 import re
 

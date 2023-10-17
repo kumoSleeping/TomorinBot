@@ -1,0 +1,12 @@
+server:
+  #  默认 0.0.0.0
+  ip: '0.0.0.0'
+  #  默认 5500
+  port: '5140'
+  # 没有就随便填
+  token: ''
+  # 心跳间隔 < 10 ，单位秒
+  HeartbeatInterval: 5
+user:
+  # 管理员用户，不论平台（暂时没支持）
+  administrator: []

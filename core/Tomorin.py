@@ -15,15 +15,10 @@ import sys
 sys.path.append("..")  # 添加上一级目录到模块搜索路径
 
 
-from plugin_package.plugin import plugin_configurations
-
-package_name = 'plugin_package'
-
-package_path = package_name.replace('.', '/')
+from plugin_package.component import component_configurations
 
 # 获取目标包下的所有文件夹
-subdirectories = [d for d in os.listdir(package_path) if os.path.isdir(os.path.join(package_path, d)) and not d.startswith('_')]
-
+subdirectories = [d for d in os.listdir('plugin_package') if os.path.isdir(os.path.join('plugin_package', d)) and not d.startswith('_')]
 formatted_subdirectories = ['插件包[' + folder + ']加载成功！' for folder in subdirectories]
 
 notice = '\n'.join(formatted_subdirectories)
@@ -34,7 +29,7 @@ def main(data):
     session = Rana.process_satori_message(data)
     # 插件管理 / 黑名单审查
 
-    for plugin in plugin_configurations:
+    for plugin in component_configurations:
         if not BanManager.check_before_plugin(session, str(plugin).split()[1]):
             # print('[WARNING] 消息被soyorin拦截...')
             continue

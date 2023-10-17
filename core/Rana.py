@@ -7,6 +7,7 @@ Rana.py
 提供平台包装元素的 API
 '''
 
+
 class User:
     def __init__(self, user_info):
         self.id = user_info.get('id', '')
@@ -52,6 +53,7 @@ class Session:
         self.guild = Guild(body.get('guild', {}))
         self.member = body.get('member', {})
         self.message = Message(body.get('message', {}))
+
 
 # 解析收到的消息信息
 def parse_message(message_info):
@@ -138,3 +140,5 @@ class H:
 
 
 h = H()
+
+
