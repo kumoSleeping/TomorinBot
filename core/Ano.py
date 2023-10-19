@@ -4,7 +4,6 @@ import websockets
 import threading
 
 from core.Tomorin import main
-print('Tomorin.py 导入插件结束\n当前 Tomorin 框架版本：[ 人間になりたいうた ]')
 from core.Soyorin import TOKEN, IP, PORT, Heartbeat_cd
 from core.Soyorin import Utils
 
@@ -21,12 +20,9 @@ async def handle_data(data):
     if data['op'] == 4:
         print("Satori驱动器连接成功！")
         for login_info in data['body']['logins']:
-            platform = login_info['platform']
-            bot_name = login_info['user']['name']
-            print(f"[{bot_name}] 已上线平台 [{platform}]!")
+            print(f"[{login_info['user']['name']}] 已上线平台 [{login_info['platform']}]!")
 
     if data['op'] == 0:
-        # 这里开了一个线程，用于处理消息，process_message在隔壁c_p.py里面，相当于利用外部文件劫持了本线程的函数，本身不影响ws线程整体运行
         # 当收到 消息类event，调用 ./Tmorin.py 的 Main() 并传入 data
         thread = threading.Thread(target=main, args=(data["body"],))
         thread.start()
@@ -40,7 +36,6 @@ class SatoriBot:
         self.websocket = None
         self.token = TOKEN
         self.ws_url = f"ws://{IP}:{PORT}/v1/events"
-        # self.session = aiohttp.ClientSession()
 
     async def while_send_ping_packet(self):
         while True:
@@ -66,7 +61,7 @@ class SatoriBot:
             "op": 3,
             "body": {
                 "token": self.token,
-                "sequence": None  # You may set a sequence if needed for session recovery
+                "sequence": None
             }
         }
         await self.websocket.send(json.dumps(identify_packet))
@@ -80,20 +75,9 @@ class SatoriBot:
                 await handle_data(data)
             except websockets.ConnectionClosed as e:
                 print(f"WebSocket connection closed. Reason: {e.reason}")
-                print("Trying to reconnect...")
                 break
-                # await asyncio.sleep(5)
 
     async def run(self):
-        # while True:
-        #     try:
-        #         await self.connect()
-        #         await self.receive_message()
-        #     except Exception as e:
-        #         print(f"An error occurred: {str(e)}")
-        #         # 延时后尝试重新连接
-        #         await asyncio.sleep(5)
-
         try:
             await self.connect()
             await self.receive_message()

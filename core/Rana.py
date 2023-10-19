@@ -1,5 +1,8 @@
+import base64
+import io
+
 from core.Soyorin import Utils
-import base64, io
+from PIL import Image
 
 '''
 Rana.py
@@ -72,6 +75,7 @@ class Rana:
             print(f'[Error] Rana 抛出 {e}')
         return session
 
+
 class H:
     @staticmethod
     def text(content):
@@ -90,53 +94,51 @@ class H:
         return f'<quote id="{message_id}"/>'
 
     @staticmethod
-    def image_url(url):
-        return f'<image url="{url}"/>'
+    def image(param):
+        if isinstance(param, Image.Image):
+            print("这是一个Pillow图像对象")
+            with io.BytesIO() as output:
+                param.save(output, format='PNG')
+                image_binary = output.getvalue()
+            # 将二进制数据转换为Base64编码
+            encoded_image = base64.b64encode(image_binary).decode('utf-8')
+            # 构建XML格式字符串
+            return f'<image url="data:image/png;base64,{encoded_image}"/>'
+        elif isinstance(param, bytes):
+            encoded_image = base64.b64encode(param).decode('utf-8')
+            print("这是一个bytes")
+            return f'<image url="data:image/png;base64,{encoded_image}"/>'
+        else:
+            if str(param).startswith("http://") or str(param).startswith("https://"):
+                print("这是一个字符串")
+                return f'<image url="{param}"/>'
 
     @staticmethod
-    def audio_url(url):
-        return f'<audio url="{url}"/>'
+    def audio(param):
+        if isinstance(param, bytes):
+            encoded_audio = base64.b64encode(param).decode('utf-8')
+            return f'<audio url="data:audio/mpeg;base64,{encoded_audio}"/>'
+        else:
+            if str(param).startswith("http://") or str(param).startswith("https://"):
+                return f'<audio url="{param}"/>'
 
     @staticmethod
-    def video_url(url):
-        return f'<video url="{url}"/>'
+    def video(param):
+        if isinstance(param, bytes):
+            encoded_video = base64.b64encode(param).decode('utf-8')
+            return f'<video url="data:video/mp4;base64,{encoded_video}"/>'
+        else:
+            if str(param).startswith("http://") or str(param).startswith("https://"):
+                return f'<video url="{param}"/>'
 
     @staticmethod
-    def file_url(url):
-        return f'<file url="{url}"/>'
-
-    @staticmethod
-    def image_buffer(buffer, mime_type='image/png'):
-        encoded_image = base64.b64encode(buffer).decode('utf-8')
-        return f'<image type="{mime_type}" data="{encoded_image}"/>'
-
-    @staticmethod
-    def image_pil(image, mime_type='image/png'):
-        # 将Pillow Image对象转换为二进制数据
-        with io.BytesIO() as output:
-            image.save(output, format='PNG')
-            image_binary = output.getvalue()
-
-        # 将二进制数据转换为Base64编码
-        encoded_image = base64.b64encode(image_binary).decode('utf-8')
-
-        # 构建XML格式字符串
-        return f'<image url="data:{mime_type};base64,{encoded_image}"/>'
-
-    @staticmethod
-    def audio_buffer(buffer, mime_type='audio/mpeg'):
-        encoded_audio = base64.b64encode(buffer).decode('utf-8')
-        return f'<audio type="{mime_type}" data="{encoded_audio}"/>'
-
-    @staticmethod
-    def video_buffer(buffer, mime_type='video/mp4'):
-        encoded_video = base64.b64encode(buffer).decode('utf-8')
-        return f'<video type="{mime_type}" data="{encoded_video}"/>'
-
-    @staticmethod
-    def file_buffer(buffer, mime_type='application/octet-stream'):
-        encoded_file = base64.b64encode(buffer).decode('utf-8')
-        return f'<file type="{mime_type}" data="{encoded_file}"/>'
+    def file(param):
+        if isinstance(param, bytes):
+            encoded_file = base64.b64encode(param).decode('utf-8')
+            return f'<file url="data:application/octet-stream;base64,{encoded_file}"/>'
+        else:
+            if str(param).startswith("http://") or str(param).startswith("https://"):
+                return f'<file url="{param}"/>'
 
 
 h = H()

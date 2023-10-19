@@ -1,35 +1,22 @@
 import json
-import os, \
-    inspect, \
-    yaml
+import os
+import yaml
 import re
-
-config = yaml.safe_load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config.yml')))
-
-IP, PORT, TOKEN, Heartbeat_cd, ADMINISTRATOR_list = config['server']["ip"], config['server']["port"],\
-    config['server']["token"], config['server']["HeartbeatInterval"], config['user']["administrator"]
+from pathlib import Path
 
 '''
 Soyorin.py
 消息审核 / 插件管理 / 黑白名单 API
 与 ./plugin 界限模糊，类似服务组件 API
 '''
+# print(str(Path.cwd()) + '/config.yml')
 
+config = yaml.safe_load(open(str(Path.cwd()) + '/config.yml'))
 
-# file_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + '/plugin_package/_plugin_data/_soyorin/ban_dicts.json'
-# print(file_path)
-relative_path = 'plugin_package/_plugin_data/_soyorin/ban_dicts.json'
+IP, PORT, TOKEN, Heartbeat_cd, ADMINISTRATOR_list = config['server']["ip"], config['server']["port"],\
+    config['server']["token"], config['server']["HeartbeatInterval"], config['user']["administrator"]
 
-# 获取当前脚本所在目录的绝对路径
-script_directory = os.path.dirname(os.path.abspath(__file__))
-
-# 获取父目录（上一级目录）的绝对路径
-parent_directory = os.path.dirname(script_directory)
-
-# 拼接相对路径和父目录的绝对路径
-file_path = os.path.join(parent_directory, relative_path)
-
-print(file_path)
+ban_dicts_path = str(Path.cwd()) + '/plugin_package/_plugin_data/_soyorin/ban_dicts.json'
 
 
 class Utils:
@@ -60,7 +47,7 @@ class Utils:
         # 将所有HTML标签替换为占位符
         cleaned_text = re.sub(html_tag_pattern, '[xml元素]', message_content)
         cleaned_text = cleaned_text[0:15] + '...' if len(cleaned_text) > 15 else cleaned_text
-
+        cleaned_text = cleaned_text.replace("\n", " ").replace("\r", " ")
         user_id = session.user.id
         try:
             member = session.user.name
@@ -83,19 +70,20 @@ class Utils:
 
 class BanManager:
     ALL_BAN_DICTS = []
+
     @classmethod
     def load_data(cls):
-        global file_path
-        if os.path.exists(file_path):
-            with open(file_path, 'r', encoding='utf-8') as file:
+        global ban_dicts_path
+        if os.path.exists(ban_dicts_path):
+            with open(ban_dicts_path, 'r', encoding='utf-8') as file:
                 cls.ALL_BAN_DICTS = json.load(file)
         else:
             cls.ALL_BAN_DICTS = []
 
     @classmethod
     def save_data(cls):
-        global file_path
-        with open(file_path, 'w', encoding='utf-8') as file:
+        global ban_dicts_path
+        with open(ban_dicts_path, 'w', encoding='utf-8') as file:
             json.dump(cls.ALL_BAN_DICTS, file, ensure_ascii=False, indent=4)
 
     @classmethod
@@ -110,6 +98,7 @@ class BanManager:
             BanManager.save_data()
         else:
             print("索引超出范围")
+
     @staticmethod
     def check_before_plugin(session, plugin_name):
         # print(BanManager.ALL_BAN_DICTS)

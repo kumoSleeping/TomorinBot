@@ -1,9 +1,10 @@
+from PIL import Image
+from pathlib import Path
+
 from core.Rana import Rana, h
-from core.Rikki import Rikki, send
+from core.Rikki import Rikki, send, h_send
 from core.Soyorin import BanManager
 from core.Soyorin import ADMINISTRATOR_list
-
-from PIL import Image
 
 component_configurations = []
 
@@ -14,16 +15,33 @@ def component(func):
 
 
 @component
-def hello(session):
-    if session.message.content == '测试音频':
-        send(f'{h.audio_url("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}', session)
+def test1(session):
+    if session.message.content == '测试文字':
+        send(f'测试成功！', session)
 
 
 @component
-def test(session):
+def test2(session):
+    if session.message.content == '测试音频':
+        send(f'{h.audio("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}', session)
+
+
+@component
+def test3(session):
     if session.message.content == '测试混合元素':
         image = Image.new('RGB', (50, 50), color='red')
-        send(f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image_pil(image)}', session)
+        send(f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image(image)}', session)
+
+
+@component
+def test4(session):
+    if session.message.content.startswith('发送到群组'):
+        forward_guild_id: str = session.message.content[5:].strip()
+        rpl = h_send(f'这是一条来自 {session.guild.name} 的消息', session.platform, forward_guild_id, session.self_id)
+        if not rpl:
+            send(f"发送失败", session)
+        else:
+            send('发送成功', session)
 
 
 # 随便规范 _开头表示 框架内置插件 也可以不用
@@ -68,4 +86,15 @@ def _soyorin(session):
         item_index = session.message.content.replace("-ign", "").strip()
         item_index = int(item_index)
         BanManager.delete_item(item_index)
+
+
+
+
+
+
+
+
+
+
+
 

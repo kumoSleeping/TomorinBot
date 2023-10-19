@@ -44,38 +44,64 @@ def test1(session):
 ***
 ## 发送元素消息
 
-Satori支持的xml元素具体可以参考 [Koishi元素](https://koishi.chat/zh-CN/api/message/elements.html)   
+### xml元素发送
+
+Satori支持的xml元素具体可以参考 [Koishi元素](https://koishi.chat/zh-CN/api/message/elements.html)。   
+
+也就是说，直接在消息中加入元素，即可发送富元素消息。  
+eg：
+```python
+# 这条消息含有 quote 和 at 元素
+msg = f'<quote id="{session.message.id}"/> <at id="{session.user.id}"/>你好'
+```
+
+### 快捷调用
+
 Rana的 `h` 类包含了一组辅助方法，用于生成特定格式的标准元素消息内容。   
 
 **方法列表**
 
-- `text(content)`: 生成文本消息内容。
-- `at(user_id)`: 生成@某用户消息内容。
+- `at(user_id)`: 生成@某用户。
 - `sharp(channel_id)`: 生成#某频道消息内容。
-- `quote(message_id)`: 生成引用消息内容。
-- `image_url(url)`: 生成图片消息内容（通过URL）。
-- `audio_url(url)`: 生成音频消息内容（通过URL）。
-- `video_url(url)`: 生成视频消息内容（通过URL）。
-- `file_url(url)`: 生成文件消息内容（通过URL）。
-- `image_buffer(buffer, mime_type='image/png')`: 生成图片消息内容（通过缓冲区）。
-- `image_pil(image, mime_type='image/png')`: 生成图片消息内容（通过Pillow Image对象）。
-- `audio_buffer(buffer, mime_type='audio/mpeg')`: 生成音频消息内容（通过缓冲区）。
-- `video_buffer(buffer, mime_type='video/mp4')`: 生成视频消息内容（通过缓冲区）。
-- `file_buffer(buffer, mime_type='application/octet-stream')`: 生成文件消息内容（通过缓冲区）。
+- `quote(message_id)`: 生成引用。
+- `image_url(param)`: 生成图片（通过URL / 缓冲区buffer / Pillow Image对象）。
+- `audio_url(param)`: 生成音频（通过URL / 缓冲区buffer）。
+- `video_url(param)`: 生成视频（通过URL / 缓冲区buffer）。
+- `file_url(param)`: 生成文件（通过URL / 缓冲区buffer）。
+- `text(content)`: 生成文本（多数情况无需使用此API生成）。
+
+填入后将通过类型自动判断。
 
 eg:
 ```python
 # 新建PIL对象
 image = Image.new('RGB', (50, 50), color='red')
 # 回复元素 提及元素 图片元素
-msg = f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image_pil(image)}'
-# 也可以使用xml表示
-# msg = f'<quote id="{session.message.id}"/> <at id="{session.user.id}"/> '
+msg = f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image(image)}'
 
 ```
 
 
 ## 接收到的信息
+
+### 核心概念
+在我们开始之前，先来了解一些与跨平台相关的核心概念。
+
+**平台 (Platform)** 是指聊天平台，比如 Discord、Telegram 等。同一平台内的用户间具有相互发送消息的能力，而不同平台的用户间则没有。对于 Rocket Chat 这一类可自建的聊天平台而言，每个独立的自建服务器都视为不同的平台。
+
+**机器人 (Bot)** 是指由 Koishi 操控的平台用户。这里的用户可以是真实用户，也可以是部分平台专门提供的机器人用户。其他用户通过与机器人进行交互来体验 Koishi 的各项功能。
+
+**适配器 (Adapter)** 是指实现了平台协议，能够让机器人接入平台的插件。通常来说一个适配器实例对应了一个机器人用户，同时启用多个适配器就实现了多个机器人的同时接入。
+
+**消息 (Message)** 是字面意义上的消息。通常是文本或富文本格式的，有时也会包含图片、语音等媒体资源。在 Koishi 中，消息通过消息元素进行统一编码。
+
+**频道 (Channel)** 是消息的集合。一个频道包含了具备时间、逻辑顺序的一系列消息。频道又分为私聊频道和群聊频道，其中私聊频道有且仅有两人参与，而群聊频道可以有任意多人参与。
+
+**群组 (Guild)** 是平台用户的集合。一个群组通常会同时包含一组用户和频道，并通过权限机制让其中的部分用户进行管理。在部分平台中，群组和群聊频道的概念恰好是重合的 (例如 QQ)：一个群组内有且仅有一个群聊频道。私聊频道不属于任何群组。
+
+以上内容来自[Koishi开发文档](https://koishi.chat/zh-CN/guide/adapter/)。   
+
+### Session类
 
 
 Session 类包装了接收到的消息的基础信息。   
@@ -91,14 +117,14 @@ Session 类包装了接收到的消息的基础信息。
   - `id` (str): 用户ID。
   - `name` (str): 用户名。
   - `avatar` (str): 用户头像。
-- `channel` (Channel): 包含渠道信息的实例。
-  - `type` (str): 渠道类型。
-  - `id` (str): 渠道ID。
-  - `name` (str): 渠道名。
-- `guild` (Guild): 包含服务器信息的实例。
-  - `id` (str): 服务器ID。
-  - `name` (str): 服务器名。
-  - `avatar` (str): 服务器头像。
+- `channel` (Channel): 包含频道信息的实例。
+  - `type` (str): 频道类型。
+  - `id` (str): ID。
+  - `name` (str): 频道名。
+- `guild` (Guild): 包含群组信息的实例。
+  - `id` (str): 群组ID。
+  - `name` (str): 群组名。
+  - `avatar` (str): 群组头像。
 - `member` (dict): 成员信息字典。
   - `name` (str): 成员名。
 - `message` (Message): 包含消息信息的实例。
@@ -155,6 +181,11 @@ def src(session):
 ```python
 # component.py
 # ...省略前面
+def component(func):
+    print(f'组件[{str(func).split()[1]}]加载成功！')
+    component_configurations.append(func)
+
+
 @component
 def test1(session):
     if session.message.content == '测试文字':
@@ -164,14 +195,14 @@ def test1(session):
 @component
 def test2(session):
     if session.message.content == '测试音频':
-        send(f'{h.audio_url("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}', session)
+        send(f'{h.audio("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}', session)
 
 
 @component
 def test3(session):
     if session.message.content == '测试混合元素':
         image = Image.new('RGB', (50, 50), color='red')
-        send(f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image_pil(image)}', session)
+        send(f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image(image)}', session)
 
 
 @component
@@ -216,7 +247,7 @@ Ano.py
 收到数据尝试启动 main() 函数。   
 
 Tmorin.py   
-提供 main()函数，先解析数据到session，然后审核消息，然后启动每个组件和插件包。
+提供 main()函数，先解析数据到session，审核消息，然后启动每个组件和插件包。
 
 Rana.py   
 提供 Rana.process_satori_message() 函数解析数据到session。   

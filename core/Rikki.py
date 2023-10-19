@@ -3,7 +3,6 @@ import json
 
 from core.Soyorin import TOKEN, IP, PORT
 
-
 '''
 Rikki.py · send
 处理「satori」协议的信息发送 / API上报
@@ -12,7 +11,7 @@ Rikki.py · send
 
 class Rikki:
     @staticmethod
-    def send_message(message_content, platform, channel_id, self_id):
+    def send_request(method, data, platform, self_id):
         """
         发送消息到指定频道。
 
@@ -27,14 +26,8 @@ class Rikki:
         dict: 包含消息信息的字典，如果发送失败则返回None。
         """
         # API endpoint
-
-        endpoint = f'http://{IP}:{PORT}/v1/message.create'  # 替换为实际API endpoint
-
-        # 构建请求参数
-        request_data = {
-            'channel_id': channel_id,
-            'content': message_content
-        }
+        method = 'message.create'
+        endpoint = f'http://{IP}:{PORT}/v1/{method}'  # 替换为实际API endpoint
 
         # 构建请求头
         headers = {
@@ -46,7 +39,7 @@ class Rikki:
 
         # 发送POST请求
         # response = requests.post(endpoint, data=json.dumps(request_data), headers=headers)
-        response = requests.post(endpoint, data=json.dumps(request_data), headers=headers, verify=True)
+        response = requests.post(endpoint, data=json.dumps(data), headers=headers, verify=True)
 
         # 检查响应
         if response.status_code == 200:
@@ -54,23 +47,27 @@ class Rikki:
             response_data = response.json()
             return response_data
         else:
-            print('Failed to create message. Status code:', response.status_code)
+            print('Status code:', response.status_code)
             return None
 
 
-# send是最常用的消息，被单独导入
+def h_send(message_content, platform, channel_id, self_id):
+    return Rikki.send_request(method='message.create', data={
+            'channel_id': channel_id,
+            'content': message_content
+        }, platform=platform, self_id=self_id)
+
+
 def send(message_content, session):
-    Rikki.send_message(message_content=message_content, platform=session.platform, channel_id=session.channel.id,
-                 self_id=session.self_id)
+    return h_send(channel_id=session.channel.id, message_content=message_content, platform=session.platform, self_id=session.self_id)
 
 
+def h_in_api(method, data, platform, self_id):
+    return Rikki.send_request(method=method, data=data, platform=platform, self_id=self_id)
 
 
-
-
-
-
-
+def in_api(method, data, session):
+    return h_in_api(method=method, data=data, platform=session.platform, self_id=session.self_id)
 
 
 
