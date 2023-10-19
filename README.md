@@ -13,46 +13,33 @@
 ***
 
 
-## 成员介绍：
-
-Ano.py   
-程序启动入口    
-对「satori」协议进行连接 / 数据包获取 / 心跳保活   
-为每个会话启动 main(data)   
-
-Tmorin.py   
-main 处理所有插件   
-核心处理调度 data 和 发送
-
-Rana.py   
-对「satori」协议进行基础消息抽象 / 日志显示   
-提供平台包装元素的 API   
-
-Soyorin.py   
-消息审核 / 插件管理 / 黑白名单 API   
-与 ./plugin 界限模糊，类似服务组件 API   
-
-Rikki.py   
-处理「satori」协议的信息发送 / API上报
-```markdown
-小知识：
-1.程序开始于Ano.py。
-2.Rikki.py 只会在 Tmorin.py 被调用。
-3.Soyorin.py Tmorin.py 可能永远都不会随着适配器而改变。
-4.Tmorin.py 永远是 Bot 的核心。
-```
-
 
 ## 快速开始：
+
+填写`config.yml`后，运行：
 
 ```bash
 python server.py
 # python3 server.py
 ```
 
-### server.py
+## 使用组件快速创建第一个功能
+打开`./plugin_package/component.py`，机器人所有的**组件**都位于这个文件。   
+你会发现很多样板函数，例如下方的`test1`。  
 
-启动！
+
+```python
+@component
+def test1(session):
+    if session.message.content == '测试文字':
+        send(f'测试成功！', session)
+```
+不难看出，当机器人会话内信息文字为**测试文字**，机器人就会回复**测试成功！**。
+
+你可以适当修改一下文字部分，修改完保存重启`server.py`后，第一个功能就会被搭载完毕。
+
+
+
 
 ***
 ## 发送元素消息
@@ -130,48 +117,83 @@ userID = session.uer.id
 
 
 
-## 创建第一个功能
+## 创建更多功能
 
-在TomorinBOT中，创建功能可以使用**插件**或**组件**的形式。   
+在TomorinBOT项目模版中，创建功能可以使用**插件**或**组件**的形式。   
 可以按照喜好自由选择。   
 
-### 一个新的组件（component）
-`component.py`是一个组件文件。   
-所有的组件都作为`component.py`的函数，使用`@component`修饰器以标识。
-
-```python
-# component.py
-# ...省略前面
-@component
-def hello(session):
-    if session.message.content == '测试音频':
-        send(f'{h.audio_url("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}', session)
-```
-不难看出，当本次消息的"消息内容"和"测试音频"一致时，BOT将会发送一条音频消息，从网络url获取。
-
-### 一个新的插件（plugin）
-`./foo` 文件夹是一个插件包示例。   
-文件夹内的`index.py`作为入口文件。
+### 一个新的插件（plugin） 
+首先，您需要在`./plugin_package`，新建一个英文名文件夹，我们就给这个文件夹取名为foo。此时，foo就是这个插件的名字。  
+`./foo`文件夹内需要一个`index.py`作为入口文件，文件内需要一个src函数作为主函数。   
+下面是一个标准例子。   
 ```python
 # index.py
+import time
+
 from core.Rana import h
 from core.Rikki import send
 
 
 def src(session):
     if session.message.content == 'foo':
+        send(f'思考...', session)
+        time.sleep(3)
         send(f'{h.quote(session.message.id)} {h.at(session.user.id)} bar', session)
 ```
-不难看出，当本次消息的"消息内容"和"foo"一致时，BOT将会发送一条消息，回复用户本条消息，提及用户，消息内容是"bar"。
+不难看出，当本次消息的"消息内容"和"foo"一致时，BOT将会发送一条消息：消息内容是"思考..."。   
+然后等待三秒。   
+再次发送一条消息：回复用户本条消息，提及用户，消息内容是"bar"。  
 
-本例子中，需要用到`Rana`的`h`解析消息，和`Rikki`的`send`发送消息。      
+本例子中，需要用到`Rana`的`h`解析消息，和`Rikki`的`send`发送消息。 
+
+### 组件（component）
+`component.py`是一个组件文件。   
+所有的组件都作为`component.py`的函数，使用`@component`修饰器以标识。
+使用组件更多是因为开发者比较懒，懒得新建一个文件夹，就把功能都堆在一起了。   
+
+我在组件里给了如下生产案例：
+```python
+# component.py
+# ...省略前面
+@component
+def test1(session):
+    if session.message.content == '测试文字':
+        send(f'测试成功！', session)
+
+
+@component
+def test2(session):
+    if session.message.content == '测试音频':
+        send(f'{h.audio_url("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}', session)
+
+
+@component
+def test3(session):
+    if session.message.content == '测试混合元素':
+        image = Image.new('RGB', (50, 50), color='red')
+        send(f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image_pil(image)}', session)
+
+
+@component
+def test4(session):
+    if session.message.content.startswith('发送到群组'):
+        forward_guild_id: str = session.message.content[5:].strip()
+        rpl = h_send(f'这是一条来自 {session.guild.name} 的消息', session.platform, forward_guild_id, session.self_id)
+        if not rpl:
+            send(f"发送失败", session)
+        else:
+            send('发送成功', session)
+```
+您可以尝试理解上面的例子，如果理解有问题可以咨询一些AI工具或者是您的亲朋好友的帮助。
+
+     
 
 
 
 
 ### 插件 / 组件 数据
-进入 `./plugin_package` 文件夹，你会发现有一个 `./_plugin_data` 文件夹，按照规范请把插件 / 组件数据放在这里。   
-当然你不放这也行。   
+进入 `./plugin_package` 文件夹，你会发现有一个 `./_plugin_data` 文件夹，按照规范请组件数据放在这里，不要到处乱拉。当然你不放这也行。      
+插件有自己的文件夹所以不用合租，有的舍友就是很让人讨厌。   
 
 
 ## 内置插件 - 服务
@@ -183,23 +205,30 @@ def src(session):
 
 
 
-## core介绍
 
-### ./core
+## ./core介绍：
+现在你需要了解一下这个python项目模版的内部，以便于更好的使用与扩展。   
 
-首先，被启动的是 `Ano.py` 用于收获来自外界的 **消息** 。
+本项目模版的`./core`部分命名来自MyGO!!!!!中的成员。
 
-`Ano.py` 收到 **消息** 后，调用 `Tomorin.py` 并传入 **消息** 。
+Ano.py   
+进行ws连接。   
+收到数据尝试启动 main() 函数。   
 
-`Tomorin.py` 会调用 `Soyo.py` 的第一部分对 **消息** 解析抽象、审查合格性。
+Tmorin.py   
+提供 main()函数，先解析数据到session，然后审核消息，然后启动每个组件和插件包。
 
-`Soyo.py` 通过后， **消息** 会继续回到 `Tomorin.py` 
+Rana.py   
+提供 Rana.process_satori_message() 函数解析数据到session。   
+提供发送消息时包装元素的 h() 函数，返回xml格式信息。  
 
-`Tomorin.py` 此时获得了 **抽象后的消息** ，此时消息会被 **正式处理** 为 **被发送的消息**。
-
-**正式处理**后，`Tomorin.py` 会调用`Soyo.py` 的第二部分对 **被发送的消息** 进行 打包、审查合格性。
-
-`Soyo.py` 通过后，`Rikki.py` 会被 `Tomorin.py` 作为 **消息发送器** 调用，直接尝试发送 **被发送的消息** 。
+Soyorin.py   
+读取配置文件，获取全局变量。      
+提供BanManager消息审核，Soyorin.show_session_log日志显示，正反向转译字符函数。   
 
 
+Rikki.py   
+基于 Rikki.send_request() 函数，提供 send(), h_send(), in_api(), h_in_api() 函数用于发送信息 / 内部请求。
 
+
+## More
