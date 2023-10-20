@@ -2,6 +2,7 @@ import base64
 import io
 
 from core.Soyorin import Utils
+from Rikki import Rikki
 from PIL import Image
 
 '''
@@ -56,6 +57,15 @@ class Session:
         self.guild = Guild(body.get('guild', {}))
         self.member = body.get('member', {})
         self.message = Message(body.get('message', {}))
+
+    def send(self, message_content):
+        return Rikki.send_request(method='message.create', data={
+            'channel_id': self.channel.id,
+            'content': message_content
+        }, platform=self.platform, self_id=self.self_id)
+
+    def call_api(self, method, data):
+        return Rikki.send_request(method=method, data=data, platform=self.platform, self_id=self.self_id)
 
 
 # 解析收到的消息信息

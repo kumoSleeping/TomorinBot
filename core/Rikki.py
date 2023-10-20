@@ -51,23 +51,22 @@ class Rikki:
             return None
 
 
-def h_send(message_content, platform, channel_id, self_id):
-    return Rikki.send_request(method='message.create', data={
-            'channel_id': channel_id,
-            'content': message_content
-        }, platform=platform, self_id=self_id)
+class Bot:
+    @staticmethod
+    def send(message_content, platform, channel_id, self_id):
+        return Rikki.send_request(method='message.create', data={
+                'channel_id': channel_id,
+                'content': message_content
+            }, platform=platform, self_id=self_id)
+
+    @staticmethod
+    def call_api(method, data, platform, self_id):
+        return Rikki.send_request(method=method, data=data, platform=platform, self_id=self_id)
 
 
-def send(message_content, session):
-    return h_send(channel_id=session.channel.id, message_content=message_content, platform=session.platform, self_id=session.self_id)
+bot = Bot()
 
 
-def h_in_api(method, data, platform, self_id):
-    return Rikki.send_request(method=method, data=data, platform=platform, self_id=self_id)
-
-
-def in_api(method, data, session):
-    return h_in_api(method=method, data=data, platform=session.platform, self_id=session.self_id)
 
 
 

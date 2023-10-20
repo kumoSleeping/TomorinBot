@@ -42,13 +42,45 @@ def test1(session):
 
 
 ***
-## 发送元素消息
+## 发送消息 / 调用API
+Rikki提供了`Rikki.send_request`请求Satori标准API。   
+在此基础上，目前有两个方法发送消息与请求。   
+
+### bot方法
+
+- `bot.send()`
+- `bot.call_api()`
+
+bot方法需要传入的参数较多，一般用于跨群聊 / 平台插件。   
+eg：
+```python
+rpl = bot.send(f'这是一条来自 {session.guild.name} 的消息', session.platform, forward_guild_id, session.self_id)
+```
+
+
+### session方法
+- `session.send()`
+- `session.call_api()`
+
+session方法会为必要信息尽可能的自动填入本次会话的信息。   
+例如一问一答的时候，使用`session.send()`只需要传入回答的消息，即可发送到本此会话所发生的地方。
+
+
+### 调用 API
+使用`call_api`调用。
+
+[Satori文档-api](https://satori.js.org/zh-CN/protocol/api.html)   
+[Satori文档-内部接口](https://satori.js.org/zh-CN/protocol/internal.html)
+如果你使用Koishi的Server插件作为万用适配器，请查看[Koishi官方插件](https://koishi.chat/zh-CN/plugins/)指南了解各个平台内部API接口。   
+
+## 消息元素
 
 ### xml元素发送
 
 Satori支持的xml元素具体可以参考 [Koishi元素](https://koishi.chat/zh-CN/api/message/elements.html)。   
 
-也就是说，直接在消息中加入元素，即可发送富元素消息。  
+也就是说，直接在消息中加入元素，即可发送富元素消息。这也是jsx很经典的用法。
+
 eg：
 ```python
 # 这条消息含有 quote 和 at 元素
@@ -56,21 +88,22 @@ msg = f'<quote id="{session.message.id}"/> <at id="{session.user.id}"/>你好'
 ```
 
 ### 快捷调用
+说实话我一直觉得在py里使用xml有一种牛的美。   
+因此，Rana的 `h` 方法包含了一组辅助方法，用于生成标准元素字符串。   
 
-Rana的 `h` 类包含了一组辅助方法，用于生成特定格式的标准元素消息内容。   
-
-**方法列表**
+**普通方法列表**
 
 - `at(user_id)`: 生成@某用户。
 - `sharp(channel_id)`: 生成#某频道消息内容。
 - `quote(message_id)`: 生成引用。
-- `image_url(param)`: 生成图片（通过URL / 缓冲区buffer / Pillow Image对象）。
-- `audio_url(param)`: 生成音频（通过URL / 缓冲区buffer）。
-- `video_url(param)`: 生成视频（通过URL / 缓冲区buffer）。
-- `file_url(param)`: 生成文件（通过URL / 缓冲区buffer）。
 - `text(content)`: 生成文本（多数情况无需使用此API生成）。
 
-填入后将通过类型自动判断。
+**类型自动判断方法列表**
+- `image(param)`: 生成图片（通过URL / 缓冲区buffer / Pillow Image对象）。
+- `audio(param)`: 生成音频（通过URL / 缓冲区buffer）。
+- `video(param)`: 生成视频（通过URL / 缓冲区buffer）。
+- `file(param)`: 生成文件（通过URL / 缓冲区buffer）。
+
 
 eg:
 ```python
@@ -138,7 +171,7 @@ eg:
 # 消息内容
 mc = session.message.content
 # 用户ID
-userID = session.uer.id
+userID = session.user.id
 ```
 
 
@@ -157,20 +190,24 @@ userID = session.uer.id
 import time
 
 from core.Rana import h
-from core.Rikki import send
 
 
 def src(session):
     if session.message.content == 'foo':
-        send(f'思考...', session)
-        time.sleep(3)
-        send(f'{h.quote(session.message.id)} {h.at(session.user.id)} bar', session)
-```
-不难看出，当本次消息的"消息内容"和"foo"一致时，BOT将会发送一条消息：消息内容是"思考..."。   
-然后等待三秒。   
-再次发送一条消息：回复用户本条消息，提及用户，消息内容是"bar"。  
+        # 使用xml元素提及用户，正常推荐使用 h.at(session.user.id)
+        msg_id = session.send(f'<at id="{session.user.id}"/> bar')
 
-本例子中，需要用到`Rana`的`h`解析消息，和`Rikki`的`send`发送消息。 
+        time.sleep(3)
+        # 尝试撤回消息（前提是平台支持这个API）
+        rpl = session.call_api(method='message.delete', data={"message_id": msg_id, "channel_id": session.channel.id})
+        # print(rpl)
+```
+不难看出，当本次消息的"消息内容"和"foo"一致时，BOT将会发送一条消息：提及用户，消息内容是"bar"。  
+然后等待三秒。   
+尝试撤回消息。  
+
+本例子中，没有需要用到`Rana`的`h`包装消息，而是直接使用xml元素。   
+使用`session.send`发送消息。 
 
 ### 组件（component）
 `component.py`是一个组件文件。   
@@ -181,39 +218,36 @@ def src(session):
 ```python
 # component.py
 # ...省略前面
-def component(func):
-    print(f'组件[{str(func).split()[1]}]加载成功！')
-    component_configurations.append(func)
-
 
 @component
 def test1(session):
     if session.message.content == '测试文字':
-        send(f'测试成功！', session)
+        session.send('测试成功！')
 
 
 @component
 def test2(session):
     if session.message.content == '测试音频':
-        send(f'{h.audio("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}', session)
+        session.send(f'{h.audio("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}')
 
 
 @component
 def test3(session):
     if session.message.content == '测试混合元素':
         image = Image.new('RGB', (50, 50), color='red')
-        send(f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image(image)}', session)
+        # h.image(image) 可以直接通过传 PIL 对象发送图片
+        session.send(f'{h.quote(session.message.id)} {h.at(session.user.id)} 爱城华恋色图：{h.image(image)}')
 
 
 @component
 def test4(session):
     if session.message.content.startswith('发送到群组'):
         forward_guild_id: str = session.message.content[5:].strip()
-        rpl = h_send(f'这是一条来自 {session.guild.name} 的消息', session.platform, forward_guild_id, session.self_id)
+        rpl = bot.send(f'这是一条来自 {session.guild.name} 的消息', session.platform, forward_guild_id, session.self_id)
         if not rpl:
-            send(f"发送失败", session)
+            session.send(f"发送失败")
         else:
-            send('发送成功', session)
+            session.send('发送成功')
 ```
 您可以尝试理解上面的例子，如果理解有问题可以咨询一些AI工具或者是您的亲朋好友的帮助。
 
