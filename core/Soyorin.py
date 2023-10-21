@@ -9,14 +9,16 @@ Soyorin.py
 消息审核 / 插件管理 / 黑白名单 API
 与 ./plugin 界限模糊，类似服务组件 API
 '''
-# print(str(Path.cwd()) + '/config.yml')
 
-config = yaml.safe_load(open(str(Path.cwd()) + '/config.yml'))
+current_directory = Path.cwd()  # 获取当前目录
+parent_directory = current_directory.parent  # 获取上一级目录
 
-IP, PORT, TOKEN, Heartbeat_cd, ADMINISTRATOR_list = config['server']["ip"], config['server']["port"],\
-    config['server']["token"], config['server']["HeartbeatInterval"], config['user']["administrator"]
+config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
 
-ban_dicts_path = str(Path.cwd()) + '/plugin_package/_plugin_data/_soyorin/ban_dicts.json'
+IP, PORT, TOKEN, Heartbeat_cd, SATORI_PATH = config['server']["ip"], config['server']["port"],\
+    config['server']["token"], config['server']["HeartbeatInterval"], config['server']["satori_path"]
+
+ban_dicts_path = str(Path.cwd()) + '/_components/_soyorin_data/ban_dicts.json'
 
 
 class Utils:
@@ -130,4 +132,7 @@ class BanManager:
 
 BanManager.load_data()
 # print(BanManager.ALL_BAN_DICTS)
-print('服务[BanManager]加载成功！\nSoyorin.py 导入服务结束')
+# print('服务[BanManager]加载成功！\nSoyorin.py 导入服务结束')
+
+
+

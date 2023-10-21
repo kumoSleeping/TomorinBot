@@ -1,9 +1,10 @@
 import base64
 import io
-
-from core.Soyorin import Utils
-from Rikki import Rikki
 from PIL import Image
+
+
+from Soyorin import Utils
+from Rikki import Rikki
 
 '''
 Rana.py
@@ -16,13 +17,16 @@ class User:
     def __init__(self, user_info):
         self.id = user_info.get('id', '')
         self.name = user_info.get('name', '')
+        self.user_id = user_info.get('user_id', '')
         self.avatar = user_info.get('avatar', '')
+        self.username = user_info.get('username', '')
 
 
 class Channel:
     def __init__(self, channel_info):
         self.type = channel_info.get('type', '')
         self.id = channel_info.get('id', '')
+
         self.name = channel_info.get('name', '')
 
 
@@ -30,19 +34,41 @@ class Guild:
     def __init__(self, guild_info):
         self.id = guild_info.get('id', '')
         self.name = guild_info.get('name', '')
+
         self.avatar = guild_info.get('avatar', '')
 
 
 class Member:
-    def __init__(self, guild_info):
-        self.name = guild_info.get('name', '')
+    def __init__(self, member_info):
+        self.name = member_info.get('name', '')
+        self.roles: list = member_info.get('roles', '')
 
 
 class Message:
     def __init__(self, message_info):
         self.id = message_info.get('id', '')
         self.content = message_info.get('content', '')
-        self.elements = message_info.get('elements', '')
+
+        self.elements = Elements(message_info.get('elements', []))
+
+
+class Elements:
+    def __init__(self, elements_info):
+        self.types = []  # 存储类型的列表
+        # self.contents = []  # 存储内容的列表
+        self.attrs_list = []  # 存储attrs的列表
+        self.children_list = []  # 存储children的列表
+
+        for element_data in elements_info:
+            element_type = element_data.get('type', '')
+            # element_content = element_data['attrs'].get('content', '')
+            element_attrs = element_data.get('attrs', {})
+            element_children = element_data.get('children', [])
+
+            self.types.append(element_type)
+            # self.contents.append(element_content)
+            self.attrs_list.append(element_attrs)
+            self.children_list.append(element_children)
 
 
 class Session:
@@ -52,6 +78,7 @@ class Session:
         self.platform = body.get('platform', '')
         self.self_id = body.get('self_id', '')
         self.timestamp = body.get('timestamp', '')
+
         self.user = User(body.get('user', {}))
         self.channel = Channel(body.get('channel', {}))
         self.guild = Guild(body.get('guild', {}))

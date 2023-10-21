@@ -1,7 +1,7 @@
 import requests
 import json
 
-from core.Soyorin import TOKEN, IP, PORT
+from Soyorin import TOKEN, IP, PORT, SATORI_PATH
 
 '''
 Rikki.py · send
@@ -27,7 +27,7 @@ class Rikki:
         """
         # API endpoint
         method = 'message.create'
-        endpoint = f'http://{IP}:{PORT}/v1/{method}'  # 替换为实际API endpoint
+        endpoint = f'http://{IP}:{PORT}{SATORI_PATH}/v1/{method}'  # 替换为实际API endpoint
 
         # 构建请求头
         headers = {

@@ -1,6 +1,9 @@
 
 
 
+# md文档版本落后，请以实际为准
+
+
 <h1 align="center"> Tomorin BOT </h1>
 
 
@@ -183,7 +186,7 @@ userID = session.user.id
 
 ### 一个新的插件（plugin） 
 首先，您需要在`./plugin_package`，新建一个英文名文件夹，我们就给这个文件夹取名为foo。此时，foo就是这个插件的名字。  
-`./foo`文件夹内需要一个`index.py`作为入口文件，文件内需要一个src函数作为主函数。   
+`./foo`文件夹内需要一个`index.py`作为入口文件，文件内需要一个`src`函数作为主函数。   
 下面是一个标准例子。   
 ```python
 # index.py

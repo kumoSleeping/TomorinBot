@@ -2,10 +2,14 @@ import asyncio
 import json
 import websockets
 import threading
+import os
 
-from core.Tomorin import main
-from core.Soyorin import TOKEN, IP, PORT, Heartbeat_cd
-from core.Soyorin import Utils
+# 获取当前脚本的目录路径,将当前工作目录切换到脚本所在的目录
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+from Tomorin import main
+from Soyorin import TOKEN, IP, PORT, SATORI_PATH, Heartbeat_cd
+from Soyorin import Utils
 
 '''
 Ano.py · receive
@@ -35,7 +39,7 @@ class SatoriBot:
     def __init__(self):
         self.websocket = None
         self.token = TOKEN
-        self.ws_url = f"ws://{IP}:{PORT}/v1/events"
+        self.ws_url = f"ws://{IP}:{PORT}{SATORI_PATH}/v1/events"
 
     async def while_send_ping_packet(self):
         while True:
@@ -74,7 +78,7 @@ class SatoriBot:
                 data = json.loads(Utils.unescape_special_characters(message))
                 await handle_data(data)
             except websockets.ConnectionClosed as e:
-                print(f"WebSocket connection closed. Reason: {e.reason}")
+                print(f"WebSocket connection closed. ")
                 break
 
     async def run(self):
