@@ -209,23 +209,23 @@ Tomorin Bot支持用这种方式来表示消息元素，但非必要的情况下
 
 Tomorin Bot的核心内容在 `core` 文件夹下，其中文件的命名来自MyGO!!!!!。
 
-- Ano.py
-  通过ws与前端进行通讯，并在收到数据尝试调用 `main()` 函数。
+- Ano.py   
+  通过ws与前端进行通讯，并在收到数据尝试调用 `main()` 函数。   
   由于异步实现遇到了一些困难，Tomorin Bot现在使用 AnonTokyo.py进行同步ws通信。
-- **AnonTokyo.py**
-  实现与Bot前端的web socket通信，包括登陆、心跳、鉴权、消息处理等。
-  接收到消息时，将消息数据转交 `Tomorin.py` 中的 `main()` 函数处理。
+- **AnonTokyo.py**   
+  实现与Bot前端的web socket通信，包括登陆、心跳、鉴权、消息处理等。   
+  接收到消息时，将消息数据转交 `Tomorin.py` 中的 `main()` 函数处理。   
 - **Tomorin.py**
-  在 `main()` 函数中，Tomorin Bot会解析前端发送的数据，通过**Rana**构建Session对象以供后续处理。
-  同时，也会调用**Soyorin**中的BanManager进行消息审核。
-  插件、组件加载也在这里进行。
-- **Rana.py**
-  主要负责前端以Satori协议传回数据的解析，并抽象了基础的消息对象。
-  同时提供了快速构建消息元素的 `h` 相关函数。
-- **Soyorin.py**
-  进行消息审核、插件管理、日志显示，并实现了一套黑白名单API。
-- **Rikki.py**
-  以Satori协议向前端发送POST请求，实现各种API上报，如消息发送等。
+  在 `main()` 函数中，Tomorin Bot会解析前端发送的数据，通过**Rana**构建Session对象以供后续处理。   
+  同时，也会调用**Soyorin**中的BanManager进行消息审核。   
+  插件、组件加载也在这里进行。   
+- **Rana.py**   
+  主要负责前端以Satori协议传回数据的解析，并抽象了基础的消息对象。   
+  同时提供了快速构建消息元素的 `h` 相关函数。   
+- **Soyorin.py**   
+  进行消息审核、插件管理、日志显示，并实现了一套黑白名单API。   
+- **Rikki.py**   
+  以Satori协议向前端发送POST请求，实现各种API上报，如消息发送等。   
 
 ### Session对象
 
@@ -280,8 +280,11 @@ msg = f'<quote id="{session.message.id}"/> <at id="{session.user.id}"/>你好'
 ```
 
 当然，我们也在实现功能一节的举例已经使用到了消息元素，你可能还记得使用 `h` 系列函数来快速构建消息元素的方法。
+
 我们认为在python代码中使用xml有一种在祥子面前演奏春日影的美。
-因此，Rana的 `h` 对象包含了一组辅助方法，用于生成标准消息元素的xml字符串。   
+
+因此，Rana的 `h` 对象包含了一组辅助方法，用于生成标准消息元素的xml字符串。
+
 ~~现在有一种Tomorin在Rana的鼓动下在祥子面前演奏春日影的美了。~~
 
 **普通方法列表**
