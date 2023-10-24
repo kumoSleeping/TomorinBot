@@ -13,7 +13,7 @@
 
 
 <h1 align="center">
-  <a href="https://github.com/你的用户名/你的项目名称/wiki">Tomorin BOT Wiki</a>
+  <a href="https://github.com/kumoSleeping/TomorinBot/wiki">Tomorin BOT Wiki</a>
 </h1>
 
 ***
@@ -57,7 +57,7 @@ Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的�
 ------
 
 
-[项目的Wiki](https://github.com/kumoSleeping/TomorinBOT/wiki)
+[项目的Wiki](https://github.com/kumoSleeping/TomorinBot/wiki)
 
 
 
