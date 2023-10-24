@@ -52,7 +52,7 @@ Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的�
 本项目尽可能的使用简洁美观的方法开发，让简单的功能实现可以高速产出。 
 
 
-如果你的机器人需要利用代码平台的高级功能较多，或您习惯SDK编写项目，我十分推荐您使用[RF-Tar-Railt/satori-python](https://github.com/RF-Tar-Railt/satori-python/releases/tag/v0.4.0)进行更高级的开发。
+如果你的机器人需要使用较多平台的高级功能，或您习惯使用SDK编写项目，我十分推荐您使用[RF-Tar-Railt/satori-python](https://github.com/RF-Tar-Railt/satori-python/releases/tag/v0.4.0)进行更高级的开发。
 
 ------
 
