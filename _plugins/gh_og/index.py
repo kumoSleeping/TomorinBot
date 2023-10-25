@@ -1,8 +1,7 @@
-import time
 import requests
 import re
 
-from core.Rana import h
+from core.rana import h
 
 
 def gh_og(session):

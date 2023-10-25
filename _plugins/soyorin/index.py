@@ -1,14 +1,12 @@
 import importlib
 
-# from core.Rana import h
-
 
 def soyorin(session):
     '''
     黑白名单总揽管理
     '''
     # 动态导入模块
-    module = importlib.import_module("core.Soyorin")
+    module = importlib.import_module("core.soyorin")
     # 访问模块中的 function_info_list
     BanManager, ADMINISTRATOR_list = module.BanManager, module.ADMINISTRATOR_list
 

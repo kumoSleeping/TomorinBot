@@ -7,7 +7,7 @@ def help(session):
     发送help查看帮助。
     """
     # 动态导入模块
-    module = importlib.import_module("core.Tomorin")
+    module = importlib.import_module("core.tomorin")
     # 访问模块中的 function_info_list
     function_info_list = module.function_info_list
 

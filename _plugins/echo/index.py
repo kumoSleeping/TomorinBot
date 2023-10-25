@@ -1,6 +1,6 @@
 import time
 
-from core.Rana import h
+from core.rana import h
 
 
 def echo(session):
