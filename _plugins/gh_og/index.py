@@ -5,23 +5,27 @@ import re
 from core.Rana import h
 
 
-def main(session):
+def gh_og(session):
+    '''
+    gh项目生成og图
+    监测到 name/reop 或gh仓库链接后 生成 og 图并发送
+    '''
     if "/" in session.message.content:
-        fetch_github_data(session)
+        _fetch_github_data(session)
 
 
-def extract_repo_name(url):
+def _extract_repo_name(url):
     parts = url.split('/')
     username = parts[3]
     repo_name = parts[4]
     return f"{username}/{repo_name}"
 
 
-def fetch_github_data(session):
+def _fetch_github_data(session):
     message = session.message.content
     try:
         if message.startswith('https://github.com/'):
-            project = extract_repo_name(message)
+            project = _extract_repo_name(message)
         elif '/' in message:
             github_repo_pattern = r'^[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+$'
             match = re.match(github_repo_pattern, session.message.content)

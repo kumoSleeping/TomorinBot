@@ -1,12 +1,8 @@
 import os
 import importlib
-import sys
 
-sys.path.append("..")  # 添加上一级目录到模块搜索路径
-
-from _components.component import component_configurations
 from Rana import Rana
-from Soyorin import BanManager
+import inspect
 
 '''
 Tmorin.py
@@ -21,34 +17,68 @@ subdirectories = [d for d in os.listdir('../_plugins')
 formatted_subdirectories = ['插件包[' + folder + ']加载成功！' for folder in subdirectories]
 
 notice = '\n'.join(formatted_subdirectories)
-print(notice)
+
+
+def show_load_plugin():
+    print(notice)
+
+
+function_info_list = []
+
+for folder in subdirectories:
+    folder_info = {'folder_name': folder, 'functions': []}
+
+    try:
+        module = importlib.import_module(f'_plugins.{folder}.index')
+
+        for name, obj in inspect.getmembers(module):
+            if inspect.isfunction(obj) and not name.startswith('_'):  # 添加过滤条件
+                function_info = {
+                    'function_name': name,
+                    'function_docstring': inspect.getdoc(obj)
+                }
+                folder_info['functions'].append(function_info)
+
+    except ImportError as e:
+        print(f"Failed to import module {folder}: {str(e)}")
+    except AttributeError as e:
+        print(f"插件包 {folder} 函数或内部发生错误. \nerror: {e}")
+
+    function_info_list.append(folder_info)
+# print(function_info_list)
 
 
 def main(data):
     session = Rana.process_satori_message(data)
     # 插件管理 / 黑名单审查
+    # 动态导入模块
+    module = importlib.import_module("core.Soyorin")
+    # 访问模块中的 function_info_list
+    BanManager = module.BanManager
 
-    for plugin in component_configurations:
-        if not BanManager.check_before_plugin(session, str(plugin).split()[1]):
-            # print('[WARNING] 消息被soyorin拦截...')
-            continue
-        plugin(session)
+    for folder_info in function_info_list:
+        folder_name = folder_info['folder_name']
+        functions = folder_info['functions']
 
-    for folder in subdirectories:
         try:
-            # 使用importlib动态导入模块
-            module = importlib.import_module(f'_plugins.{folder}.index')
-            if not BanManager.check_before_plugin(session, folder):
-                # print('[WARNING] 消息被soyorin拦截...')
-                continue
+            module = importlib.import_module(f'_plugins.{folder_name}.index')
 
-            # 调用模块中的src函数
-            module.main(session)
+            for function_info in functions:
+                function_name = function_info['function_name']
+                function_docstring = function_info['function_docstring']
+                # print(function_name)
+                if not BanManager.check_before_plugin(session, function_name):
+                    # print('[WARNING] 消息被soyorin拦截...')
+                    continue
+
+                # 调用函数
+                func = getattr(module, function_name)
+                func(session)
+
         except ImportError as e:
-            print(f"Failed to import module {folder}: {str(e)}")
-        except AttributeError:
-            print(f"Module {folder} does not have a src() function.")
-
+            print(f"Failed to import module {folder_name}: {str(e)}")
+        except AttributeError as e:
+            print(f"插件包 {folder_name} 函数或内部发生错误. \nerror: {e}")
 
 
 

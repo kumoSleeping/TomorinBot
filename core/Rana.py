@@ -26,7 +26,6 @@ class Channel:
     def __init__(self, channel_info):
         self.type = channel_info.get('type', '')
         self.id = channel_info.get('id', '')
-
         self.name = channel_info.get('name', '')
 
 
@@ -34,7 +33,6 @@ class Guild:
     def __init__(self, guild_info):
         self.id = guild_info.get('id', '')
         self.name = guild_info.get('name', '')
-
         self.avatar = guild_info.get('avatar', '')
 
 
@@ -42,6 +40,17 @@ class Member:
     def __init__(self, member_info):
         self.name = member_info.get('name', '')
         self.roles: list = member_info.get('roles', '')
+
+        self.member_user = MemberUser(member_info.get('user', {}))
+
+
+class MemberUser:
+    def __init__(self, member_user_info):
+        self.id = member_user_info.get('id', '')
+        self.name = member_user_info.get('name', '')
+        self.user_id = member_user_info.get('user_id', '')
+        self.avatar = member_user_info.get('avatar', '')
+        self.username = member_user_info.get('username', '')
 
 
 class Message:
@@ -55,18 +64,15 @@ class Message:
 class Elements:
     def __init__(self, elements_info):
         self.types = []  # 存储类型的列表
-        # self.contents = []  # 存储内容的列表
         self.attrs_list = []  # 存储attrs的列表
         self.children_list = []  # 存储children的列表
 
         for element_data in elements_info:
             element_type = element_data.get('type', '')
-            # element_content = element_data['attrs'].get('content', '')
             element_attrs = element_data.get('attrs', {})
             element_children = element_data.get('children', [])
 
             self.types.append(element_type)
-            # self.contents.append(element_content)
             self.attrs_list.append(element_attrs)
             self.children_list.append(element_children)
 
@@ -78,12 +84,17 @@ class Session:
         self.platform = body.get('platform', '')
         self.self_id = body.get('self_id', '')
         self.timestamp = body.get('timestamp', '')
+        self.subtype = body.get('subtype', '')
+
+        self.member = Member(body.get('member', {}))
 
         self.user = User(body.get('user', {}))
         self.channel = Channel(body.get('channel', {}))
         self.guild = Guild(body.get('guild', {}))
-        self.member = body.get('member', {})
         self.message = Message(body.get('message', {}))
+
+        self.member_user = MemberUser(body.get('message', {}))
+
 
     def send(self, message_content):
         return Rikki.send_request(method='message.create', data={

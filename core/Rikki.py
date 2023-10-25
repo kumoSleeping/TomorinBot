@@ -1,7 +1,13 @@
 import requests
 import json
+import os
+import yaml
 
-from Soyorin import TOKEN, IP, PORT, SATORI_PATH
+script_directory = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录的绝对路径
+parent_directory = os.path.dirname(script_directory)  # 获取上一级目录的绝对路径
+
+config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
+
 
 '''
 Rikki.py · send
@@ -25,9 +31,21 @@ class Rikki:
         Returns:
         dict: 包含消息信息的字典，如果发送失败则返回None。
         """
+        # 遍历连接配置
+        for connection in config["connections"]:
+            if connection["self_id"] == self_id:
+                this_connection = connection
+                break
+        else:
+            # 如果未找到匹配的连接配置
+            print(f"未找到 self_id 为 {self_id} 的连接配置")
+            return
+
         # API endpoint
-        method = 'message.create'
-        endpoint = f'http://{IP}:{PORT}{SATORI_PATH}/v1/{method}'  # 替换为实际API endpoint
+        endpoint_first = this_connection['endpoint']
+        version = this_connection['version']
+        TOKEN = this_connection['token']
+        endpoint = f'{endpoint_first}/{version}/{method}'  # 替换为实际API endpoint
 
         # 构建请求头
         headers = {

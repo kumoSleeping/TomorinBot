@@ -9,16 +9,73 @@ Soyorin.py
 消息审核 / 插件管理 / 黑白名单 API
 与 ./plugin 界限模糊，类似服务组件 API
 '''
-
+ADMINISTRATOR_list = ['1528593481']
 current_directory = Path.cwd()  # 获取当前目录
 parent_directory = current_directory.parent  # 获取上一级目录
+ban_dicts_path = str(parent_directory) + '/_plugins/soyorin/ban_dicts.json'
 
-config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
 
-IP, PORT, TOKEN, Heartbeat_cd, SATORI_PATH = config['server']["ip"], config['server']["port"],\
-    config['server']["token"], config['server']["HeartbeatInterval"], config['server']["satori_path"]
+class BanManager:
+    ALL_BAN_DICTS = []
 
-ban_dicts_path = str(Path.cwd()) + '/_components/_soyorin_data/ban_dicts.json'
+    @classmethod
+    def load_data(cls):
+        global ban_dicts_path
+        if os.path.exists(ban_dicts_path):
+            with open(ban_dicts_path, 'r', encoding='utf-8') as file:
+                cls.ALL_BAN_DICTS = json.load(file)
+        else:
+            cls.ALL_BAN_DICTS = []
+
+    @classmethod
+    def save_data(cls):
+        global ban_dicts_path
+        with open(ban_dicts_path, 'w', encoding='utf-8') as file:
+            json.dump(cls.ALL_BAN_DICTS, file, ensure_ascii=False, indent=4)
+
+    @classmethod
+    def add_item(cls, item):
+        cls.ALL_BAN_DICTS.append(item)
+        BanManager.save_data()
+
+    @classmethod
+    def delete_item(cls, index):
+        if 0 <= index < len(cls.ALL_BAN_DICTS):
+            del cls.ALL_BAN_DICTS[index]
+            BanManager.save_data()
+        else:
+            print("索引超出范围")
+
+    @staticmethod
+    def check_before_plugin(session, plugin_name):
+        # print(BanManager.ALL_BAN_DICTS)
+        for idx, ban_config in enumerate(BanManager.ALL_BAN_DICTS):
+            if plugin_name == 'soyorin':
+                return True
+            # 初始化变量
+            guild_ = ban_config.get('G', ban_config.get('G', 'N/A'))
+            platform_ = ban_config.get('P', ban_config.get('P', 'N/A'))
+            user_ = ban_config.get('U', ban_config.get('U', 'N/A'))
+            func_ = ban_config.get('F', ban_config.get('F', 'N/A'))
+            message_ = ban_config.get('M', ban_config.get('M', 'N/A'))
+
+            if guild_ != session.guild.id and guild_ != 'N/A':
+                continue
+            if platform_ != session.platform and platform_ != 'N/A':
+                continue
+            if user_ != session.user.id and user_ != 'N/A':
+                continue
+            if func_ != plugin_name and func_ != 'N/A':
+                continue
+            if message_ != session.message and message_ != 'N/A':
+                continue
+            # print("不通过")
+            return False  # 此消息审核 不过
+        # print('通过')
+        return True  # 此消息审核 过
+
+
+BanManager.load_data()
 
 
 class Utils:
@@ -70,67 +127,6 @@ class Utils:
         print(f"[ {session.platform}: {group} ] （ {member} ）{cleaned_text}")
 
 
-class BanManager:
-    ALL_BAN_DICTS = []
-
-    @classmethod
-    def load_data(cls):
-        global ban_dicts_path
-        if os.path.exists(ban_dicts_path):
-            with open(ban_dicts_path, 'r', encoding='utf-8') as file:
-                cls.ALL_BAN_DICTS = json.load(file)
-        else:
-            cls.ALL_BAN_DICTS = []
-
-    @classmethod
-    def save_data(cls):
-        global ban_dicts_path
-        with open(ban_dicts_path, 'w', encoding='utf-8') as file:
-            json.dump(cls.ALL_BAN_DICTS, file, ensure_ascii=False, indent=4)
-
-    @classmethod
-    def add_item(cls, item):
-        cls.ALL_BAN_DICTS.append(item)
-        BanManager.save_data()
-
-    @classmethod
-    def delete_item(cls, index):
-        if 0 <= index < len(cls.ALL_BAN_DICTS):
-            del cls.ALL_BAN_DICTS[index]
-            BanManager.save_data()
-        else:
-            print("索引超出范围")
-
-    @staticmethod
-    def check_before_plugin(session, plugin_name):
-        # print(BanManager.ALL_BAN_DICTS)
-        for idx, ban_config in enumerate(BanManager.ALL_BAN_DICTS):
-            if plugin_name == '_soyorin':
-                return True
-            # 初始化变量
-            guild_ = ban_config.get('G', ban_config.get('G', 'N/A'))
-            platform_ = ban_config.get('P', ban_config.get('P', 'N/A'))
-            user_ = ban_config.get('U', ban_config.get('U', 'N/A'))
-            func_ = ban_config.get('F', ban_config.get('F', 'N/A'))
-            message_ = ban_config.get('M', ban_config.get('M', 'N/A'))
-
-            if guild_ != session.guild.id and guild_ != 'N/A':
-                continue
-            if platform_ != session.platform and platform_ != 'N/A':
-                continue
-            if user_ != session.user.id and user_ != 'N/A':
-                continue
-            if func_ != plugin_name and func_ != 'N/A':
-                continue
-            if message_ != session.message and message_ != 'N/A':
-                continue
-            # print("不通过")
-            return False  # 此消息审核 不过
-        # print('通过')
-        return True  # 此消息审核 过
-
-
-BanManager.load_data()
 # print(BanManager.ALL_BAN_DICTS)
 # print('服务[BanManager]加载成功！\nSoyorin.py 导入服务结束')
 
