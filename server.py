@@ -7,5 +7,5 @@ script_directory = os.path.dirname(os.path.abspath(__file__))
 
 
 # 我们的迷失，从Anochan开始。
-subprocess.run(["python", script_directory + '/core/Anochan.py'])
+subprocess.run(["python", script_directory + '/core/anochan.py'])
 
