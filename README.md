@@ -40,11 +40,25 @@ Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的�
 可以用支持Satori协议的服务连接本项目。
 
 ### 模版实现    
-1.ws连接到satori协议前端，根据yml文件支持多例。    
-2.h包装富元素，session、bot属性抽象。    
-3.dev下利用flask热重载(此dev可连接webhook)。    
-4.插件包系统内部支持多组件，支持help <组件名> 。     
-5.提供一套名为ign的黑白名单，插件/组件管理。   
+
+| 功能                  | 说明 |
+|:----------------------|:-------:|
+| ws多例连接  |      |
+| ws自动重连  |      |
+| webhook基础连接   | 利用flask的debug启用dev    |
+| 混合连接模式   | 用于无公网启用dev     |
+| 插件包系统             |      |
+| 插件包内组件系统      |      |
+| help系统      |      |
+| 黑白名单 组件管理      |      |
+| h函数快捷包装元素     |     |
+| session抽象     |     |
+| bot抽象     |     |
+| send与call_api     |     |
+
+[项目的Wiki](https://github.com/kumoSleeping/TomorinBot/wiki)
+参阅wiki以理解上述功能。
+
 
 ### 关于此模版
 本模版出发点是学习优秀设计方法，简洁易用。使用此项目的人可以任意修改`./core`中的代码来迎合自己的习惯。   
@@ -57,7 +71,6 @@ Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的�
 ------
 
 
-[项目的Wiki](https://github.com/kumoSleeping/TomorinBot/wiki)
 
 
 
