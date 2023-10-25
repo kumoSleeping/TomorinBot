@@ -17,9 +17,9 @@ class User:
     def __init__(self, user_info):
         self.id = user_info.get('id', '')
         self.name = user_info.get('name', '')
-        self.user_id = user_info.get('user_id', '')
         self.avatar = user_info.get('avatar', '')
-        self.username = user_info.get('username', '')
+        self.nick = user_info.get('nick', '')
+        self.is_bot = user_info.get('is_bot', '')
 
 
 class Channel:
@@ -27,6 +27,7 @@ class Channel:
         self.type = channel_info.get('type', '')
         self.id = channel_info.get('id', '')
         self.name = channel_info.get('name', '')
+        self.parent_id = channel_info.get('parent_id', '')
 
 
 class Guild:
@@ -38,43 +39,47 @@ class Guild:
 
 class Member:
     def __init__(self, member_info):
-        self.name = member_info.get('name', '')
-        self.roles: list = member_info.get('roles', '')
+        self.user = member_info.get('user', '')
+        self.nick = member_info.get('nick', '')
+        self.avatar = member_info.get('avatar', '')
+        self.joined_at = member_info.get('joined_at', '')
+        self.user = User(member_info.get('user', {}))
 
-        self.member_user = MemberUser(member_info.get('user', {}))
+
+class Operator:
+    def __init__(self, operator_info):
+        self.id = operator_info.get('id', '')
+        self.name = operator_info.get('name', '')
+        self.avatar = operator_info.get('avatar', '')
+        self.nick = operator_info.get('nick', '')
+        self.is_bot = operator_info.get('is_bot', '')
 
 
-class MemberUser:
-    def __init__(self, member_user_info):
-        self.id = member_user_info.get('id', '')
-        self.name = member_user_info.get('name', '')
-        self.user_id = member_user_info.get('user_id', '')
-        self.avatar = member_user_info.get('avatar', '')
-        self.username = member_user_info.get('username', '')
+class Role:
+    def __init__(self, role_info):
+        self.id = role_info.get('id', '')
+        self.name = role_info.get('name', '')
+
+
+class Login:
+    def __init__(self, login_info):
+        self.id = login_info.get('id', '')
+        self.self_id = login_info.get('self_id', '')
+        self.platform = login_info.get('platform', '')
+        self.status: int = login_info.get('status', '')
+        self.user = User(login_info.get('user', {}))
 
 
 class Message:
     def __init__(self, message_info):
         self.id = message_info.get('id', '')
         self.content = message_info.get('content', '')
-
-        self.elements = Elements(message_info.get('elements', []))
-
-
-class Elements:
-    def __init__(self, elements_info):
-        self.types = []  # 存储类型的列表
-        self.attrs_list = []  # 存储attrs的列表
-        self.children_list = []  # 存储children的列表
-
-        for element_data in elements_info:
-            element_type = element_data.get('type', '')
-            element_attrs = element_data.get('attrs', {})
-            element_children = element_data.get('children', [])
-
-            self.types.append(element_type)
-            self.attrs_list.append(element_attrs)
-            self.children_list.append(element_children)
+        self.member = Member(message_info.get('member', {}))
+        self.user = User(message_info.get('user', {}))
+        self.channel = Channel(message_info.get('channel', {}))
+        self.guild = Guild(message_info.get('guild', {}))
+        self.created_at: int = message_info.get('created_at', '')
+        self.updated_at: int = message_info.get('updated_at', '')
 
 
 class Session:
@@ -87,14 +92,15 @@ class Session:
         self.subtype = body.get('subtype', '')
 
         self.member = Member(body.get('member', {}))
-
         self.user = User(body.get('user', {}))
         self.channel = Channel(body.get('channel', {}))
         self.guild = Guild(body.get('guild', {}))
         self.message = Message(body.get('message', {}))
-
-        self.member_user = MemberUser(body.get('message', {}))
-
+        self.guild = Guild(body.get('guild', {}))
+        self.message = Message(body.get('message', {}))
+        self.role = Role(body.get('role', {}))
+        self.login = Login(body.get('login', {}))
+        self.operator = Operator(body.get('operator', {}))
 
     def send(self, message_content):
         return Rikki.send_request(method='message.create', data={

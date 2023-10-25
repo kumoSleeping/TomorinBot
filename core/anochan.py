@@ -8,7 +8,7 @@ import requests
 
 # 获取当前脚本的目录路径
 script_directory = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录的绝对路径
-
+print(script_directory)
 # 将当前工作目录切换到脚本所在的目录
 os.chdir(script_directory)
 

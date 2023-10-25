@@ -30,6 +30,5 @@ def echoo(session):
         session.send(rpl)
 
 
-def test2(session):
-    if session.message.content == '测试音频':
-        session.send(f'{h.audio("https://bestdori.com/assets/jp/sound/bgm542_rip/bgm542.mp3")}')
+
+
