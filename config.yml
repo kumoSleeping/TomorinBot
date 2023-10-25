@@ -1,12 +1,16 @@
-server:
-  #  默认 0.0.0.0
-  ip: '0.0.0.0'
-  #  默认 5500
-  port: '5140'
-  # 没有就随便填
-  token: ''
-  # 心跳间隔 < 10 ，单位秒
-  HeartbeatInterval: 5
-user:
-  # 管理员用户，不论平台（暂时没支持）
-  administrator: []
+# WS 配置
+connections:
+  - self_id: '114514' # 平台账号1
+    url: 'ws://127.0.0.1:5140/satori' # websockets 连接 前端 的 url (可能包含/path)
+    endpoint: 'http://127.0.0.1:5140/satori' # http 连接 前端 的 url (可能包含/path)
+    token: 'your_token'
+    version: 'v1'
+    HeartbeatInterval: 5 # 心跳间隔 < 10 ，单位秒
+
+#  - self_id: '1919810' # 平台账号2
+#    url...
+
+# DEV 开发模式 配置 =======================================
+dev:
+  endpoint: 'http://127.0.0.1:17240/'  # dev 模式用与连接 flask 的url
+  port: '17240'  # 和上面一样
