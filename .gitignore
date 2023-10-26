@@ -4,7 +4,11 @@
 .DS_Store
 
 
+# 忽略以_开头的文件/文件夹
+_*
 
+# 忽略config.yml文件
+config.yml
 
 
 # Byte-compiled / optimized / DLL files
