@@ -17,15 +17,16 @@
 </h1>
 
 ***
-## 概述
+## イントロダクション
 
-### 介绍
+
+
 
 Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的，基于**Satori协议**的的聊天机器人后端**模版框**。   
 
-整体设计灵感来自Koishi，命名灵感来自MyGO!!!!!
+整体设计灵感来自Koishi，命名灵感来自[MyGO!!!!!](https://zh.moegirl.org.cn/MyGO!!!!!)。
 
-### 关系
+### 実行プロセス 
 
 ```mermaid
 graph TB
@@ -54,23 +55,23 @@ graph TB
      websockets[[websockets]] -- event --> anonchan.py 
     end
 ```
-~~画的看个乐就行（~~
 
+查看[Wiki](https://github.com/kumoSleeping/TomorinBot/wiki/Tomorin-Bot-Core%E6%A6%82%E8%BF%B0)以了解更多。
 
-## 前端支持
+## フロントエンドサポート
 
 
 | 前端                  | 可用性 |
 |:----------------------|:-------:|
-| koishi-plugin-server  | ✅     |
-| go-satori-server        | 🫓     |
-| satori.js              | 🫓     |
+| [koishi-plugin-server]()  | ✅     |
+| [go-satori-server]()        | 🫓     |
+| [satori.js]()              | 🫓     |
 | chronocat             | 🏃     |
 | lagrange-satori        | 🏃     |
 
 可以用支持Satori协议的服务连接本项目。
 
-## 模版实现    
+## 機能実現    
 
 以下的链接会跳转到[本项目的Wiki](https://github.com/kumoSleeping/TomorinBot/wiki)。
 

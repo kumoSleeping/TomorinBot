@@ -15,7 +15,7 @@ Tmorin.py
 
 # 获取目标包下的所有文件夹
 subdirectories = [d for d in os.listdir('../plugins')
-                  if os.path.isdir(os.path.join('../plugins', d)) and not d.startswith('_')]
+                  if os.path.isdir(os.path.join('../plugins', d)) and not d.startswith('__')]
 formatted_subdirectories = ['插件包[' + folder + ']加载成功！' for folder in subdirectories]
 
 notice = '\n'.join(formatted_subdirectories)
