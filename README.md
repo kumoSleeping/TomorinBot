@@ -25,8 +25,39 @@ Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的�
 
 整体设计灵感来自Koishi，命名灵感来自MyGO!!!!!
 
+### 关系
 
-### 前端支持
+```mermaid
+graph TB
+    subgraph ./core
+        anonchan.py -- event --> rana.py -- session --> tomorin.py
+        tomorin.py -- session --> soyorin.py
+        tomorin.py
+        soyorin.py -- pass_session --> tomorin.py
+        rikki.py
+        exit((exit))
+    end
+
+    subgraph ./plugins
+        index1(plugins_name/index.py > component_2) -- handle --> end_plugin1((end))
+        index2(plugins_name/index.py > component_1) -- handle --> send -- handle --> end_plugin2((end))
+    end
+
+    tomorin.py -- pass_session --> ./plugins
+    soyorin.py -- not_pass_session --> exit
+    send -- will_send_session --> rikki.py
+    rikki.py -- message_id --> send
+    rikki.py -- requests --> http_post[[http_post]]
+
+    subgraph app
+    http_post
+     websockets[[websockets]] -- event --> anonchan.py 
+    end
+```
+~~画的看个乐就行（~~
+
+
+## 前端支持
 
 
 | 前端                  | 可用性 |
@@ -39,7 +70,7 @@ Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的�
 
 可以用支持Satori协议的服务连接本项目。
 
-### 模版实现    
+## 模版实现    
 
 以下的链接会跳转到[本项目的Wiki](https://github.com/kumoSleeping/TomorinBot/wiki)。
 
@@ -61,7 +92,7 @@ Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的�
 
 
 
-### 关于此模版
+## 关于此模版
 本模版出发点是学习优秀设计方法，简洁易用。使用此项目的人可以任意修改`./core`中的代码来迎合自己的习惯。   
 
 本项目尽可能的使用简洁美观的方法开发，让简单的功能实现可以高速产出。 
@@ -69,7 +100,7 @@ Tomorin项目模版是由Python编写的，代码简约、无异步、轻量的�
 
 如果你的机器人需要使用较多平台的高级功能，或您习惯使用SDK编写项目，我十分推荐您使用[RF-Tar-Railt/satori-python](https://github.com/RF-Tar-Railt/satori-python/releases/tag/v0.4.0)进行更高级的开发。
 
-### 仓库
+## 仓库
 由于本人直接在仓库开发BOT   
 `.gitignore`规则了忽略了所有`_开头的文件/文件夹`和`config.yml`。
 
