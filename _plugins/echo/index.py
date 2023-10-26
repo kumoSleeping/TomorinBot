@@ -11,7 +11,6 @@ def echo(session):
     if session.user.id not in ['1528593481']:
         return
     if str(session.message.content).startswith('echo '):
-        # time.sleep(5)
         rpl = session.message.content[5:]
         session.send(rpl)
 
