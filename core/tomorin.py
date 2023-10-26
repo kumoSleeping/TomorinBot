@@ -14,8 +14,8 @@ Tmorin.py
 
 
 # 获取目标包下的所有文件夹
-subdirectories = [d for d in os.listdir('../_plugins')
-                  if os.path.isdir(os.path.join('../_plugins', d)) and not d.startswith('_')]
+subdirectories = [d for d in os.listdir('../plugins')
+                  if os.path.isdir(os.path.join('../plugins', d)) and not d.startswith('_')]
 formatted_subdirectories = ['插件包[' + folder + ']加载成功！' for folder in subdirectories]
 
 notice = '\n'.join(formatted_subdirectories)
@@ -37,7 +37,7 @@ for folder in subdirectories:
         os.chdir(core_directory)  # 切换到这个目录
         sys.path.append(script_directory)
         
-        module = importlib.import_module(f'_plugins.{folder}.index')
+        module = importlib.import_module(f'plugins.{folder}.index')
 
         for name, obj in inspect.getmembers(module):
             if inspect.isfunction(obj) and not name.startswith('_'):  # 添加过滤条件
@@ -69,7 +69,7 @@ def main(data):
         functions = folder_info['functions']
 
         try:
-            module = importlib.import_module(f'_plugins.{folder_name}.index')
+            module = importlib.import_module(f'plugins.{folder_name}.index')
 
             for function_info in functions:
                 function_name = function_info['function_name']
