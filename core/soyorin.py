@@ -14,7 +14,7 @@ Soyorin.py
 current_directory = Path.cwd()  # 获取当前目录
 parent_directory = current_directory.parent  # 获取上一级目录
 
-ban_dicts_path = str(parent_directory) + '/_plugins/soyorin/ban_dicts.json'
+ban_dicts_path = str(parent_directory) + '/plugins/soyorin/ban_dicts.json'
 config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
 
 ADMINISTRATOR_list = ['1528593481']
