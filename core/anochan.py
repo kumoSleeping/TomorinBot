@@ -11,20 +11,8 @@ script_directory = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚
 # 将当前工作目录切换到脚本所在的目录
 os.chdir(script_directory)
 
-
 from tomorin import main
-
-
-parent_directory = os.path.dirname(script_directory)  # 获取上一级目录的绝对路径
-
-config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
-
-DEV_URL = config["dev"]["endpoint"]
-dev = False
-try:
-    response = requests.get(f'http://localhost:{config["dev"]["port"]}')
-    if response.status_code:
-        ascii_ = '''
+ascii_dev = '''
  ██████╗ ███████╗██╗   ██╗ 
  ██╔══██╗██╔════╝██║   ██║ 
  ██║  ██║█████╗  ██║   ██║ 
@@ -34,11 +22,7 @@ try:
 DEV模式启动，将会转发消息给 dev.py。
 所有组件日志将 dev.py 显示。
         '''
-        print(ascii_)
-        dev = True
-
-except requests.exceptions.ConnectionError:
-    ascii_ = '''
+ascii_tmr = '''
      __________________________________
     |                                  |\ 
     |   ████████╗███╗   ███╗██████╗    | |
@@ -61,7 +45,20 @@ except requests.exceptions.ConnectionError:
      \__________________________________\|   
 
             '''
-    print(ascii_)
+
+parent_directory = os.path.dirname(script_directory)  # 获取上一级目录的绝对路径
+config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
+
+DEV_URL = config["dev"]["endpoint"]
+dev = False
+try:
+    response = requests.get(f'http://localhost:{config["dev"]["port"]}')
+    if response.status_code:
+        print(ascii_dev)
+        dev = True
+
+except requests.exceptions.ConnectionError:
+    print(ascii_tmr)
     dev = False
 
 

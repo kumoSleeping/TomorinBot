@@ -6,12 +6,13 @@ def help(session):
     help组件
     发送help查看帮助。
     """
-    function_info_list = []
 
     import os
     import inspect
     import sys
-    if str(session.message.content).startswith('helb') or str(session.message.content).startswith('help'):
+
+    def load_function_info_list():
+        function_info_list = []
         for folder in [d for d in os.listdir('../plugins')
                        if os.path.isdir(os.path.join('../plugins', d)) and not d.startswith('__')]:
             folder_info = {'folder_name': folder, 'functions': []}
@@ -28,6 +29,7 @@ def help(session):
                     folder_info['functions'].append(function_info)
 
                     function_info_list.append(function_info)
+        return function_info_list
 
     def get_text_before_first_newline(text):
         # 查找第一个换行符的索引
@@ -44,6 +46,7 @@ def help(session):
 
     if session.message.content in ['helb', 'help']:
         help_list = ""  # 初始化一个空字符串
+        function_info_list = load_function_info_list()
 
         for item in function_info_list:
             function_name = item['function_name']
@@ -61,8 +64,10 @@ def help(session):
         session.send(rpl)
 
     if str(session.message.content).startswith('helb ') or str(session.message.content).startswith('help '):
-        print(function_info_list)
+        # print(function_info_list)
         search_value = session.message.content[5:]
+        function_info_list = load_function_info_list()
+
 
         found_docstring = None
 

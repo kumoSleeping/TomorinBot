@@ -7,7 +7,6 @@ script_directory = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚
 parent_directory = os.path.dirname(script_directory)  # 获取上一级目录的绝对路径
 
 config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
-
 # 少导点对身体好
 
 '''
