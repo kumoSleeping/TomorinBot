@@ -2,7 +2,6 @@ import base64
 import io
 from PIL import Image
 
-
 from soyorin import Utils
 from rikki import Rikki
 

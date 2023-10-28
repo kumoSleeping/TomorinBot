@@ -3,16 +3,12 @@ import json
 import os
 import yaml
 
-script_directory = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录的绝对路径
-parent_directory = os.path.dirname(script_directory)  # 获取上一级目录的绝对路径
-
-config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
-# 少导点对身体好
-
 '''
 Rikki.py · send
 处理「satori」协议的信息发送 / API上报
 '''
+
+config = yaml.safe_load(open('./config.yml', encoding='utf-8'))
 
 
 class Rikki:

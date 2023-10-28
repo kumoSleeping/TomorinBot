@@ -13,8 +13,8 @@ def help(session):
 
     def load_function_info_list():
         function_info_list = []
-        for folder in [d for d in os.listdir('../plugins')
-                       if os.path.isdir(os.path.join('../plugins', d)) and not d.startswith('__')]:
+        for folder in [d for d in os.listdir('./plugins')
+                       if os.path.isdir(os.path.join('./plugins', d)) and not d.startswith('__')]:
             folder_info = {'folder_name': folder, 'functions': []}
 
             module = importlib.import_module(f'plugins.{folder}.index')

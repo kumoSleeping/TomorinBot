@@ -2,8 +2,6 @@ import json
 import os
 import yaml
 import re
-from pathlib import Path
-
 
 '''
 Soyorin.py
@@ -11,12 +9,9 @@ Soyorin.py
 与 ./plugin 界限模糊，类似服务组件 API
 '''
 
-current_directory = Path.cwd()  # 获取当前目录
-parent_directory = current_directory.parent  # 获取上一级目录
 
-ban_dicts_path = str(parent_directory) + '/plugins/soyorin/ban_dicts.json'
-config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
-
+ban_dicts_path = './plugins/soyorin/ban_dicts.json'
+config = yaml.safe_load(open('config.yml', encoding='utf-8'))
 ADMINISTRATOR_list = ['1528593481']
 
 
@@ -131,9 +126,6 @@ class Utils:
 
         print(f"[ {session.platform}: {group} ] （ {member} ）{cleaned_text}")
 
-
-# print(BanManager.ALL_BAN_DICTS)
-# print('服务[BanManager]加载成功！\nSoyorin.py 导入服务结束')
 
 
 

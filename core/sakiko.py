@@ -2,20 +2,25 @@ from flask import Flask, request, jsonify, make_response
 import json
 import os
 import yaml
-
+import inspect
+import sys
 
 # 获取当前脚本的目录路径
-script_directory = os.path.dirname(os.path.abspath(__file__))
-# 将当前工作目录切换到脚本所在的目录
-os.chdir(script_directory)
-# 获取上一级目录的绝对路径
-parent_directory = os.path.dirname(script_directory)
-# 读取config
-config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
+# 获取当前代码所在文件的位置（包括文件名）
+current_file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
+# 获取当前代码所在文件的目录
+current_file_directory = os.path.dirname(current_file_path)
+# 获取上一级目录 也就是主目录
+parent_directory = os.path.dirname(current_file_directory)
+# 将当前工作目录切换到 上一级目录 也就是主目录
+os.chdir(parent_directory)
+sys.path.append(parent_directory)
 
 
 from tomorin import main
 
+# 读取config
+config = yaml.safe_load(open('config.yml', encoding='utf-8'))
 
 app = Flask(__name__)
 
