@@ -56,15 +56,14 @@ ascii_tmr = '''
 
             '''
 
-config = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
+config: dict = yaml.safe_load(open(str(parent_directory) + '/config.yml', encoding='utf-8'))
 
 DEV_URL = config["dev"]["endpoint"]
 dev = False
 try:
     response = requests.get(f'http://localhost:{config["dev"]["port"]}')
-    if response.status_code:
-        print(ascii_dev)
-        dev = True
+    print(ascii_dev)
+    dev = True
 
 except requests.exceptions.ConnectionError:
     print(ascii_tmr)
@@ -76,12 +75,12 @@ def send_2_dev_flask(data_body):
     headers = {
         'Content-Type': 'application/json',
     }
-    response = requests.post(endpoint, json=json.dumps(data_body), headers=headers, verify=True)
+    requests.post(endpoint, json=json.dumps(data_body), headers=headers, verify=True)
 
 
-def on_message(ws, message):
+def on_message(ws: websocket.WebSocketApp, message: str):
     # data = json.loads(Utils.unescape_special_characters(message))
-    data = json.loads(message)
+    data: dict = json.loads(message)
     # 展示登陆信息
     if data['op'] == 4:
         print("Satori驱动器连接成功！")
@@ -100,10 +99,10 @@ def on_message(ws, message):
 class SatoriBot:
     def __init__(self, connection_config):
         self.websocket = None
-        self.token = connection_config['token']
-        self.url = connection_config['url']
-        self.version = connection_config['version']
-        self.Heartbeat_cd = connection_config['HeartbeatInterval']
+        self.token: str = connection_config['token']
+        self.url: str = connection_config['url']
+        self.version: str = connection_config['version']
+        self.heartbeat_cd: int = connection_config['HeartbeatInterval']
 
         self.ws_url = f"{self.url}/{self.version}/events"
 
@@ -115,7 +114,7 @@ class SatoriBot:
     def while_send_ping_packet(self):
         while True:
             try:
-                time.sleep(self.Heartbeat_cd)
+                time.sleep(self.heartbeat_cd)
                 if self.websocket and self.websocket.sock:
                     identify_packet = {
                         "op": 1,
@@ -132,7 +131,7 @@ class SatoriBot:
                 # 发生异常时，也执行重新连接逻辑
 
     # 认证 IDENTIFY 信令：连接建立后，在 10s 内发送一个 IDENTIFY 信令，用于鉴权和恢复会话
-    def on_open(self, ws):
+    def on_open(self, ws: websocket.WebSocketApp):
         identify_packet = {
             "op": 3,
             "body": {

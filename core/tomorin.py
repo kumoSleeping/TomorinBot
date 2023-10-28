@@ -3,6 +3,7 @@ import inspect
 import os
 
 from rana import Rana
+from soyorin import BanManager
 
 
 '''
@@ -17,9 +18,8 @@ function_info_list = []
 def main(data):
     # print(function_info_list)
     session = Rana.process_satori_message(data)
-    module = importlib.import_module("soyorin")
     # 访问模块中的 function_info_list
-    ban_manager = module.BanManager
+    ban_manager = BanManager
 
     def load_and_execute_plugins(session, folder, ban_manager):
         try:
