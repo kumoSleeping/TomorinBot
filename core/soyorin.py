@@ -2,6 +2,11 @@ import json
 import os
 import yaml
 import re
+from typing import List, Dict, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from rana import Session
+
 
 '''
 Soyorin.py
@@ -11,12 +16,12 @@ Soyorin.py
 
 
 ban_dicts_path = './plugins/soyorin/ban_dicts.json'
-config = yaml.safe_load(open('config.yml', encoding='utf-8'))
+config: dict = yaml.safe_load(open('config.yml', encoding='utf-8'))
 ADMINISTRATOR_list = ['1528593481']
 
 
 class BanManager:
-    ALL_BAN_DICTS = []
+    ALL_BAN_DICTS: List[Dict] = []
 
     @classmethod
     def load_data(cls):
@@ -47,9 +52,9 @@ class BanManager:
             print("索引超出范围")
 
     @staticmethod
-    def check_before_plugin(session, plugin_name):
+    def check_before_plugin(session: "Session", plugin_name: str):
         # print(BanManager.ALL_BAN_DICTS)
-        for idx, ban_config in enumerate(BanManager.ALL_BAN_DICTS):
+        for ban_config in BanManager.ALL_BAN_DICTS:
             if plugin_name == 'soyorin':
                 return True
             # 初始化变量
@@ -80,7 +85,7 @@ BanManager.load_data()
 
 class Utils:
     @staticmethod
-    def escape_special_characters(message):
+    def escape_special_characters(message: str):
         # 替换特殊字符为转义字符
         message = message.replace('&', '&amp;')
         message = message.replace('"', '&quot;')
@@ -89,7 +94,7 @@ class Utils:
         return message
 
     @staticmethod
-    def unescape_special_characters(escaped_message):
+    def unescape_special_characters(escaped_message: str):
         # 将转义字符替换回特殊字符
         escaped_message = escaped_message.replace('&quot;', '"')
         escaped_message = escaped_message.replace('&amp;', '&')
@@ -98,7 +103,7 @@ class Utils:
         return escaped_message
 
     @staticmethod
-    def show_session_log(session):
+    def show_session_log(session: "Session"):
         # 展示日志
         message_content = session.message.content
 
@@ -108,11 +113,9 @@ class Utils:
         cleaned_text = cleaned_text[0:15] + '...' if len(cleaned_text) > 15 else cleaned_text
         cleaned_text = cleaned_text.replace("\n", " ").replace("\r", " ")
         user_id = session.user.id
-        try:
-            member = session.user.name
-            if not member:
-                member = f'QQ用户{user_id}'
-        except:
+
+        member = session.user.name
+        if not member:
             # 为什么是QQ用户，因为就QQ可能拿不到成员name...
             member = f'QQ用户{user_id}'
 

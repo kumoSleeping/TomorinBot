@@ -1,6 +1,5 @@
 import requests
 import json
-import os
 import yaml
 
 '''
@@ -13,14 +12,13 @@ config = yaml.safe_load(open('./config.yml', encoding='utf-8'))
 
 class Rikki:
     @staticmethod
-    def send_request(method, data, platform, self_id):
+    def send_request(method: str, data: dict, platform: str, self_id: str):
         """
         发送消息到指定频道。
 
         Parameters:
-        channel_id (str): 频道ID。
-        message_content (str): 消息内容。
-        bearer_token (str): 认证Token。
+        method (str): API方法。
+        data (dict): 消息内容。
         platform (str): 平台名称。
         self_id (str): 平台账号。
 
@@ -35,7 +33,7 @@ class Rikki:
         else:
             # 如果未找到匹配的连接配置
             print(f"未找到 self_id 为 {self_id} 的连接配置")
-            return
+            return None
 
         # API endpoint
         endpoint_first = this_connection['endpoint']
