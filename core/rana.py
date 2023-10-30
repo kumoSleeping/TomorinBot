@@ -61,10 +61,11 @@ class Guild:
 
 class Member:
     def __init__(self, member_info: dict):
-        self.user: Optional[User] = User(member_info.get('user'))
+        self.user: Optional[User] = User(member_info.get('user', {}))
         self.nick: Optional[str] = member_info.get('nick', '')
         self.avatar: Optional[str] = member_info.get('avatar', '')
         self.joined_at: Optional[int] = member_info.get('joined_at', '')
+        self.user: User = User(member_info.get('user', {}))
 
 
 class Role:
@@ -87,7 +88,7 @@ class Message:
         self.content: str = message_info.get('content', '')
         self.member: Optional[Member] = Member(message_info.get('member', {}))
         self.user: Optional[User] = User(message_info.get('user', {}))
-        self.channel: Optional[User] = Channel(message_info.get('channel', {}))
+        self.channel: Optional[Channel] = Channel(message_info.get('channel', {}))
         self.guild: Optional[Guild] = Guild(message_info.get('guild', {}))
         self.created_at: Optional[int] = message_info.get('created_at', '')
         self.updated_at: Optional[int] = message_info.get('updated_at', '')
@@ -100,6 +101,7 @@ class Session:
         self.platform: str = body.get('platform', '')
         self.self_id: str = body.get('self_id', '')
         self.timestamp: int = body.get('timestamp', '')
+
         self.member: Optional[Member] = Member(body.get('member', {}))
         self.user: Optional[User] = User(body.get('user', {}))
         self.channel: Optional[Channel] = Channel(body.get('channel', {}))
