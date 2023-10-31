@@ -1,6 +1,7 @@
 # WS 配置
 connections:
   - self_id: '114514' # 平台账号1
+    NEED_CONNECTIONS: true # 是否需要启动新连接（有时候一个连接会提供多个账号，此时第二个账号配置不需要启动新连接）
     url: 'ws://127.0.0.1:5140/satori' # websockets 连接 前端 的 url (可能包含/path)
     endpoint: 'http://127.0.0.1:5140/satori' # http 连接 前端 的 url (可能包含/path)
     token: 'your_token'
@@ -8,6 +9,7 @@ connections:
     HeartbeatInterval: 5 # 心跳间隔 < 10 ，单位秒
 
 #  - self_id: '1919810' # 平台账号2
+#    NEED_CONNECTIONS: false
 #    url...
 
 # DEV 开发模式 配置 =======================================
