@@ -60,7 +60,6 @@ class Rikki:
             return response_data
         elif response.status_code == 413:
             print('Status code:', response.status_code)
-            print(data)
             data_413 = {'channel_id': data["channel_id"], 'content': 'code 413 \n关门歇业：问题已修，不过要等下个版本实装\nrouter默认设置了1mb资源上限，已改成10'}
             response2 = requests.post(endpoint, data=json.dumps(data_413), headers=headers, verify=True)
             print(response2.status_code)

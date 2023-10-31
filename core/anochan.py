@@ -157,9 +157,15 @@ class SatoriBot:
 if "connections" in config:
     connections = config["connections"]
     for connection_config in connections:
-        satori_bot = SatoriBot(connection_config)
-        t = threading.Thread(target=satori_bot.run)
-        t.start()
+        need_new_connection = connection_config.get("NEED_CONNECTIONS", True)
+
+        if need_new_connection:
+            satori_bot = SatoriBot(connection_config)
+            t = threading.Thread(target=satori_bot.run)
+            t.start()
+        else:
+            print('[这个，不需要了（指 NEED_CONNECTIONS 为假 不需要开启新连接）]')
+            continue
 
 
 

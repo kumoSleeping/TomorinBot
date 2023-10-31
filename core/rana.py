@@ -114,7 +114,8 @@ class Session:
     def send(self, message_content: str):
         return Rikki.send_request(method='message.create', data={
             'channel_id': self.channel.id,
-            'content': message_content
+            'content': message_content,
+            'message_id': self.message.id,
         }, platform=self.platform, self_id=self.self_id)
 
     def call_api(self, method: str, data):
