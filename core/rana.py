@@ -13,6 +13,7 @@ Rana.py
 提供平台包装元素的 API
 '''
 
+
 class ChannelType(IntEnum):
     TEXT = 0
     VOICE = 1
@@ -65,7 +66,6 @@ class Member:
         self.nick: Optional[str] = member_info.get('nick', '')
         self.avatar: Optional[str] = member_info.get('avatar', '')
         self.joined_at: Optional[int] = member_info.get('joined_at', '')
-        self.user: User = User(member_info.get('user', {}))
 
 
 class Role:
