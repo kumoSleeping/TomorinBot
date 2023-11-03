@@ -1,18 +1,37 @@
-# WS 配置
+# sever 配置
+server:
+  reload: true  # reload 及时热重载
+  host: '127.0.0.1' # 接受标准 webhook 的 url
+  local_port: '17230'  # 接受标准 webhook 的 port
+
+
+# 账号连接配置
 connections:
-  - self_id: '114514' # 平台账号1
-    NEED_CONNECTIONS: true # 是否需要启动新连接（有时候一个连接会提供多个账号，此时第二个账号配置不需要启动新连接）
-    url: 'ws://127.0.0.1:5140/satori' # websockets 连接 前端 的 url (可能包含/path)
-    endpoint: 'http://127.0.0.1:5140/satori' # http 连接 前端 的 url (可能包含/path)
-    token: 'your_token'
-    version: 'v1'
-    HeartbeatInterval: 5 # 心跳间隔 < 10 ，单位秒
+  - self_ids: [ '11111', '22222' ]   # 平台账号，可填写一个/多个
+    link_way: 'websocket'
+    address: '127.0.0.1:5140/satori/v1'   # 主机地址 与 path路径 与 版本
+    http_protocol: 'http' # 这个选可以不填，默认http
+    token: 'Your_token' # 由前端提供
 
-#  - self_id: '1919810' # 平台账号2
-#    NEED_CONNECTIONS: false
-#    url...
+  - self_ids: [ '33333' ]
+    link_way: 'webhook'
+    address: '127.0.0.1:5140/satori/v1'
+    token: 'Your_token'
 
-# DEV 开发模式 配置 =======================================
-dev:
-  endpoint: 'http://127.0.0.1:17240/'  # dev 模式用与连接 flask 的url
-  port: '17240'  # 和上面一样
+  - self_ids: [ '44444' ]
+    link_way: 'only_webhook'
+    life_cycle: 60
+
+  # 此功能弃用
+#  - self_ids: [ '22222' ] # 账号必须存在于上面任一连接
+#    link_way: 'forward' # http 转发 json 化的 satori 消息到目标地址
+#    address: '127.0.0.1:5140/satori/v1' # 目标地址
+
+
+
+
+
+
+
+
+

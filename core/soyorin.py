@@ -2,6 +2,7 @@ import json
 import os
 import yaml
 import re
+import time
 from typing import List, Dict, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -14,10 +15,9 @@ Soyorin.py
 与 ./plugin 界限模糊，类似服务组件 API
 '''
 
-
 ban_dicts_path = './plugins/soyorin/ban_dicts.json'
-config: dict = yaml.safe_load(open('config.yml', encoding='utf-8'))
 ADMINISTRATOR_list = ['1528593481']
+config: dict = yaml.safe_load(open('config.yml', encoding='utf-8'))
 
 
 class BanManager:
@@ -117,7 +117,7 @@ class Utils:
         member = session.user.name
         if not member:
             # 为什么是QQ用户，因为就QQ可能拿不到成员name...
-            member = f'QQ用户{user_id}'
+            member = f'用户{user_id}'
 
         try:
             group = session.guild.name
@@ -125,9 +125,35 @@ class Utils:
                 group = f'频道: {session.channel.name}'
         except:
             # 为什么是QQ用户，因为就QQ可能拿不到成员name...
-            group = f'QQ用户{user_id}'
+            group = f'用户{user_id}'
 
         print(f"[ {session.platform}: {group} ] （ {member} ）{cleaned_text}")
+
+
+class Queue:
+    rpl_queue: List[Dict] = []
+
+    @staticmethod
+    def add(time_int: int, message: str, self_id: str):
+        global rpl_queue
+        connections = config["connections"]
+        for connection_config in connections:
+            if connection_config["link_way"] == 'only_webhook':
+                if self_id in connection_config["self_ids"]:
+                    data_rpl_queue = {"timestamp": time_int, "message": message}
+                    Queue.rpl_queue.append(data_rpl_queue)
+                    print('插入消息池成功')
+                    # 设置等待的最大时间（以秒为单位）
+                    max_wait_time = connection_config['life_cycle']
+
+                    # 记录开始时间
+                    for item in Queue.rpl_queue:
+                        if time_int - item["timestamp"] > max_wait_time * 1000:
+                            Queue.rpl_queue.remove(item)
+                            print('删除超时玩意')
+                    break
+
+
 
 
 

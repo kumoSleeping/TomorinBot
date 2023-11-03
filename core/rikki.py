@@ -2,6 +2,7 @@ import requests
 import json
 import yaml
 
+
 '''
 Rikki.py · send
 处理「satori」协议的信息发送 / API上报
@@ -25,9 +26,10 @@ class Rikki:
         Returns:
         dict: 包含消息信息的字典，如果发送失败则返回None。
         """
+
         # 遍历连接配置
         for connection in config["connections"]:
-            if connection["self_id"] == self_id:
+            if self_id in connection["self_ids"]:
                 this_connection = connection
                 break
         else:
@@ -36,22 +38,22 @@ class Rikki:
             return None
 
         # API endpoint
-        endpoint_first = this_connection['endpoint']
-        version = this_connection['version']
-        TOKEN = this_connection['token']
-        endpoint = f'{endpoint_first}/{version}/{method}'  # 替换为实际API endpoint
+        address = this_connection['address']
+        token = this_connection['token']
+        http_protocol = this_connection.get('http_protocol', 'http')
+        full_address = f'{http_protocol}://{address}/{method}'  # 替换为实际API endpoint
 
         # 构建请求头
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': f'Bearer {TOKEN}',
+            'Authorization': f'Bearer {token}',
             'X-Platform': platform,
             'X-Self-ID': self_id
         }
 
         # 发送POST请求
         # response = requests.post(endpoint, data=json.dumps(request_data), headers=headers)
-        response = requests.post(endpoint, data=json.dumps(data), headers=headers, verify=True)
+        response = requests.post(full_address, data=json.dumps(data), headers=headers, verify=True)
 
         # 检查响应
         if response.status_code == 200:
@@ -61,7 +63,7 @@ class Rikki:
         elif response.status_code == 413:
             print('Status code:', response.status_code)
             data_413 = {'channel_id': data["channel_id"], 'content': 'code 413 \n关门歇业：问题已修，不过要等下个版本实装\nrouter默认设置了1mb资源上限，已改成10'}
-            response2 = requests.post(endpoint, data=json.dumps(data_413), headers=headers, verify=True)
+            response2 = requests.post(full_address, data=json.dumps(data_413), headers=headers, verify=True)
             print(response2.status_code)
         else:
             print('Status code:', response.status_code)

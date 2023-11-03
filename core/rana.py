@@ -111,7 +111,14 @@ class Session:
         self.login: Optional[Login] = Login(body.get('login', {}))
         self.operator: Optional[User] = User(body.get('operator', {}))
 
+        self.selfId = body.get('selfId', '')
+
     def send(self, message_content: str):
+        # 试验性 only_webhook
+        from soyorin import Queue
+        Queue.add(self.timestamp, message_content, self.selfId)
+
+        print(f'[ send -> {self.platform}: {self.channel.name} ] ')
         return Rikki.send_request(method='message.create', data={
             'channel_id': self.channel.id,
             'content': message_content,
