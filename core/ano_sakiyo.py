@@ -174,7 +174,7 @@ def webhook_():
 
 if __name__ == '__main__':
     cd = 1
-    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not config["server"]["reload"]:
         print(f'将在{cd}s后唤醒ws连接')
 
         def start_ws():
