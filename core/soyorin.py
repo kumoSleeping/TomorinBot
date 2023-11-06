@@ -129,31 +129,41 @@ class Utils:
 
         print(f"[ {session.platform}: {group} ] （ {member} ）{cleaned_text}")
 
-
-class Queue:
-    rpl_queue: List[Dict] = []
+    @staticmethod
+    def show_session_data(data: dict):
+        if config['server']['reload']:
+            pretty_json = json.dumps(data, indent=4, ensure_ascii=False)
+            print(pretty_json)
 
     @staticmethod
-    def add(time_int: int, message: str, self_id: str):
-        global rpl_queue
-        connections = config["connections"]
-        for connection_config in connections:
-            if connection_config["link_way"] == 'only_webhook':
-                if self_id in connection_config["self_ids"]:
-                    data_rpl_queue = {"timestamp": time_int, "message": message}
-                    Queue.rpl_queue.append(data_rpl_queue)
-                    print('插入消息池成功')
-                    # 设置等待的最大时间（以秒为单位）
-                    max_wait_time = connection_config['life_cycle']
-
-                    # 记录开始时间
-                    for item in Queue.rpl_queue:
-                        if time_int - item["timestamp"] > max_wait_time * 1000:
-                            Queue.rpl_queue.remove(item)
-                            print('删除超时玩意')
-                    break
-
-
+    def rm_1_at(text):
+        clean_text = re.sub(r'<at.*?>', '', text, count=1)  # 使用 count=1 只替换第一个匹配项
+        return clean_text.strip()
+#
+# class Queue:
+#     rpl_queue: List[Dict] = []
+#
+#     @staticmethod
+#     def add(time_int: int, message: str, self_id: str):
+#         global rpl_queue
+#         connections = config["connections"]
+#         for connection_config in connections:
+#             if connection_config["link_way"] == 'only_webhook':
+#                 if self_id in connection_config["self_ids"]:
+#                     data_rpl_queue = {"timestamp": time_int, "message": message}
+#                     Queue.rpl_queue.append(data_rpl_queue)
+#                     print('插入消息池成功')
+#                     # 设置等待的最大时间（以秒为单位）
+#                     max_wait_time = connection_config['life_cycle']
+#
+#                     # 记录开始时间
+#                     for item in Queue.rpl_queue:
+#                         if time_int - item["timestamp"] > max_wait_time * 1000:
+#                             Queue.rpl_queue.remove(item)
+#                             print('删除超时玩意')
+#                     break
+#
+#
 
 
 

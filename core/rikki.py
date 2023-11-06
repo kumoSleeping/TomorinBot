@@ -52,7 +52,6 @@ class Rikki:
         }
 
         # 发送POST请求
-        # response = requests.post(endpoint, data=json.dumps(request_data), headers=headers)
         response = requests.post(full_address, data=json.dumps(data), headers=headers, verify=True)
 
         # 检查响应
@@ -62,7 +61,7 @@ class Rikki:
             return response_data
         elif response.status_code == 413:
             print('Status code:', response.status_code)
-            data_413 = {'channel_id': data["channel_id"], 'content': 'code 413 \n关门歇业：问题已修，不过要等下个版本实装\nrouter默认设置了1mb资源上限，已改成10'}
+            data_413 = {'channel_id': data["channel_id"], 'content': '55，资源过大，不太好发的说'}
             response2 = requests.post(full_address, data=json.dumps(data_413), headers=headers, verify=True)
             print(response2.status_code)
         else:

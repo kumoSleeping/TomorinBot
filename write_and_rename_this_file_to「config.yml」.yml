@@ -18,9 +18,10 @@ connections:
     address: '127.0.0.1:5140/satori/v1'
     token: 'Your_token'
 
-  - self_ids: [ '44444' ]
-    link_way: 'only_webhook'
-    life_cycle: 60
+  # 此功能弃用
+#  - self_ids: [ '44444' ]
+#    link_way: 'only_webhook'
+#    life_cycle: 60
 
   # 此功能弃用
 #  - self_ids: [ '22222' ] # 账号必须存在于上面任一连接
