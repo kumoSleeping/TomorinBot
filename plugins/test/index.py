@@ -1,6 +1,6 @@
 import time
 
-from core.rana import h
+from core.tomorin import h
 
 
 def test(session):

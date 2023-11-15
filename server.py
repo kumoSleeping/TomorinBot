@@ -33,5 +33,5 @@ print(ascii_tmr)
 # 我们的迷失，从ano酱开始。（saki？
 
 
-subprocess.run(["python", script_directory + '/core/ano_sakiyo.py'])
+subprocess.run(["python", script_directory + '/core/server.py'])
 
