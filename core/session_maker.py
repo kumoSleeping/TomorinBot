@@ -1,7 +1,9 @@
 from enum import IntEnum
 from typing import Union, Optional
+import re
 
 from api import Api
+from tomorin_t import rm_at_prefix
 
 '''
 Rana.py
@@ -100,6 +102,13 @@ class Quote:
         self.user = User(quote_info.get('user', {}))
 
 
+class Command:
+    def __init__(self, command_name, args, text):
+        self.command_name: str = command_name
+        self.args: list = args
+        self.text: str = text
+
+
 class Session(Api):
     def __init__(self, body: dict):
         self.id: int = body.get('id', '')
@@ -118,18 +127,35 @@ class Session(Api):
         self.operator: Optional[User] = User(body.get('operator', {}))
 
         self.data: dict = body  # 原始数据
+        self.command: Optional[Command] = None
 
         super().__init__(self.platform, self.self_id)
+    #
+    # def cmd(self, cmd: str) -> Command | bool:
+    #     pure_message: str = rm_at_prefix(self.message.content)
+    #     if pure_message.startswith(cmd + ' '):
+    #         cmd_list: list = pure_message.split()
+    #         args: list = cmd_list[1:]
+    #         text: str = pure_message.replace(cmd, '', 1)
+    #         if text.startswith(' '):
+    #             text = text.replace(' ', '', 1)
+    #         cmd_final = Command(cmd, args, text)
+    #         return cmd_final
+    #     if pure_message == cmd:
+    #         cmd_final = Command(cmd, None, '')
+    #         return cmd_final
+    #     return False
 
     def send(self, message_content: str):
         print(f'[ send -> {self.platform}: {self.channel.name} ] ')
-        return Api.message_create(self, channel_id=self.channel.id, content=message_content)
+        return Api.message_create(self, channel_id=self.channel.id or self.guild.id, content=message_content, message_id=self.message.id)
 
     # message
-    def message_create(self, channel_id: str = None, content: str = None):
+    def message_create(self, channel_id: str = None, content: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         content = content or self.message.content
-        return super().message_create(channel_id=channel_id, content=content)
+        message_id = message_id or self.message.id
+        return super().message_create(channel_id, content, message_id)
 
     def message_get(self, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
@@ -243,13 +269,9 @@ class Session(Api):
         return super().reaction_list(channel_id, message_id, emoji, next_token)
 
 
-class EventToSession:
-    @staticmethod
-    def process_satori_message(body_data: dict):
-        session = Session(body_data)
-        return session
-
-
+def event_to_session(body_data: dict):
+    session = Session(body_data)
+    return session
 
 
 

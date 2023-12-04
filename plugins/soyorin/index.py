@@ -1,8 +1,9 @@
 import importlib
 
-from core.tomorin import admin_list
+from core.tomorin import admin_list, on_event
 
 
+@on_event.message_created
 def soyorin(session):
     '''
     黑白名单总揽管理

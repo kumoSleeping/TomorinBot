@@ -45,12 +45,12 @@ def send_request(method: str, data: dict, platform: str, self_id: str):
 
     # 发送POST请求
     response = requests.post(full_address, data=json.dumps(data), headers=headers, verify=True)
-
     # 检查响应
     if response.status_code == 200:
         try:
             # 解析响应为JSON格式
             response_data = response.json()
+            # print(response)
             return response_data
         except Exception:
             return response.text

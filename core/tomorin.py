@@ -1,5 +1,6 @@
 
 from tomorin_h import h
+from tomorin_d import on_event, on_activator
 from tomorin_t import rm_1_at, unescape_special_characters, escape_special_characters
 from api import api
 from config import admin_list, ban_dicts_path
@@ -8,7 +9,6 @@ from config import admin_list, ban_dicts_path
 from tomorin import h
 from tomorin import rm_1_at, unescape_special_characters, escape_special_characters
 '''
-
 
 
 

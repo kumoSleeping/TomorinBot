@@ -1,0 +1,83 @@
+    <html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimum-scale=1, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="UTF-8">
+    <title>小小趴-bdc</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 70vh;
+        }
+    
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 2px solid #8a8a8a; /* 边框颜色 */
+            border-radius: 10px;
+            background-color: #77BBDD; /* 容器背景颜色 */
+        }
+    
+        .center {
+            text-align: center;
+        }
+    
+        input[type="text"] {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ccc; /* 输入框边框颜色 */
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    
+        input[type="submit"],
+        button.button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white; /* 按钮文字颜色 */
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3f87ab; /* 按钮背景颜色 */
+        }
+    
+        input[type="submit"]:hover,
+        button.button:hover {
+            background-color: #3986ac; /* 按钮鼠标悬停时背景颜色 */
+        }
+    
+        #result {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #f38200; /* 结果文本颜色 */
+        }
+    
+        .button-row {
+            display: flex;
+            justify-content: center;
+        }
+    
+        .button-row input[type="submit"],
+        .button-row button.button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container center">
+        <h1>欢迎使用TomorinBOT！</h1>
+        <form method="POST" action="/command">
+            <input type="text" name="command_data" placeholder="commend" required>
+            <input type="submit" value="查询">
+        </form>
+    </div>
+</body>
+</html>

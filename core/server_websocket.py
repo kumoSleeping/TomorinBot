@@ -10,9 +10,14 @@ def on_message(ws: websocket.WebSocketApp, message: str):
     data: dict = json.loads(message)
     # 展示登陆信息
     if data['op'] == 4:
+        # print(data)
         print("Satori驱动器连接成功！")
         for login_info in data['body']['logins']:
-            print(f"[{login_info['user']['name']}] 已上线平台 [{login_info['platform']}]!")
+            name = login_info['user'].get('name', login_info['user']['id'])
+            status = login_info['status']
+            status_desc = "运行中" if status == 1 else "waiting" if status == 2 else "未知状态"
+            print(f"[logining_caller] [{name}] 上线 [{login_info['platform']}] 状态: {status_desc}")
+
     # event 事件
     if data['op'] == 0:
         thread = threading.Thread(target=main, args=(data["body"],))

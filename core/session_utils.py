@@ -3,30 +3,22 @@ import json
 from config import config
 
 
-def show_session_log(session: "Session"):
+def show_session_log(session):
     # 展示日志
     message_content = session.message.content
 
     html_tag_pattern = re.compile(r'<.*?>')
     # 将所有HTML标签替换为占位符
-    cleaned_text = re.sub(html_tag_pattern, '[xml元素]', message_content)
+    cleaned_text = re.sub(html_tag_pattern, '[媒体消息]', message_content)
     cleaned_text = cleaned_text[0:15] + '...' if len(cleaned_text) > 15 else cleaned_text
     cleaned_text = cleaned_text.replace("\n", " ").replace("\r", " ")
 
-    member = session.user.name
-    if not member:
-        # 为什么 因为QQ可能拿不到成员name...
-        member = f'用户{session.user.id}'
+    user = session.user.name if session.user.name != '' else ('U_' + session.user.id)
+    guild = session.guild.name if session.guild.name != '' else ('G_' + session.guild.id)
+    channel = session.channel.name if session.channel.name != '' else ('G_' + session.channel.id)
+    place = channel if channel == guild else guild + '->' + channel
 
-    try:
-        group = session.guild.name
-        if not group:
-            group = f'频道: {session.channel.name}'
-    except:
-        # 为什么是QQ用户，因为就QQ可能拿不到成员name...
-        group = f'用户{session.user.id}'
-
-    print(f"[ {session.platform}: {group} ] （ {member} ）{cleaned_text}")
+    print(f"[ {session.platform}: {place} ] < {session.type} >（ {user} ）{cleaned_text}")
 
 
 def show_session_data(data: dict):

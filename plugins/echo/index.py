@@ -1,16 +1,15 @@
-import time
-import re
 
-from core.tomorin import h, rm_1_at, api
+from core.tomorin import on_event, on_activator
 
 
+@on_activator.command('复读')
 def echo(session):
     """
     回声
     复读你的话
     """
-
-    pure_msg = rm_1_at(session.message.content).strip()
-    if pure_msg.startswith('echo '):
-        session.send(pure_msg[5:])
+    print(session.data)
+    if session.command.args:
+        # session.message_create(content=session.command.text)
+        session.send(session.command.text)
 

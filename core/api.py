@@ -7,10 +7,11 @@ class Api:
         self.self_id = self_id
 
     # message
-    def message_create(self, channel_id: str, content: str):
+    def message_create(self, channel_id: str, content: str, message_id: str):
         return send_request(method='message.create', data={
             'channel_id': channel_id,
             'content': content,
+            'message_id: str': message_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def message_get(self, channel_id: str, message_id: str):

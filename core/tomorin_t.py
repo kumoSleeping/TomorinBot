@@ -25,4 +25,10 @@ def rm_1_at(text):
     return clean_text.strip()
 
 
+def rm_at_prefix(text):
+    clean_text = re.sub(r'<at.*?>', '', text, count=1)  # 使用 count=1 只替换第一个匹配项
+    if clean_text.strip().startswith('/'):
+        clean_text = clean_text.replace('/', '', 1).strip()
+    return clean_text
+
 
