@@ -2,8 +2,9 @@
 from tomorin_h import h
 from tomorin_d import on_event, on_activator
 from tomorin_t import rm_1_at, unescape_special_characters, escape_special_characters
-from api import api
+from api import new_api
 from config import admin_list, ban_dicts_path
+
 '''
 可以使用
 from tomorin import h

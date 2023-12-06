@@ -3,7 +3,6 @@ from typing import Union, Optional
 import re
 
 from api import Api
-from tomorin_t import rm_at_prefix
 
 '''
 Rana.py
@@ -148,7 +147,7 @@ class Session(Api):
 
     def send(self, message_content: str):
         print(f'[ send -> {self.platform}: {self.channel.name} ] ')
-        return Api.message_create(self, channel_id=self.channel.id or self.guild.id, content=message_content, message_id=self.message.id)
+        return Api.message_create(self, channel_id=self.channel.id or self.guild.id, content=message_content)
 
     # message
     def message_create(self, channel_id: str = None, content: str = None, message_id: str = None):

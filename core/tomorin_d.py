@@ -1,4 +1,9 @@
 from functools import wraps
+from datetime import datetime
+import time
+from threading import Thread
+import schedule
+
 from session_maker import Command
 # from load_plugins import function_info_list
 
@@ -23,7 +28,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'message-created':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -38,7 +42,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'message-updated':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -53,7 +56,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'message-deleted':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -68,7 +70,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'interaction/button':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -83,7 +84,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'interaction/command':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -98,7 +98,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-added':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -113,7 +112,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-updated':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -128,7 +126,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-removed':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -143,7 +140,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-request':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -158,7 +154,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'login-added':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -173,7 +168,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'login-removed':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -188,7 +182,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'login-updated':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -203,7 +196,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-member-added':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -218,7 +210,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-member-updated':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -233,7 +224,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-member-removed':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -248,7 +238,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-member-request':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -263,7 +252,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'friend-request':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -278,7 +266,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-role-created':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -293,7 +280,6 @@ class OnEvent:
             session = args[0]
             inner_wrapper.enable_feature = True
             if session.type == 'guild-role-updated':
-                # inner_wrapper.enable_feature = True
                 return func(session)
 
         return inner_wrapper
@@ -318,7 +304,7 @@ on_event = OnEvent()
 
 class OnActivator:
     @staticmethod
-    def command(cmd=None):
+    def command(cmd: (str, list) = None):
         '''
         当命令被触发时触发。以 create-message 为底层事件。
         支持传入字符串列表作为多个触发词。
@@ -368,6 +354,77 @@ class OnActivator:
             return decorator(cmd)
         else:
             return decorator  # 否则，返回装饰器函数
+
+    @staticmethod
+    def timer(time_or_times: (str, list)):
+        """
+        装饰器：在指定的24小时制时间（字符串或字符串列表）循环执行函数
+        """
+
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                def scheduled_task():
+                    # 执行日志
+                    print(f"[scheduler] Do [{func.__name__}] now!")
+                    func()
+                    time.sleep(60)
+
+                # 判断传入的是单个时间字符串还是时间字符串列表
+                times = [time_or_times] if isinstance(time_or_times, str) else time_or_times
+
+                for time_str in times:
+                    schedule.every().day.at(time_str).do(scheduled_task)
+
+                # 启动一个线程来运行定时任务检查
+                def run_schedule():
+                    while True:
+                        schedule.run_pending()
+                        time.sleep(1)
+                        # print('op')
+
+                schedule_thread = Thread(target=run_schedule)
+                schedule_thread.start()
+
+                print(f"[scheduler] [{func.__name__}] is scheduled for {times}.")
+                return func
+
+            return wrapper
+
+        return decorator
+
+    @staticmethod
+    def interval(interval: int):
+        """
+        装饰器：在函数调用之间加入固定的时间间隔
+        :param interval: 间隔时间（秒）
+        """
+
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                def interval_task():
+                    # 执行日志
+                    print(f"[interval] Do [{func.__name__}] now!")
+                    func()
+
+                # 启动一个线程来运行定时任务检查
+                def run_interval():
+                    time.sleep(3)  # 等待框架启动完成
+                    while True:
+                        interval_task()
+                        time.sleep(interval)
+
+                interval_thread = Thread(target=run_interval)
+                interval_thread.start()
+
+                print(f"[interval] Then [{func.__name__}] is scheduled for every {interval} seconds.")
+                return func
+
+            return wrapper
+
+        return decorator
+
 
 
 on_activator = OnActivator()

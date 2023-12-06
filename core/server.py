@@ -26,7 +26,10 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def welcome():
-    return render_template('index.html')
+    if config["server"]["webui"]:
+        return render_template('index.html')
+    else:
+        return 'webui close'
 
 
 @app.route('/command', methods=['POST'])
@@ -54,14 +57,11 @@ def loder_plugins():
 def websocket_():
     connections = config["connections"]
     for connection_config in connections:
-        if connection_config["link_way"] == 'websocket':
-            # 来自文件 websocket_link
-            websocket_ink = WebsocketLink(connection_config)
-            t = threading.Thread(target=websocket_ink.run)
-            t.daemon = True
-            t.start()
-        else:
-            continue
+        # 来自文件 websocket_link
+        websocket_ink = WebsocketLink(connection_config)
+        t = threading.Thread(target=websocket_ink.run)
+        t.daemon = True
+        t.start()
     time.sleep(0.1)
     return 'All websockets connected.'
 
@@ -80,9 +80,17 @@ def webhook_():
 
 if __name__ == '__main__':
     cd = 1
+    print(f'[server] [Flask Watcher] reload: {config["server"]["reload"]}')
+
     if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not config["server"]["reload"]:
-        print(f'将在{cd}s后加载插件')
-        print(f'将在{cd}s后唤醒ws连接')
+        print(f'[server] 将在{cd}s后加载插件')
+        print(f'[server] 将在{cd}s后唤醒ws连接')
+        if config["server"]["webui"]:
+            print(f'[server] [WebUI] on url: http://{config["server"]["host"]}:{config["server"]["local_port"]}/')
+        else:
+            print(f'[server] [WebUI] off')
+        print(f'[server] [prefix] {config["bot"]["prefix"]}')
+        print(f'[server] [rm_at] {config["bot"]["rm_at"]}')
 
         def start_ws():
             time.sleep(cd)

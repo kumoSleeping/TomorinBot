@@ -11,7 +11,7 @@ def on_message(ws: websocket.WebSocketApp, message: str):
     # 展示登陆信息
     if data['op'] == 4:
         # print(data)
-        print("Satori驱动器连接成功！")
+        print("[server] [websocket] Satori驱动器连接成功！")
         for login_info in data['body']['logins']:
             name = login_info['user'].get('name', login_info['user']['id'])
             status = login_info['status']
@@ -65,7 +65,7 @@ class WebsocketLink:
             }
         }
         ws.send(json.dumps(identify_packet))
-        print(f"尝试连接到 Satori 驱动器 ...")
+        print(f"[server] [websocket] 尝试连接到 Satori 驱动器 ...")
 
     def run(self):
         try:
