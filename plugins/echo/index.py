@@ -24,3 +24,11 @@ def echo(session):
 # @on_activator.interval(5)
 # def miaow():
 #     print('喵喵喵')
+
+
+@on_event.message_created
+def s(session):
+    '''
+    事件
+    '''
+    print(session.data)
