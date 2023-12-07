@@ -364,11 +364,20 @@ class OnActivator:
         def decorator(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
+                last_run_time = None  # 跟踪上次执行时间
+
                 def scheduled_task():
-                    # 执行日志
+                    nonlocal last_run_time
+                    current_time = datetime.now()
+
+                    # 如果上次执行时间和当前时间在同一分钟内，则跳过执行
+                    if last_run_time and current_time.minute == last_run_time.minute:
+                        print(f"[scheduler] [{func.__name__}] is skipped.")
+                        return
+
+                    last_run_time = current_time  # 更新上次执行时间
                     print(f"[scheduler] Do [{func.__name__}] now!")
                     func()
-                    time.sleep(60)
 
                 # 判断传入的是单个时间字符串还是时间字符串列表
                 times = [time_or_times] if isinstance(time_or_times, str) else time_or_times
@@ -380,8 +389,7 @@ class OnActivator:
                 def run_schedule():
                     while True:
                         schedule.run_pending()
-                        time.sleep(1)
-                        # print('op')
+                        time.sleep(10)  # 每秒检查一次
 
                 schedule_thread = Thread(target=run_schedule)
                 schedule_thread.start()
@@ -424,8 +432,7 @@ class OnActivator:
             return wrapper
 
         return decorator
-
-
+    
 
 on_activator = OnActivator()
 
