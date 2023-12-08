@@ -4,7 +4,7 @@ import time
 from threading import Thread
 import schedule
 
-from session_maker import Command
+from bridge.session_adder import Command
 # from load_plugins import function_info_list
 
 
@@ -393,7 +393,7 @@ class OnActivator:
                     while True:
                         schedule.run_pending()
                         time.sleep(10)  # 每10秒检查一次
-                        print('op')
+                        # print('op')
 
                 schedule_thread = Thread(target=run_schedule)
                 schedule_thread.start()

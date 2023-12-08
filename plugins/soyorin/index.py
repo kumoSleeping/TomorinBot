@@ -1,6 +1,6 @@
 import importlib
 
-from core.tomorin import admin_list, on_event
+from bridge.tomorin import admin_list, on_event
 
 
 @on_event.message_created

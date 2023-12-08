@@ -170,5 +170,3 @@ class Api:
         }, platform=self.platform, self_id=self.self_id)
 
 
-def new_api(platform, self_id):
-    return Api(platform=platform, self_id=self_id)

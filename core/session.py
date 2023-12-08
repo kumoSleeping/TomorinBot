@@ -1,5 +1,5 @@
 
-from session_maker import event_to_session
+from bridge.session_adder import SessionExtension
 from session_utils import show_session_log, show_session_data
 from load_plugins import plugin_loader
 
@@ -14,7 +14,7 @@ function_info_list = []
 def main(data):
     # 展示data
     # show_session_data(data)
-    session = event_to_session(data)
+    session = SessionExtension(data)
     # 控制台输出
     try:
         show_session_log(session)

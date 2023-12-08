@@ -2,9 +2,9 @@ import importlib
 import os
 import inspect
 from core.load_plugins import data_nil
-from core.session_maker import event_to_session
+from bridge.session_adder import SessionExtension
 
-from core.tomorin import on_activator, on_event
+from bridge.tomorin import on_activator, on_event
 
 
 def load_function_info_list():
@@ -18,12 +18,14 @@ def load_function_info_list():
             if not (
                     inspect.isfunction(obj) and
                     # not name.startswith('_') and
-                    obj.__module__ == f'plugins.{folder}.index'
+                    obj.__module__ == f'plugins.{folder}.index' and
+                    len(inspect.signature(obj).parameters) != 0
                     # and inspect.getdoc(obj) is not None
+
             ):
                 continue
             # 这个语句是为了在「不是插件的函数」传递「session」时抛出异常时结束这本次导入
-            session_nil = event_to_session(data_nil)
+            session_nil = SessionExtension(data_nil)
             try:
                 obj(session_nil)
             except:

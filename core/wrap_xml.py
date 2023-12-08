@@ -69,6 +69,6 @@ class H:
                 return f'<file url="{param}"/>'
 
 
-h = H()
+
 
 

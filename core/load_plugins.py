@@ -4,7 +4,7 @@ import inspect
 import os
 
 from session_filter import ban_manager
-from session_maker import event_to_session
+from bridge.session_adder import SessionExtension
 
 
 data_nil = {
@@ -50,7 +50,7 @@ class PluginLoader:
         self.loaded_plugins = {}
 
     def load_plugins(self):
-        session = event_to_session(data_nil)
+        session = SessionExtension(data_nil)
         for folder in [d for d in os.listdir('./plugins') if os.path.isdir(os.path.join('./plugins', d)) and not d.startswith('__')]:
             # print(f'[load_plugins] 正在加载插件包 [{folder}]')
             module = importlib.import_module(f'plugins.{folder}.index')
