@@ -67,6 +67,8 @@ def help(session):
     发送help查看帮助。
     """
     help_list = ""  # 初始化一个空字符串
+    if session.command.args:
+        return # 如果有参数，就不执行下面的代码
     for item in load_function_info_list():
         function_name, function_docstring = item['function_name'], item['function_docstring']
         function_docstring = '' if not function_docstring else function_docstring
@@ -78,6 +80,8 @@ def help(session):
     session.send(rpl)
     return
 
+
+# 以下代码是为了兼容旧版的help组，还没改
 
 @on_event.message_created
 def qwe(session):
