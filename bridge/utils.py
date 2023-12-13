@@ -1,6 +1,8 @@
 import json
 import re
 
+from bridge.config import config
+
 
 def escape_special_characters(message: str):
     # 替换特殊字符为转义字符
@@ -25,10 +27,20 @@ def rm_1_at(text):
     return clean_text.strip()
 
 
-def rm_at_prefix(text):
-    clean_text = re.sub(r'<at.*?>', '', text, count=1)  # 使用 count=1 只替换第一个匹配项
-    if clean_text.strip().startswith('/'):
-        clean_text = clean_text.replace('/', '', 1).strip()
-    return clean_text
+def rm_all_at(text):
+    clean_text = re.sub(r'<at.*?>', '', text)  # 使用 count=1 只替换第一个匹配项
+    return clean_text.strip()
 
+
+def rm_all_xml(text):
+    clean_text = re.sub(r'<.*?>', '', text)  # 使用 count=1 只替换第一个匹配项
+    return clean_text.strip()
+
+
+def rm_perfix(text):
+    for prefix in config['bot']['prefix']:
+        if text.startswith(prefix):
+            text = text.replace(prefix, '', 1)
+            break
+    return text.strip()
 

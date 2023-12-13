@@ -103,7 +103,7 @@ def process_emoji(emoji_list):
 # 匹配stuff中包含列表元素的项并返回
 def select_by_stuff(target_list, material=None):
     matching_items = []
-    with open('./plugins/_cook/data.json', 'r', encoding='utf-8') as json_file:
+    with open('./plugins/cook/data.json', 'r', encoding='utf-8') as json_file:
         data = json.load(json_file)
     if material:
         if material == 'pure':

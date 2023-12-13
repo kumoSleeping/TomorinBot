@@ -29,7 +29,7 @@ def auto_bdb(session):
     msg.startswith('你现在不许玩笨蛋机！')):
         num = re.findall(r"\d+\.?\d*", msg)
         # 小于1000 直接梭哈
-        if int(num[0]) <= 1000:
+        if int(num[0]) <= 300:
             session.send(f'投币{num[0]}')
             return
         # 大于1000 投币 1 / 5

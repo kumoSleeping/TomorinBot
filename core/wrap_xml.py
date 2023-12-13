@@ -24,7 +24,6 @@ class H:
     @staticmethod
     def image(param: Union[Image.Image, bytes, str]):
         if isinstance(param, Image.Image):
-            print("这是一个Pillow图像对象")
             with io.BytesIO() as output:
                 param.save(output, format='PNG')
                 image_binary = output.getvalue()
@@ -34,11 +33,9 @@ class H:
             return f'<image url="data:image/png;base64,{encoded_image}"/>'
         elif isinstance(param, bytes):
             encoded_image = base64.b64encode(param).decode('utf-8')
-            print("这是一个bytes")
             return f'<image url="data:image/png;base64,{encoded_image}"/>'
         else:
             if str(param).startswith("http://") or str(param).startswith("https://"):
-                print("这是一个字符串")
                 return f'<image url="{param}"/>'
 
     @staticmethod

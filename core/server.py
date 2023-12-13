@@ -65,7 +65,6 @@ def websocket_():
     time.sleep(0.1)
     return 'All websockets connected.'
 
-
 @app.route('/', methods=['POST'])
 def webhook_():
     try:

@@ -4,8 +4,10 @@ import time
 from threading import Thread
 import schedule
 
-from bridge.session_adder import Command
+from bridge.session_adder import MessageExtension, Function, Command
 from core.event_decorator import OnEvent
+from bridge.utils import rm_1_at, rm_all_at
+from bridge.config import config
 on_event = OnEvent()
 
 
@@ -18,6 +20,8 @@ class OnActivator:
         如果没有提供 cmd 参数，则使用装饰的函数名作为命令，且此时不会被help命令识别。
         '''
         def decorator(func):
+            # print(f"Function name: {func.__name__}")
+            # print(f"Function docstring: {func.__doc__}")
             @wraps(func)
             def wrapper(*args, **kwargs):
                 wrapper.enable_feature = True
@@ -26,9 +30,14 @@ class OnActivator:
                     session = args[0]
 
                 except IndexError:
-                    print('你 session 呢 IndexError')
+                    # print('你 session 呢 IndexError')
                     return False
-                pure_message = session.message.content
+                if config['bot']['rm_at']:
+                    pure_message = rm_all_at(session.message.content)
+                for prefix in config['bot']['prefix']:
+                    if pure_message.startswith(prefix):
+                        pure_message = pure_message.replace(prefix, '', 1)
+                        break
 
                 if session.type != 'message-created':
                     return False
@@ -38,6 +47,8 @@ class OnActivator:
                 # 如果cmd是函数，或者没有提供cmd，则使用函数名
                 if callable(cmd) or cmd is None:
                     command_names = [func.__name__]
+                # 给此函数添加自己的指令触发词列表
+                session.function = Function(command_names, '')
 
                 # 检查是否匹配任一命令名
                 for command_name in command_names:
@@ -47,10 +58,10 @@ class OnActivator:
                         text = pure_message.replace(command_name, '', 1)
                         if text.startswith(' '):
                             text = text.replace(' ', '', 1)
-                        session.command = Command(command_name, command_args, text)
+                        session.message.command = Command(command_name, command_args, text)
                         return func(session)
                     elif pure_message == command_name:
-                        session.command = Command(command_name, None, '')
+                        session.message.command = Command(command_name, None, '', )
                         return func(session)
                 return False
 
@@ -110,12 +121,13 @@ class OnActivator:
         return decorator
 
     @staticmethod
-    def interval(interval: int):
+    def interval(interval: int, do_now: bool = True):
         """
         装饰器：在函数调用之间加入固定的时间间隔
+
+        :param do_now: 是否在启动时立即执行一次
         :param interval: 间隔时间（秒）
         """
-
         def decorator(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -126,7 +138,9 @@ class OnActivator:
 
                 # 启动一个线程来运行定时任务检查
                 def run_interval():
-                    time.sleep(3)  # 等待框架启动完成
+                    time.sleep(0.5)  # 等待框架启动完成
+                    if not do_now:
+                        time.sleep(interval)
                     while True:
                         interval_task()
                         time.sleep(interval)

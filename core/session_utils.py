@@ -17,8 +17,8 @@ def show_session_log(session):
     guild = session.guild.name if session.guild.name != '' else ('G_' + session.guild.id)
     channel = session.channel.name if session.channel.name != '' else ('G_' + session.channel.id)
     place = channel if channel == guild else guild + '->' + channel
-
-    print(f"[ {session.platform}: {place} ] < {session.type} >（ {user} ）{cleaned_text}")
+    if session.type != 'internal':
+        print(f"[ {session.platform}: {place} ] < {session.type} >（ {user} ）{cleaned_text}")
 
 
 def show_session_data(data: dict):
