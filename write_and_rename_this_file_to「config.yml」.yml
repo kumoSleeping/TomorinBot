@@ -1,35 +1,32 @@
-# sever 配置
-server:
-  reload: true  # reload 及时热重载
-  host: '127.0.0.1' # 接受标准 webhook 的 url
-  local_port: '17230'  # 接受标准 webhook 的 port
+core:
+  plugins-dir:
+    - path: 'plugins_i_write'
+      priority: 1
+    - path: 'plugins'
+      priority: 4
+
+auth:
+  - platform: 'red'
+    admin: ['114514']
+  - platform: 'onebot'
+    admin: [ '1919810' ]
+
+message_content_tools:
+  prefix: ['-']  #  指令前缀
 
 
-# 账号连接配置
-connections:
-  - self_ids: [ '11111', '22222' ]   # 平台账号，可填写一个/多个
-    link_way: 'websocket'
-    address: '127.0.0.1:5140/satori/v1'   # 主机地址 与 path路径 与 版本
-    http_protocol: 'http' # 这个选可以不填，默认http
-    token: 'Your_token' # 由前端提供
+websocket_client:
+  connections:
+    - self_ids: [ '11111', '22222' ]   # 平台账号，可填写一个/多个
+      link_way: 'websocket'
+      address: '127.0.0.1:5140/satori/v1'   # 主机地址 与 path路径 与 版本
+      http_protocol: 'http' # 这个选可以不填，默认http
+      token: 'Your_token' # 由前端提供
 
-  - self_ids: [ '33333' ]
-    link_way: 'webhook'
-    address: '127.0.0.1:5140/satori/v1'
-    token: 'Your_token'
-
-  # 此功能弃用
-#  - self_ids: [ '44444' ]
-#    link_way: 'only_webhook'
-#    life_cycle: 60
-
-  # 此功能弃用
-#  - self_ids: [ '22222' ] # 账号必须存在于上面任一连接
-#    link_way: 'forward' # http 转发 json 化的 satori 消息到目标地址
-#    address: '127.0.0.1:5140/satori/v1' # 目标地址
-
-
-
+    - self_ids: [ '33333' ]
+      link_way: 'webhook'
+      address: '127.0.0.1:5140/satori/v1'
+      token: 'Your_token'
 
 
 
