@@ -29,7 +29,7 @@ class StderrRedirector:
             time_ = datetime.datetime.now().strftime("%Y-%m-%d ｜ %H:%M:%S")
             if message == "Traceback (most recent call last):\n":
                 log_file.write(f"{time_} ========================[ERROR]=======================\n{message}")
-            if 'time.sleep(114514)' in message:
+            if 'time.sleep(1.14)' in message:
             #     删除前两行
                 message = message.split('\n')[5:]
                 message = '\n'.join(message)

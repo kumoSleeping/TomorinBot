@@ -1,4 +1,5 @@
 core:
+  hot_reload: false
   plugins-dir:
     - path: 'plugins_i_write'
       priority: 1
