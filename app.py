@@ -19,7 +19,7 @@ ascii_tmr = '''
  
  '''
 
-print(ascii_tmr)
+print('\033[34m' + ascii_tmr + '\033[0m')
 
 # 我们的迷失，从ano酱开始。（saki？
 

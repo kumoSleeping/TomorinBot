@@ -49,31 +49,33 @@ def load_plugins():
                     continue
                 if hasattr(obj, 'enable_feature'):
                     loaded_func[name] = obj
-                    print(f'[func_loader] [{plugin_folder}] 加载功能 [{obj.__name__}]')
+                    # 绿色字体
+                    print(f'\033[32m[load_plugins] [{plugin_folder}] 加载功能 [{obj.__name__}]\033[0m')
                     continue
                 if hasattr(obj, 'is_before_request'):
                     before_request[name] = obj
-                    print(f'[before_request] [{plugin_folder}] 注册组建 [{obj.__name__}]')
+                    # 蓝色字体
+                    print(f'\033[34m[before_request] [{plugin_folder}] 注册 [{obj.__name__}]\033[0m')
                     continue
                 if hasattr(obj, 'is_after_request'):
                     after_request[name] = obj
-                    print(f'[after_request] [{plugin_folder}] 注册组建 [{obj.__name__}]')
+                    print(f'\033[34m[after_request] [{plugin_folder}] 注册 [{obj.__name__}]\033[0m')
                     continue
                 if hasattr(obj, 'is_before_event'):
                     before_event[name] = obj
-                    print(f'[before_event] [{plugin_folder}] 注册组建 [{obj.__name__}]')
+                    print(f'\033[34m[before_event] [{plugin_folder}] 注册 [{obj.__name__}]\033[0m')
                     continue
                 if hasattr(obj, 'is_before_plugin_do'):
                     before_plugin_do[name] = obj
-                    print(f'[before_plugin_do] [{plugin_folder}] 注册组建 [{obj.__name__}]')
+                    print(f'\033[34m[before_plugin_do] [{plugin_folder}] 注册 [{obj.__name__}]\033[0m')
                     continue
                 if hasattr(obj, 'is_after_event'):
                     after_event[name] = obj
-                    print(f'[after_event] [{plugin_folder}] 注册组建 [{obj.__name__}]')
+                    print(f'\033[34m[after_event] [{plugin_folder}] 注册 [{obj.__name__}]\033[0m')
                     continue
                 if hasattr(obj, 'is_satori_post'):
                     satori_post[name] = obj
-                    print(f'[satori_post] [{plugin_folder}] 注册组建 [{obj.__name__}]')
+                    print(f'\033[34m[satori_post] [{plugin_folder}] 注册 [{obj.__name__}]\033[0m')
                     continue
 
 
