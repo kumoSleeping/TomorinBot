@@ -124,7 +124,7 @@ class Event:
         self.data: dict = body  # 原始数据
 
     # message
-    def message_create(self, channel_id: str = None, content: str = None):
+    def message_create(self,content: str = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
         return send_request(event=self, method='message.create', data={
             'channel_id': channel_id,
@@ -139,7 +139,7 @@ class Event:
             'message_id': message_id,
         }, platform=self.platform, self_id=self.self_id)
 
-    def message_update(self, channel_id: str = None, message_id: str = None, content: str = None):
+    def message_update(self, content: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
         return send_request(event=self, method='message.update', data={
@@ -148,7 +148,7 @@ class Event:
             'content': content,
         }, platform=self.platform, self_id=self.self_id)
 
-    def message_list(self, channel_id: str = None, next_token: str = None):
+    def message_list(self, next_token: str = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
         return send_request(event=self, method='message.list', data={
             'channel_id': channel_id,
@@ -161,22 +161,21 @@ class Event:
             'channel_id': channel_id,
         }, platform=self.platform, self_id=self.self_id)
 
-    def channel_list(self, guild_id: str = None, next_token: str = None):
+    def channel_list(self, next_token: str = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
         return send_request(event=self, method='channel.list', data={
             'guild_id': guild_id,
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
-    def channel_create(self, guild_id: str = None, channel_data: dict = None):
+    def channel_create(self, channel_data: dict = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        # channel_data = channel_data or self.data.get('channel', {})
         return send_request(event=self, method='channel.create', data={
             'guild_id': guild_id,
             'data': channel_data,
         }, platform=self.platform, self_id=self.self_id)
 
-    def channel_update(self, channel_id: str = None, channel_data: dict = None):
+    def channel_update(self, channel_data: dict = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
         return send_request(event=self, method='channel.update', data={
             'channel_id': channel_id,
@@ -200,7 +199,7 @@ class Event:
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
-    def guild_approve(self, message_id: str = None, approve: bool = False, comment: str = None):
+    def guild_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
         return send_request(event=self, method='guild.approve', data={
             'message_id': message_id,
@@ -216,14 +215,14 @@ class Event:
             'user_id': user_id,
         }, platform=self.platform, self_id=self.self_id)
 
-    def guild_member_list(self, guild_id: str = None, next_token: str = None):
+    def guild_member_list(self, next_token: str = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
         return send_request(event=self, method='guild.member.list', data={
             'guild_id': guild_id,
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
-    def guild_member_kick(self, guild_id: str = None, user_id: str = None, permanent: bool = False):
+    def guild_member_kick(self, permanent: bool = False, guild_id: str = None, user_id: str = None):
         guild_id = guild_id or self.guild.id
         user_id = user_id or self.user.id
         return send_request(event=self, method='guild.member.kick', data={
@@ -232,7 +231,7 @@ class Event:
             'permanent': permanent,
         }, platform=self.platform, self_id=self.self_id)
 
-    def guild_member_approve(self, message_id: str = None, approve: bool = False, comment: str = None):
+    def guild_member_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
         return send_request(event=self, method='guild.member.approve', data={
             'message_id': message_id,
@@ -254,7 +253,7 @@ class Event:
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
-    def friend_approve(self, message_id: str = None, approve: bool = False, comment: str = None):
+    def friend_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
         return send_request(event=self, method='friend.approve', data={
             'message_id': message_id,
@@ -262,7 +261,7 @@ class Event:
             'comment': comment,
         }, platform=self.platform, self_id=self.self_id)
 
-    def reaction_create(self, channel_id: str = None, message_id: str = None, emoji: str = None):
+    def reaction_create(self, emoji: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
         return send_request(event=self, method='reaction.create', data={
@@ -271,10 +270,10 @@ class Event:
             'emoji': emoji,
         }, platform=self.platform, self_id=self.self_id)
 
-    def reaction_delete(self, channel_id: str = None, message_id: str = None, emoji: str = None, user_id: str = None):
+    def reaction_delete(self, emoji: str = None, user_id: str = None, channel_id: str = None, message_id: str = None):
+        user_id = user_id or self.user.id
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        user_id = user_id or self.user.id
         return send_request(event=self, method='reaction.delete', data={
             'channel_id': channel_id,
             'message_id': message_id,
@@ -282,7 +281,7 @@ class Event:
             'user_id': user_id,
         }, platform=self.platform, self_id=self.self_id)
 
-    def reaction_clear(self, channel_id: str = None, message_id: str = None, emoji: str = None):
+    def reaction_clear(self, emoji: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
         return send_request(event=self, method='reaction.clear', data={
@@ -291,7 +290,7 @@ class Event:
             'emoji': emoji,
         }, platform=self.platform, self_id=self.self_id)
 
-    def reaction_list(self, channel_id: str = None, message_id: str = None, emoji: str = None, next_token: str = None):
+    def reaction_list(self, emoji: str = None, next_token: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
         return send_request(event=self, method='reaction.list', data={
