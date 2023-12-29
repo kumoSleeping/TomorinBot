@@ -15,8 +15,7 @@ if __name__ == '__main__':
     # 启动线程
     threading.Thread(target=load_plugins).start()
     # 保持主线程运行
-    while True:
-        time.sleep(114514)
+    input()
 
 
 
