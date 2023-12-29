@@ -18,7 +18,9 @@ class Action:
         self.is_did: bool = False  # 是否已经执行过
 
         pure_msg = self.event.message.content
-        pure_msg = remove_all_xml(pure_msg)
+        # 如果at的xml元素存在于消息
+        if f'<at id="{self.event.self_id}' not in pure_msg and ('<at id="' in pure_msg and '"/>' in pure_msg):
+            pure_msg = ''
         pure_msg = plaintext_if_prefix(pure_msg).strip()
         if pure_msg == '':
             self.is_did = True

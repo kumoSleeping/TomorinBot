@@ -46,6 +46,7 @@ def remove_first_prefix(text):
 
 def plaintext_if_prefix(text):
     for prefix in config['message_content_tools']['prefix']:
+        text = remove_all_xml(text)
         if text.startswith(prefix):
             text = text.replace(prefix, '', 1)
             return text.strip()
@@ -61,4 +62,8 @@ def easy_to_show_text(text):
     cleaned_text = cleaned_text[0:15] + '...' if len(cleaned_text) > 15 else cleaned_text
     cleaned_text = cleaned_text.replace("\n", " ").replace("\r", " ")
     return cleaned_text
+
+
+
+
 
