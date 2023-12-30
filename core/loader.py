@@ -38,14 +38,12 @@ def load_plugins():
             for name, obj in inspect.getmembers(module):
                 if not (inspect.isfunction(obj) and obj.__module__ == f'{folder}.{plugin_folder}'):
                     continue
-                # 这个语句是为了在「不是插件的函数」传递「session」时抛出异常时结束这本次导入 # 故意传递一个空的 session，在对应插件做了异常处理的情况下，这里不会抛出
-                if inspect.signature(obj).parameters:
-                    try:
-                        obj()
-                    except:
-                        pass
-                else:
+
+                # 过滤掉非内部函数
+                if not inspect.signature(obj).parameters:
                     continue
+
+                # 属性标记在装饰器中已经完成
                 if hasattr(obj, 'enable_feature'):
                     loaded_func[name] = obj
                     # 绿色字体

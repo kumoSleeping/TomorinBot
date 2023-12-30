@@ -305,12 +305,8 @@ class On:
         被装饰函数的参数为 event:Event, data: dict, headers: dict, full_address: str
         被装饰函数的返回值为event, data, headers, full_address, response_dict
         '''
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            wrapper.is_satori_post = True
-            return func(*args, **kwargs)
-
-        return wrapper
+        func.is_satori_post = True
+        return func
 
     @staticmethod
     def before_request(func):
@@ -320,11 +316,8 @@ class On:
         被装饰函数的参数为 event:Event, method: str, data: dict, platform: str, self_id: str
         被装饰函数的返回值与参数相同
         """
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            wrapper.is_before_request = True
-            return func(*args, **kwargs)
-        return wrapper
+        func.is_before_request = True
+        return func
 
     @staticmethod
     def after_request(func):
@@ -334,11 +327,8 @@ class On:
         被装饰函数的参数为 event:Event, method: str, data: dict, platform: str, self_id: str, response_dict: dict
         被装饰函数的返回值与参数相同
         """
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            wrapper.is_after_request = True
-            return func(*args, **kwargs)
-        return wrapper
+        func.is_after_request = True
+        return func
 
     @staticmethod
     def before_event(func):
@@ -348,11 +338,8 @@ class On:
         被装饰函数的参数为 data: dict
         被装饰函数的返回值与参数相同
         """
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            wrapper.is_before_event = True
-            return func(*args, **kwargs)
-        return wrapper
+        func.is_before_event = True
+        return func
 
     @staticmethod
     def before_plugin_do(func):
@@ -362,11 +349,8 @@ class On:
         被装饰函数的参数为 event:Event, plugin_name: str
         被装饰函数的返回值与参数相同
         """
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            wrapper.is_before_plugin_do = True
-            return func(*args, **kwargs)
-        return wrapper
+        func.is_before_plugin_do = True
+        return func
 
     @staticmethod
     def after_event(func):
@@ -376,9 +360,6 @@ class On:
         被装饰函数的参数为 event:Event
         被装饰函数的返回值与参数相同
         """
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            wrapper.is_after_event = True
-            return func(*args, **kwargs)
-        return wrapper
+        func.is_after_event = True
+        return func
 
