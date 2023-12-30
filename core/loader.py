@@ -41,7 +41,6 @@ def load_plugins():
                 # 这个语句是为了在「不是插件的函数」传递「session」时抛出异常时结束这本次导入 # 故意传递一个空的 session，在对应插件做了异常处理的情况下，这里不会抛出
                 if inspect.signature(obj).parameters:
                     try:
-                        # print(f'[load_plugins] [{plugin_folder}] 正在加载函数 [{obj.__name__}]')
                         obj()
                     except:
                         pass
