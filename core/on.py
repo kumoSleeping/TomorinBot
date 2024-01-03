@@ -7,9 +7,10 @@ class On:
         """
         当消息被创建时触发。必需资源：channel，message，user。
         """
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'message-created':
                 return func(event)
@@ -21,9 +22,10 @@ class On:
         '''
         当消息被编辑时触发。必需资源：channel，message，user。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'message-updated':
                 return func(event)
@@ -35,9 +37,10 @@ class On:
         '''
         当消息被删除时触发。必需资源：channel，message，user。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'message-deleted':
                 return func(event)
@@ -49,9 +52,10 @@ class On:
         '''
         当按钮被点击时触发。必需资源：button。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'interaction/button':
                 return func(event)
@@ -63,9 +67,10 @@ class On:
         '''
         调用斜线指令时触发。资源 argv 或 message 中至少包含其一。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'interaction/command':
                 return func(event)
@@ -77,9 +82,10 @@ class On:
         '''
         加入群组时触发。必需资源：guild。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-added':
                 return func(event)
@@ -91,9 +97,10 @@ class On:
         '''
         群组被修改时触发。必需资源：guild。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-updated':
                 return func(event)
@@ -105,9 +112,10 @@ class On:
         '''
         退出群组时触发。必需资源：guild。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-removed':
                 return func(event)
@@ -119,9 +127,10 @@ class On:
         '''
         接收到新的入群邀请时触发。必需资源：guild。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-request':
                 return func(event)
@@ -133,9 +142,10 @@ class On:
         '''
         登录被创建时触发。必需资源：login。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'login-added':
                 return func(event)
@@ -147,9 +157,10 @@ class On:
         '''
         登录被删除时触发。必需资源：login。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'login-removed':
                 return func(event)
@@ -161,9 +172,10 @@ class On:
         '''
         登录信息更新时触发。必需资源：login。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'login-updated':
                 return func(event)
@@ -175,9 +187,10 @@ class On:
         '''
         群组成员增加时触发。必需资源：guild，member，user。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-member-added':
                 return func(event)
@@ -189,9 +202,10 @@ class On:
         '''
         群组成员信息更新时触发。必需资源：guild，member，user。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-member-updated':
                 return func(event)
@@ -203,9 +217,10 @@ class On:
         '''
         群组成员移除时触发。必需资源：guild，member，user。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-member-removed':
                 return func(event)
@@ -217,9 +232,10 @@ class On:
         '''
         接收到新的加群请求时触发。必需资源：guild，member，user。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-member-request':
                 return func(event)
@@ -231,9 +247,10 @@ class On:
         '''
         接收到新的好友申请时触发。必需资源：user。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'friend-request':
                 return func(event)
@@ -245,9 +262,10 @@ class On:
         '''
         群组角色被创建时触发。必需资源：guild，role。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-role-created':
                 return func(event)
@@ -259,9 +277,10 @@ class On:
         '''
         群组角色被修改时触发。必需资源：guild，role。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-role-updated':
                 return func(event)
@@ -273,9 +292,10 @@ class On:
         '''
         群组角色被删除时触发。必需资源：guild，role。
         '''
+        func.enable_feature = True
+
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
-            inner_wrapper.enable_feature = True
             event = args[0]
             if event.type == 'guild-role-deleted':
                 return func(event)
@@ -287,9 +307,10 @@ class On:
     def internal(target_event_type):
 
         def decorator(func):
+            func.enable_feature = True
+
             @wraps(func)
             def inner_wrapper(*args, **kwargs):
-                inner_wrapper.enable_feature = True
                 event = args[0]
                 if event._type == target_event_type:
                     return func(*args, **kwargs)
