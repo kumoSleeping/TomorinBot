@@ -20,20 +20,17 @@ asc_back = asc(event, command=['你好'], perfix=False)
 
 ## 返回
 
-1.当`message`匹配到`command`时，返回`ACS类的实例`，否则返回`False`。
-
-## ACS属性：
+当`message`匹配到`command`时，返回`ACS类的实例`
 
 ```python
 self.args: list  # 参数
 self.text: str  # 文本
 ```
-.   
-
+否则返回`False`
 
 ## 方法：
 
-1.send
+1.send（可用于兼容qq适配器，暂未实现）
 
 
 ## 使用例（状态码猫图）：
@@ -46,8 +43,11 @@ from plugins.auto_selector import asc
 
 @on.message_created
 def cat_code(event: Event):
-    if asc := asc(event, command=['状态码猫图', 'scc'], prefix=False):
-        asc.send(h.image("https://httpcats.com/" + aps.args[0] + '.jpg') if aps.args[0].isdigit() else '状态码猫图只能是数字喵')
+    if aps := asc(event, ['状态码猫图', 'scc', 'statuscodecat'], prefix=False):
+        try:
+            aps.send(h.image("https://httpcats.com/" + aps.args[0] + '.jpg') if aps.args[0].isdigit() else '状态码猫图只能是数字喵')
+        except:
+            aps.send(f'你家状态码会返回 {aps.args[0]} 喵？')
 ```
 
 
