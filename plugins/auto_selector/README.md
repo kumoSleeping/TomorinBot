@@ -15,7 +15,18 @@ from plugins.auto_selector import asc
 
 ## 使用：
 ```python
-asc_back = asc(event, command=['你好'], perfix=False)
+# 最简使用
+asc_back = asc(event, '你好')  # 存在at会检查at me
+
+# 也可以使用列表
+asc_back = asc(event, ['你好', 'hello', 'hi'])
+
+# 强制要求前缀匹配，除非前缀带有 '' 空字符串
+# 即使为 false 也会自动处理掉前缀，只是不会强制必须要有
+asc_back = asc(event, '你好', force_prefix=True)
+
+# 支持startswith
+asc_back = asc(event, '你好', startswith=True)
 ```
 
 ## 返回
@@ -43,7 +54,7 @@ from plugins.auto_selector import asc
 
 @on.message_created
 def cat_code(event: Event):
-    if aps := asc(event, ['状态码猫图', 'scc', 'statuscodecat'], prefix=False):
+    if aps := asc(event, ['状态码猫图', 'scc', 'statuscodecat'], startswith=True):
         try:
             aps.send(h.image("https://httpcats.com/" + aps.args[0] + '.jpg') if aps.args[0].isdigit() else '状态码猫图只能是数字喵')
         except:

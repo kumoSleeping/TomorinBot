@@ -1,4 +1,5 @@
 from core import on, Event
+from typing import Optional, Union, List
 from plugins.message_content_tools import plaintext_if_prefix, remove_all_xml, remove_first_prefix
 
 
@@ -12,25 +13,29 @@ class ASC:
         return self.event.message_create(content=content)
 
 
-def asc(event, command: list, prefix: bool = True):
+def asc(event, command: Optional[Union[List[str], str]] = None, startswith: bool = False, force_prefix: bool = False) -> Optional[ASC]:
     pure_msg = event.message.content
     # 如果at的xml元素存在于消息
     if f'<at id="{event.self_id}' not in pure_msg and ('<at id="' in pure_msg and '"/>' in pure_msg):
         pure_msg = ''
-    if prefix:
+    if force_prefix:
         pure_msg = plaintext_if_prefix(pure_msg).strip()
     else:
         pure_msg = remove_all_xml(remove_first_prefix(pure_msg)).strip()
     if pure_msg == '':
         return None
+    if isinstance(command, str):
+        command: list = [command]
     for item in command:
-        cmd = pure_msg.split()[0] if len(pure_msg.split()) > 0 else ''
-        if item.startswith(cmd + ' '):
+        # cmd = pure_msg.split()[0] if len(pure_msg.split()) > 0 else ''
+        if pure_msg.startswith(item + ' '):
             args = pure_msg.split()[1:]
-            text = pure_msg.replace(cmd + ' ', '', 1)
+            text = pure_msg.replace(item + ' ', '', 1)
             return ASC(event, args, text)
-        elif item == cmd:
-            args = pure_msg.split()[1:]
-            text = pure_msg.replace(cmd + ' ', '', 1)
+        elif startswith and pure_msg.startswith(item):
+            args = pure_msg.replace(item, '', 1).split()
+            text = pure_msg.replace(item, '', 1)
             return ASC(event, args, text)
+        elif pure_msg == item:
+            return ASC(event, [], '')
     return None
