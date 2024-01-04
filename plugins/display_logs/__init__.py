@@ -22,9 +22,12 @@ def display_receive(event: Event):
 @on.after_request
 def display_send(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
     try:
-        print(f'\033[37m[send] {method} -> {platform} {data.get("message_id", "")} {response.status_code}\033[0m')
+        print(f'\033[37m[send] {method} -> {platform} {data.get("message_id", "")} \033[0m')
     except Exception as e:
-        print(f'[display_logs] 无法显示日志 {e}')
+        if not response:
+            print(f'[display_logs] 无法显示日志: 返回值为空')
+        else:
+            print(f'[display_logs] 无法显示日志 {e}')
     return event, method, data, platform, self_id, response
 
 
