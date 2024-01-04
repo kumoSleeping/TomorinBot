@@ -23,19 +23,19 @@ class H:
     def image(param: Union[bytes, str]):
         if isinstance(param, bytes):
             encoded_image = base64.b64encode(param).decode('utf-8')
-            return f'<image url="data:image/png;base64,{encoded_image}"/>'
+            return f'<img src="data:image/png;base64,{encoded_image}"/>'
         else:
             if str(param).startswith("http://") or str(param).startswith("https://"):
-                return f'<image url="{param}"/>'
+                return f'<img src="{param}"/>'
 
     @staticmethod
     def audio(param: Union[bytes, str]):
         if isinstance(param, bytes):
             encoded_audio = base64.b64encode(param).decode('utf-8')
-            return f'<audio url="data:audio/mpeg;base64,{encoded_audio}"/>'
+            return f'<audio src="data:audio/mpeg;base64,{encoded_audio}"/>'
         else:
             if str(param).startswith("http://") or str(param).startswith("https://"):
-                return f'<audio url="{param}"/>'
+                return f'<audio src="{param}"/>'
 
     @staticmethod
     def video(param: Union[bytes, str]):
@@ -74,13 +74,13 @@ class HExtension(H):
             # 将二进制数据转换为Base64编码
             encoded_image = base64.b64encode(image_binary).decode('utf-8')
             # 构建XML格式字符串
-            return f'<image url="data:image/png;base64,{encoded_image}"/>'
+            return f'<img src="data:image/png;base64,{encoded_image}"/>'
         elif isinstance(param, bytes):
             encoded_image = base64.b64encode(param).decode('utf-8')
-            return f'<image url="data:image/png;base64,{encoded_image}"/>'
+            return f'<img src="data:image/png;base64,{encoded_image}"/>'
         else:
             if str(param).startswith("http://") or str(param).startswith("https://"):
-                return f'<image url="{param}"/>'
+                return f'<img src="{param}"/>'
 
 
 h = HExtension
