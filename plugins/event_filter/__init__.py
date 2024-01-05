@@ -47,7 +47,7 @@ class BanManager:
         for ban_config in BanManager.ALL_BAN_DICTS:
             # print(ban_config)
             # print(plugin_name)
-            if plugin_name == 'soyorin':
+            if plugin_name == 'soyo0':
                 return True
             # 初始化变量
             guild_ = ban_config.get('G', ban_config.get('G', 'N/A'))
@@ -80,7 +80,7 @@ ban_manager = BanManager
 
 
 @on.before_plugin_do
-def soyo0(event: Event, plugin: callable):
+def soyo_filter(event: Event, plugin: callable):
     plugin_name = plugin.__name__
     if not ban_manager.check_before_plugin(event, plugin_name):
         # print(f'[filter] ID 为 {event.message.id} 的消息被过滤')
@@ -88,48 +88,43 @@ def soyo0(event: Event, plugin: callable):
     return event, plugin
 
 
+from plugins.auto_selector import asc
+
+
 @on.message_created
-def _soyo1(event: Event):
-    action = Action(event)
-    action.description = 'soyo0黑名单管理插件'
-    action.command(['ign'], ign)
-    action.command(['-ign'], _ign)
+def soyo_0(event: Event):
 
+    if res := asc(event, 'ign', admin=True):
 
-def ign(action):
-    if action.args:
-        if is_admin(action.event.platform, action.event.user.id):
-            print('[!] 权限不足～')
+        if not res.args:
+            # 无参数时，输出所有的忽略
+            output_lines = []
+            for i, ban_dict in enumerate(BanManager.ALL_BAN_DICTS, start=0):
+                output_line = f"Item {i}: "
+                output_line += ', '.join([f"{key}: {value}" for key, value in ban_dict.items()])
+                output_lines.append(output_line)
+
+            rpl = '\n'.join(output_lines)
+            res.send(
+                f'<at id="{event.user.id}"/> 目前支持的保留字有: G、U、P、M、F\n分别表示 Guild User Message Platform Func\n目前的逻辑列表为:\n{rpl}')
             return
-        ele_list = action.args
 
-        replacement_values = {'G': action.event.guild.id, 'U': 'Default', 'P': action.event.platform,
-                              'M': action.event.message.content, 'F': 'Default'}
+        # 有参数时，添加忽略
+        ele_list = res.args
+
+        replacement_values = {'G': event.guild.id, 'U': 'Default', 'P': event.platform,
+                              'M': event.message.content, 'F': 'Default'}
         ban_dict = {part[0]: part[1:] if part[1:] else replacement_values.get(part[0], 'Default') for part in
                     ele_list if part[0] in replacement_values}
-
         BanManager.add_item(ban_dict)
-        action.send(f'已执行·添加逻辑成功')
-    else:
-        output_lines = []
-        for i, ban_dict in enumerate(BanManager.ALL_BAN_DICTS, start=0):
-            output_line = f"Item {i}: "
-            output_line += ', '.join([f"{key}: {value}" for key, value in ban_dict.items()])
-            output_lines.append(output_line)
-
-        rpl = '\n'.join(output_lines)
-        action.send(f'<at id="{action.event.user.id}"/> 目前支持的保留字有: G、U、P、M、F\n分别表示 Guild User Message Platform Func\n目前的逻辑列表为:\n{rpl}')
-        return
-
-
-def _ign(action):
+        res.send(f'已执行·添加逻辑成功')
 
     # 按照顺序移除忽略
-    if action.args:
-        if is_admin(action.event.platform, action.event.user.id):
-            print('[!] 权限不足～')
-            return
-        item_index = int(action.text)
-        BanManager.delete_item(item_index)
-        action.send(f'已执行·删除逻辑 [item {item_index}]')
+    if res := asc(event, ['rmign', '-ign'], admin=True):
+        try:
+            item_index = int(res.text)
+            BanManager.delete_item(item_index)
+            res.send(f'已执行·删除逻辑 [item {item_index}]')
+        except:
+            res.send(f'删除失败，请检查输入是否正确')
 
