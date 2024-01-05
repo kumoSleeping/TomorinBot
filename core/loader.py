@@ -63,7 +63,7 @@ def find_deep_nesting(source_code, max_depth=3):
     return deep_nestings
 
 
-def code_debug(file_path):
+def code_static_check(file_path):
     duplicates = find_duplicate_function_definitions(file_path + '/' + '__init__.py')
     if duplicates:
         print(f'[code_debug] \033[31m [{file_path}] 可能存在重复函数定义: {duplicates} \033[0m')
@@ -106,15 +106,27 @@ def load_plugins():
             continue
         print(f'[load_plugins] 正在加载插件包 [{folder}]')
 
+        # 静态检查
+        core_config = config.get('core', {})
+        plugins_dir = core_config.get('plugins-dir', [])
+        for plugin in plugins_dir:
+            if plugin['path'] != folder:
+                continue
+            static_check = plugin.get('static_check', False)  # 默认值为 False
+            break
+        else:
+            static_check = False
+
+        # 遍历插件文件夹
         for plugin_folder in [d for d in os.listdir(folder) if os.path.isdir(os.path.join(folder, d))]: # 遍历插件文件夹
             # print(f'[load_plugins] 正在加载插件包 [{plugin_folder}]')
 
-            # debug
-            if config['core']['code_debug']:
-                code_debug(os.path.join(folder, plugin_folder))
-
             module = importlib.import_module(f'{folder}.{plugin_folder}') # 导入插件包
-            # 检测重名函数
+            # 代码静态检查
+            if static_check:
+                code_static_check(f'{folder}/{plugin_folder}')
+
+            # 遍历插件包中的函数
             for name, obj in inspect.getmembers(module):
                 if not (inspect.isfunction(obj) and obj.__module__ == f'{folder}.{plugin_folder}'):
                     continue

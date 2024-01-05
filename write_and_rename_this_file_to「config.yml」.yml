@@ -1,9 +1,10 @@
 core:
-  hot_reload: false
-  code_debug: true
+  hot_reload: true
   plugins-dir:
     - path: 'plugins_i_write'
       priority: 1
+      static_check: true
+
     - path: 'plugins'
       priority: 4
 
