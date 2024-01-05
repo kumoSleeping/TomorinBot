@@ -27,10 +27,10 @@ print(ascii_tmr)
 
 
 try:
+    print('[Python] 此启动方式无视虚拟环境，需要请主动运行 core/app.py')
     subprocess.run(["python", script_directory + '/core/app.py'])
 except:
     try:
-        print('[Python] 检测到您的系统路径没有Python，正在尝试使用Python3运行')
         subprocess.run(["python3", script_directory + '/core/app.py'])
     except:
         exit(1)
