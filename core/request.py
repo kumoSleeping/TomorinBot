@@ -48,17 +48,17 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
     # 调用before_request
     if before_request:
         print(before_request)
-        for before_request_k, before_request_v in before_request.items():
-            event, method, data, platform, self_id = before_request_v(event, method, data, platform, self_id)
+        for i in before_request:
+            event, method, data, platform, self_id = i(event, method, data, platform, self_id)
     # 发送POST请求
     if satori_post:
-        for satori_post_k, satori_post_v in satori_post.items():
-            event, data, headers, full_address, response_dict = satori_post_v(event, data, headers, full_address)
+        for i in satori_post:
+            event, data, headers, full_address, response_dict = i(event, data, headers, full_address)
             break  # 只取第一个
         # 调用after_request
         if after_request:
-            for after_request_k, after_request_v in after_request.items():
-                event, method, data, platform, self_id, response_dict = after_request_v(event, method, data, platform, self_id, response_dict)
+            for i in after_request:
+                event, method, data, platform, self_id, response_dict = i(event, method, data, platform, self_id, response_dict)
     else:
         print(f"[core] [request] 未找到 satori_post 组件")
 

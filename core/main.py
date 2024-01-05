@@ -3,6 +3,7 @@ import threading
 from core.event import Event
 from core.loader import loaded_func
 from core.loader import before_event, before_plugin_do, after_event
+import gc
 
 
 function_info_list = []
@@ -10,24 +11,26 @@ function_info_list = []
 
 def main(data):
     if before_event:
-        for k, v in before_event.items():
-            data = v(data)
+        for i_1 in before_event:
+            data = i_1(data)
     event = Event(data)
     if after_event:
-        for k, v in after_event.items():
-            event = v(event)
-    for k, v in loaded_func.items():
+        for i_2 in after_event:
+            event = i_2(event)
+    for i_3 in loaded_func:
         # before_plugin_do
         if before_plugin_do:
-            for k2, v2 in before_plugin_do.items():
-                event, v = v2(event, v)
+            for i_4 in before_plugin_do:
+                i_4(event, i_3)
         if data['type'] == 'internal':
-            plugin_thread = threading.Thread(target=v, args=(event,))
+            plugin_thread = threading.Thread(target=i_3, args=(event,))
             plugin_thread.start()
         else:
             # 使用 session 的副本创建并启动插件线程
-            plugin_thread = threading.Thread(target=v, args=(event,))
+            plugin_thread = threading.Thread(target=i_3, args=(event,))
             plugin_thread.start()
+    # 释放资源
+    gc.collect()
 
 
 
