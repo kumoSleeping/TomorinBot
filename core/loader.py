@@ -66,13 +66,13 @@ def find_deep_nesting(source_code, max_depth=3):
 def code_static_check(file_path):
     duplicates = find_duplicate_function_definitions(file_path + '/' + '__init__.py')
     if duplicates:
-        print(f'[code_debug] \033[31m [{file_path}] 可能存在重复函数定义: {duplicates} \033[0m')
+        print(f'\033[31m[static_check] [{file_path}] 可能存在重复函数定义: {duplicates} \033[0m')
     long_functions = find_long_functions(file_path + '/' + '__init__.py')
     if long_functions:
-        print(f'[code_debug] \033[33m [{file_path}] 可能存在过长的函数: {long_functions} \033[0m')
+        print(f'\033[33m[static_check] [{file_path}] 可能存在过长的函数: {long_functions} \033[0m')
     deep_nestings = find_deep_nesting(file_path + '/' + '__init__.py')
     if deep_nestings:
-        print(f'[code_debug] \033[33m [{file_path}] 可能存在深层嵌套: {deep_nestings} \033[0m')
+        print(f'\033[33m[static_check] [{file_path}] 可能存在深层嵌套: {deep_nestings} \033[0m')
 
 
 config: dict = yaml.safe_load(open('./config.yml', encoding='utf-8'))
