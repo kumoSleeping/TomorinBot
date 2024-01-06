@@ -2,12 +2,10 @@ import json
 import os
 from typing import List, Dict, TYPE_CHECKING
 from core import event, Event, on
-from core.loader import config
 
-from plugins.action import Action
-from plugins.auth import is_admin
+from plugins.asset_path import auto_asset_path
 
-ban_dicts_path = 'plugins/event_filter/ban_dicts.json'
+ban_dicts_path = auto_asset_path() + '/ban_dicts.json'
 
 
 class BanManager:
@@ -47,16 +45,22 @@ class BanManager:
         for ban_config in BanManager.ALL_BAN_DICTS:
             # print(ban_config)
             # print(plugin_name)
-            if plugin_name == 'soyo0':
+            # print(event.platform)
+            # print(event.guild.id)
+            # print(event.channel.id)
+            if plugin_name == 'soyo_0':
                 return True
             # 初始化变量
             guild_ = ban_config.get('G', ban_config.get('G', 'N/A'))
+            channel_ = ban_config.get('C', ban_config.get('C', 'N/A'))
             platform_ = ban_config.get('P', ban_config.get('P', 'N/A'))
             user_ = ban_config.get('U', ban_config.get('U', 'N/A'))
             func_ = ban_config.get('F', ban_config.get('F', 'N/A'))
             message_ = ban_config.get('M', ban_config.get('M', 'N/A'))
 
             if guild_ != event.guild.id and guild_ != 'N/A':
+                continue
+            if channel_ != event.channel.id and channel_ != 'N/A':
                 continue
             if platform_ != event.platform and platform_ != 'N/A':
                 continue
@@ -84,7 +88,7 @@ def soyo_filter(event: Event, plugin: callable):
     plugin_name = plugin.__name__
     if not ban_manager.check_before_plugin(event, plugin_name):
         # print(f'[filter] ID 为 {event.message.id} 的消息被过滤')
-        return event, None
+        return None, None
     return event, plugin
 
 
