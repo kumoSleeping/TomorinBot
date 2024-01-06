@@ -2,6 +2,8 @@ from PIL import Image, ImageDraw, ImageFont
 from math import ceil
 from typing import List, Tuple
 import os
+import re
+
 # import inspect
 # import io
 # from memory_profiler import profile
@@ -81,13 +83,18 @@ def text2img(text: str,
     - 把文段绘制成图片
     :return: 图片
     '''
-    import re
-    words = re.findall(r'[\u4e00-\u9fff]+|[a-zA-Z]+|\d+|\s|.', text)
-    # print(os.path.join(current_directory, font_path))
-    # print(os.path.join(current_directory, dir_+'GB18030.ttf'))
+    # 更新正则表达式以包括包含空格的英语单词或短语
+    # \u4e00-\u9fff: 中文字符
+    # \u3040-\u309F: 平假名
+    # \u30A0-\u30FF: 片假名
+    # [a-zA-Z]+(?:\s[a-zA-Z]+)*: 英语单词或短语，可能包含空格
+    # \d+: 数字
+    # .: 其他所有字符
+    # pattern = r'[\u4e00-\u9fff\u3040-\u309F\u30A0-\u30FF]+|[a-zA-Z]+(?:\s[a-zA-Z]+)*|\d+|.'
+    # words = re.findall(pattern, text)
+    # 匹配所有字符
+    words = re.findall(r'[a-zA-Z]+|\d+|\s|.', text)
     font: ImageFont.ImageFont = ImageFont.truetype(font=os.path.join(current_directory, font_path), size=36)
-    # words = [char for char in text if char.strip()]
-    # print(len(words))
 
     width = int(len(words)*2 + 600)
     padding: int = int(width // 20)
@@ -97,9 +104,9 @@ def text2img(text: str,
     result = Image.new("RGBA", (width, height), bg_fill)
     draw = ImageDraw.Draw(result)
     # 行数
-
-    for i in data:
-        draw.text(i["xy"], i["text"], i["fill"], i["font"])
+    for item in data:
+        if item["text"] != '':
+            draw.text(item["xy"], item["text"], item["fill"], item["font"])
 
     return result
 
