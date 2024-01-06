@@ -1,12 +1,16 @@
 import sys
 import os
 import datetime
+from plugins.asset_path import auto_asset_path
+
+
+path_ = auto_asset_path()
 
 
 # 获取日志文件的路径
 def get_log_file_path():
     date_str = datetime.datetime.now().strftime("%Y-%m-%d")  # 当前日期
-    log_file = os.path.join('plugins/logger/output', f'log-{date_str}.txt')
+    log_file = os.path.join(path_, f'log-{date_str}.txt')
     return log_file
 
 
@@ -29,11 +33,11 @@ class StderrRedirector:
             time_ = datetime.datetime.now().strftime("%Y-%m-%d ｜ %H:%M:%S")
             if message == "Traceback (most recent call last):\n":
                 log_file.write(f"{time_} ========================[ERROR]=======================\n{message}")
-            if 'time.sleep(1.14)' in message:
-            #     删除前两行
-                message = message.split('\n')[5:]
-                message = '\n'.join(message)
-                log_file.write(f"{time_} ========================[END]=======================\n{message}")
+            # if 'time.sleep(1.14)' in message:
+            # #     删除前两行
+            #     message = message.split('\n')[5:]
+            #     message = '\n'.join(message)
+            #     log_file.write(f"{time_} ========================[END]=======================\n{message}")
             else:
                 log_file.write(f"{message}")
         sys.__stderr__.write(message)
@@ -43,6 +47,6 @@ class StderrRedirector:
 
 
 sys.stderr = StderrRedirector()
-if not os.path.exists('plugins/logger/output'):
-    os.mkdir('plugins/logger/output')
+if not os.path.exists(path_):
+    os.mkdir(path_)
 

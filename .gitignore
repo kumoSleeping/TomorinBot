@@ -8,7 +8,7 @@
 #__*
 --*
 plugins_*
-
+assets
 # 忽略config.yml文件
 config.yml
 

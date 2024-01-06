@@ -2,12 +2,15 @@ from peewee import SqliteDatabase, Model, CharField, DateTimeField
 from datetime import datetime
 from datetime import timedelta
 import inspect
-from core import on, Event, config
+from core import on, Event
 from requests import Response
-from plugins.schedule_do import interval_do
 
+from plugins.schedule_do import interval_do
+from plugins.asset_path import auto_asset_path
+
+assets_dir = auto_asset_path()
 # 配置数据库 - 这里使用 SQLite
-db = SqliteDatabase('plugins/analysis/analysis.db')
+db = SqliteDatabase(f'{assets_dir}/analysis.db')
 
 
 # 定义模型

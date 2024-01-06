@@ -5,9 +5,11 @@ import os
 # import inspect
 # import io
 # from memory_profiler import profile
+from plugins.asset_path import auto_asset_path
+from core.loader import config
 
 current_directory = os.getcwd()
-dir_ = 'plugins/text_to_image/'
+font_path = auto_asset_path() + '/' + config['text_to_image']['font_name']
 
 
 # @profile
@@ -81,8 +83,9 @@ def text2img(text: str,
     '''
     import re
     words = re.findall(r'[\u4e00-\u9fff]+|[a-zA-Z]+|\d+|\s|.', text)
+    # print(os.path.join(current_directory, font_path))
     # print(os.path.join(current_directory, dir_+'GB18030.ttf'))
-    font: ImageFont.ImageFont = ImageFont.truetype(font=os.path.join(current_directory, dir_+'f.ttf'), size=36)
+    font: ImageFont.ImageFont = ImageFont.truetype(font=os.path.join(current_directory, font_path), size=36)
     # words = [char for char in text if char.strip()]
     # print(len(words))
 
