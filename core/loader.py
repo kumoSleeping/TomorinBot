@@ -7,7 +7,7 @@ import ast
 
 def find_duplicate_function_definitions(source_code):
     """查找重复的函数定义，并给出函数起始行号"""
-    with open(source_code, "r") as file:
+    with open(source_code, "r", encoding='utf-8') as file:
         tree = ast.parse(file.read(), filename=source_code)
 
     function_definitions = {}
@@ -26,7 +26,7 @@ def find_duplicate_function_definitions(source_code):
 
 def find_long_functions(source_code, max_length=50):
     """查找过长的函数，并给出函数起始行号"""
-    with open(source_code, "r") as file:
+    with open(source_code, "r", encoding='utf-8') as file:
         tree = ast.parse(file.read(), filename=source_code)
 
     long_functions = {}
@@ -41,7 +41,7 @@ def find_long_functions(source_code, max_length=50):
 
 def find_deep_nesting(source_code, max_depth=3):
     """查找深层嵌套，并给出最深嵌套结构的起始行号"""
-    with open(source_code, "r") as file:
+    with open(source_code, "r", encoding='utf-8') as file:
         tree = ast.parse(file.read(), filename=source_code)
 
     deep_nestings = []
