@@ -61,7 +61,7 @@ class Member:
         self.user: Optional[User] = User(member_info.get('user', {}))
         self.nick: Optional[str] = member_info.get('nick', '')
         self.avatar: Optional[str] = member_info.get('avatar', '')
-        self.joined_at: Optional[int] = member_info.get('joined_at', '')
+        self.joined_at: Optional[int] = member_info.get('joined_at', -1)
 
 
 class Role:
@@ -86,8 +86,8 @@ class Message:
         self.user: Optional[User] = User(message_info.get('user', {}))
         self.channel: Optional[Channel] = Channel(message_info.get('channel', {}))
         self.guild: Optional[Guild] = Guild(message_info.get('guild', {}))
-        self.created_at: Optional[int] = message_info.get('created_at', '')
-        self.updated_at: Optional[int] = message_info.get('updated_at', '')
+        self.created_at: Optional[int] = message_info.get('created_at', -1)
+        self.updated_at: Optional[int] = message_info.get('updated_at', -1)
 
         self.quote: Quote = Quote(message_info.get('quote', {}))
 
@@ -104,11 +104,11 @@ class Event:
     def __init__(self, body=None):
         if body is None:
             body = {}
-        self.id: int = body.get('id', '')
+        self.id: int = body.get('id', -1)
         self.type: str = body.get('type', '')
         self.platform: str = body.get('platform', '')
         self.self_id: str = body.get('self_id', '')
-        self.timestamp: int = body.get('timestamp', '')
+        self.timestamp: int = body.get('timestamp', -1)
 
         self.member: Optional[Member] = Member(body.get('member', {}))
         self.user: Optional[User] = User(body.get('user', {}))
@@ -303,7 +303,7 @@ class Event:
 
 class SessionInternal:
     def __init__(self, body=None):
-        '''
+        """
         内部使用的 Session
         # 字段	类型	说明
         # id	number	事件 ID
@@ -313,14 +313,14 @@ class SessionInternal:
         # timestamp	number	事件的时间戳
         # _type	string	原生事件类型
         # _data	object	原生事件数据
-        '''
+        """
         if body is None:
             body = {}
-        self.id: int = body.get('id', '')
+        self.id: int = body.get('id', -1)
         self.type: str = body.get('type', '')
         self.platform: str = body.get('platform', '')
         self.self_id: str = body.get('self_id', '')
-        self.timestamp: int = body.get('timestamp', '')
+        self.timestamp: int = body.get('timestamp', -1)
 
         self._type: str = body.get('_type', '')
         self._data: dict = body.get('_data', {})
