@@ -92,13 +92,13 @@ def soyo_filter(event: Event, plugin: callable):
     return event, plugin
 
 
-from plugins.auto_selector import asc
+from plugins.match_command import match_command
 
 
 @on.message_created
 def soyo_0(event: Event):
 
-    if res := asc(event, 'ign', admin=True):
+    if res := match_command(event, 'ign', admin_only=True):
 
         if not res.args:
             # 无参数时，输出所有的忽略
@@ -124,7 +124,7 @@ def soyo_0(event: Event):
         res.send(f'已执行·添加逻辑成功')
 
     # 按照顺序移除忽略
-    if res := asc(event, ['rmign', '-ign'], admin=True):
+    if res := match_command(event, ['rmign', '-ign'], admin_only=True):
         try:
             item_index = int(res.text)
             BanManager.delete_item(item_index)
