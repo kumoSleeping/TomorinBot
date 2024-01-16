@@ -3,12 +3,6 @@ from typing import Union, Optional
 
 from request import send_request
 
-'''
-Rana.py
-对「satori」协议进行基础消息抽象 / 日志显示
-提供平台包装元素的 API
-'''
-
 
 class ChannelType(IntEnum):
     TEXT = 0
