@@ -2,7 +2,9 @@ import sys
 import os
 import datetime
 from plugins.asset_path import auto_asset_path
-
+from core.loader import config
+import traceback
+import inspect
 
 path_ = auto_asset_path()
 
@@ -49,4 +51,19 @@ class StderrRedirector:
 sys.stderr = StderrRedirector()
 if not os.path.exists(path_):
     os.mkdir(path_)
+
+
+def log(text: str):
+    '''
+    如果是开发模式，打印日志，如果不是，不打印
+    '''
+    if log_config := config['logger']['debug_package']:
+        # 检查调用此函数的文件所在的文件夹名字
+        caller = inspect.stack()[1].filename.split('/')[-2]
+        for i in log_config:
+            if i == caller:
+                print('\033[1;33m[log] '+text+'\033[0m')
+                return
+
+
 

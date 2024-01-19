@@ -14,6 +14,9 @@ auth:
   - platform: 'onebot'
     admin: [ '1919810' ]
 
+logger:
+  debug_package: ['match_command']
+
 message_content_tools:
   prefix: ['-', '']  #  指令前缀
 
