@@ -24,8 +24,11 @@ Tomorin项目模版是由Python编写的，代码简约、轻小、无异步、�
 
 整体设计灵感来自Koishi，命名来自[MyGO!!!!!](https://zh.moegirl.org.cn/MyGO!!!!!)。
 
+## 依赖: core & 预装插件
 
-
+```shell
+pip install PyYAML requests hupper peewee schedule pillow websocket-client beautifulsoup4
+```
 
 ## フロントエンドサポート
 
@@ -133,7 +136,7 @@ classDiagram
 本模版出发点是学习优秀设计方法，简洁易用，让简单的功能实现可以高速产出。 
 
 
-如果您习惯使用SDK编写项目，我十分推荐您使用[RF-Tar-Railt/satori-python](https://github.com/RF-Tar-Railt/satori-python/releases/tag/v0.4.0)进行更开发。
+如果您习惯使用SDK编写项目，我十分推荐您使用[RF-Tar-Railt/satori-python](https://github.com/RF-Tar-Railt/satori-python/releases/tag/v0.4.0)进行开发。
 
 ## 仓库
 `.gitignore`规则了忽略了所有的`config.yml`。
