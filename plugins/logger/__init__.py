@@ -58,12 +58,18 @@ def log(text: str):
     如果是开发模式，打印日志，如果不是，不打印
     '''
     if log_config := config['logger']['debug_package']:
-        # 检查调用此函数的文件所在的文件夹名字
-        caller = inspect.stack()[1].filename.split('/')[-2]
-        for i in log_config:
-            if i == caller:
-                print('\033[1;33m[log] '+text+'\033[0m')
-                return
+        try:
+            # 使用 os.path.sep 获取操作系统相关的路径分隔符
+            caller = inspect.stack()[1].filename.split(os.path.sep)[-2]
+        except IndexError:
+            # 适当处理错误，例如记录错误信息或者使用默认值
+            print('\033[1;33m[log] caller filename folder IndexError\033[0m')
+            caller = "Unknown"
+
+        # 检查是否应该记录这个调用者的日志
+        if caller in log_config:
+            print('\033[1;33m[log] ' + text + '\033[0m')
+
 
 
 
