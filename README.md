@@ -10,11 +10,12 @@
     <img src="https://img.shields.io/badge/TomorinBOT%20v3-blue" alt="license">
   </a>
 
-<a href="https://img.shields.io/github/license/kumoSleeping/TomorinBot">
+<a href="https://github.com/kumoSleeping/TomorinBot/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/kumoSleeping/TomorinBot" alt="license">
   </a>
-
-  <img src="https://img.shields.io/badge/python-3.7+-blue?logo=python&logoColor=edb641" alt="python">
+<a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/python-3.7+-blue?logo=python&logoColor=edb641" alt="license">
+  </a>
 
   <a href="https://satori.js.org/zh-CN/">
     <img src="https://img.shields.io/badge/Satori-v1-black?style=social">
