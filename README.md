@@ -1,10 +1,8 @@
 
 
 
-<h1 align="center"> TomorinBOT  </h1>
+<h1 align="center"> TomorinBOT  <img src="./DemoProject2/register/example/eg.jpg" width="30" height="30" alt="nonebot"/> </div></h1>
 
-
-<div align="center"> <img src="./DemoProject2/register/example/eg.jpg" width="120"/> </div>
 
 <p align="center">
 
@@ -23,10 +21,11 @@
   </a>
 
 </p>
-
-<h1 align="center">
-  <a href="https://github.com/kumoSleeping/TomorinBot/wiki"> Click Here.> Core WIKI</a>
-</h1>
+<p align="center">
+<br>  かつて忘れられない、星空は未来を照らし、次の春へ。
+<br>
+――「2024.1.30 10:54:23・東京・豊島区
+<br> 
 
 ***
 ## 介绍
