@@ -61,6 +61,20 @@ class PluginManager:
                 self.after_event.append(obj)
 
     def load_plugins(self):
+        # 检测register文件夹是否存在
+        if not os.path.exists('register'):
+            os.mkdir('register')
+            with open('register/__init__.py', 'w', encoding='utf-8') as f:
+                f.write('from register.example import *\n')
+            os.mkdir('register/example')
+            # 创建一个默认的__init__.py文件
+            with open('register/example/__init__.py', 'w', encoding='utf-8') as f:
+                f.write('')
+            print('[load_modules] Welcome! register folder created, put your plugins in it now!')
+            print('demo1: https://github.com/kumoSleeping/TomorinBot/tree/main/DemoProject1')
+            print('demo2: https://github.com/kumoSleeping/TomorinBot/tree/main/DemoProject1')
+
+            exit()
 
         self.load_plugin_from_folder('register')
 

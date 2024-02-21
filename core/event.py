@@ -1,7 +1,7 @@
 from enum import IntEnum
 from typing import Union, Optional
 
-from transmit import send_request
+from http_transmit import send_request
 
 
 class ChannelType(IntEnum):

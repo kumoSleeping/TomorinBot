@@ -64,6 +64,8 @@ class PluginManager:
         # 检测register文件夹是否存在
         if not os.path.exists('register'):
             os.mkdir('register')
+            with open('register/__init__.py', 'w', encoding='utf-8') as f:
+                f.write('from register.example import *\n')
             os.mkdir('register/example')
             # 创建一个默认的__init__.py文件
             with open('register/example/__init__.py', 'w', encoding='utf-8') as f:

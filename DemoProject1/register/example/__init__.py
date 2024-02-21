@@ -21,7 +21,7 @@ def display_receive(event: Event):
     接收到消息后提示
     '''
     try:
-        print(f'\033[37m  [receive] {event.platform} {event.type}  \033[0m')
+        print(f'\033[37m  [receive] {event.platform} {event.type} {event.message.content}  \033[0m')
     except Exception as e:
         print(f'[display_logs] 无法显示日志', e)
     return event
