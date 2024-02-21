@@ -5,19 +5,31 @@
 
 
 <div align="center"> <img src="./DemoProject2/register/example/eg.jpg" width="120"/> </div>
-<div align="center">v0.2.0</div>
-<div align="center">  人間になりたいうた...
-</div>
 
+<p align="center">
 
+<a href="https://github.com/kumoSleeping/TomorinBot/blob/main/core/__init__.py#L8C1-L8C22">
+    <img src="https://img.shields.io/badge/TomorinBOT%20v3-blue" alt="license">
+  </a>
 
+<a href="https://img.shields.io/github/license/kumoSleeping/TomorinBot">
+    <img src="https://img.shields.io/github/license/kumoSleeping/TomorinBot" alt="license">
+  </a>
+
+  <img src="https://img.shields.io/badge/python-3.7+-blue?logo=python&logoColor=edb641" alt="python">
+
+  <a href="https://satori.js.org/zh-CN/">
+    <img src="https://img.shields.io/badge/Satori-v1-black?style=social">
+  </a>
+
+</p>
 
 <h1 align="center">
   <a href="https://github.com/kumoSleeping/TomorinBot/wiki"> Click Here.> Core WIKI</a>
 </h1>
 
 ***
-## イントロダクション
+## 介绍
 
 
 Tomorin项目模版是由Python编写的，代码简单、看似轻小、无异步、线程化、使用注册+依赖模块思想，基于**Satori协议**的的聊天机器人后端**模版框**。     
@@ -31,13 +43,13 @@ Tomorin项目模版是由Python编写的，代码简单、看似轻小、无异�
 pip install PyYAML requests hupper websocket-client
 ```
 
-## 使用
+## 运行
 
 ```shell
-python3 core/app.py
+python3 core
 ```
 
-### 核心
+## core
 
 
 ```mermaid
@@ -91,7 +103,7 @@ classDiagram
 如果您习惯使用SDK编写项目，推荐您使用[RF-Tar-Railt/satori-python](https://github.com/RF-Tar-Railt/satori-python/releases/tag/v0.4.0)进行开发。
 
 ## 仓库
-`.gitignore`规则了忽略了所有的`config.yml`。
+`.gitignore`规则了忽视了一些东西，请注意检查。
 
 
 ------
