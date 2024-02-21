@@ -10,7 +10,17 @@
 plugins_*
 assets
 # 忽略config.yml文件
-config.yml
+/DemoProject1/config.yml
+/DemoProject2/config.yml
+bin/
+test_plugin/
+
+
+
+
+
+
+
 
 
 # Byte-compiled / optimized / DLL files

@@ -1,7 +1,6 @@
 import os
 import sys
 import inspect
-import time
 
 
 # 获取当前文件的父目录并切换工作目录
@@ -10,29 +9,40 @@ os.chdir(parent_directory)
 sys.path.append(parent_directory)
 
 
-def main():
-    from core.loader import load_plugins
-    import threading
-
-    # 启动线程
-    threading.Thread(target=load_plugins, daemon=True).start()
-    os.environ['keep_alive'] = 'True'
-    # 保持主线程运行
-    while True:
-        time.sleep(1.14)
+def st():
+    # chick()
+    from core.loader import plugin_manager
+    plugin_manager.load_plugins()
+    input()
 
 
 if __name__ == '__main__':
+    ascii_tmr = '''
+
+      ██████████╗   ███████╗    
+       ╚══██╔████╗ ████╔══██╗   
+          ██║██╔████╔██████╔╝   
+          ██║██║╚██╔╝██╔══██╗   
+          ██║██║ ╚═╝ ██║  █████║   
+          ╚═╝╚═╝     ╚═╝  ╚════╝  lite @2023
+
+    '''
+
+    ascii_tmr = '\033[34m' + ascii_tmr + '\033[37m' + '''
+    かつて忘れられない、星空は未来を照らし、次の春へ。
+    　　　　　　　　　　　　――「未来のある日・東京・豊島区」
+
+     ''' + '\033[0m'
+
+    print(ascii_tmr)
     from loader import config
+
     if config['core']['hot_reload']:
         import hupper
-        print('\033[31m[core] 已启用热重载\033[0m')
-        reloader = hupper.start_reloader('core.app.main')
+        reloader = hupper.start_reloader('core.app.st',)
+
     else:
-        main()
-
-
-
+        st()
 
 
 
