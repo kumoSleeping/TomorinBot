@@ -11,7 +11,8 @@ sys.path.append(parent_directory)
 
 
 def start():
-    # chick()
+    from core.ws_transmit import start_ws
+    start_ws()
     from core.loader import plugin_manager
     plugin_manager.load_plugins()
     input()
@@ -31,14 +32,14 @@ signal.signal(signal.SIGINT, end)
 
 
 if __name__ == '__main__':
-    from core.__init__ import __version__
-    ascii_tmr = f'''\033[34m
+
+    ascii_tmr = '''\033[34m
   ██████████╗   ███████╗    
    ╚══██╔████╗ ████╔══██╗   
       ██║██╔████╔██████╔╝   
       ██║██║╚██╔╝██╔══██╗   
       ██║██║ ╚═╝ ██║  █████║   
-      ╚═╝╚═╝     ╚═╝  ╚════╝  v{__version__} @2023
+      ╚═╝╚═╝     ╚═╝  ╚════╝  v3 @2023
 \033[0m'''
 
     print(ascii_tmr)

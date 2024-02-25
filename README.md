@@ -33,10 +33,9 @@
 ## 介绍
 
 
-Tomorin项目模版是由Python编写的，代码简单、看似轻小、无异步、线程化、使用注册+依赖模块思想，基于**Satori协议**的的聊天机器人后端**模版框**。     
-因此，本程序也是一个satori协议的客户端实现，用于连接satori服务器，接收和发送消息。
-
-整体设计灵感来自Koishi，命名来自[MyGO!!!!!](https://zh.moegirl.org.cn/MyGO!!!!!)。
+Tomorin是由Python编写的，结构简单、客户端低代码量、使用同步编程+线程化、使用注册+模块思想，基于**Satori协议**的**聊天机器人后端模版**。     
+因此，本程序也是一个satori协议的客户端实现，用于连接satori服务器，接收和发送消息。   
+用户可以在此模版上编写注册自己的函数，使得在收到各类信息时，对应函数被调用。    
 
 ## 安装 core 所需依赖
 
@@ -62,7 +61,7 @@ classDiagram
     class loader{
         记录注册的函数
     }
-    class transmit{
+    class transmit(ws / http){
         与服务端进行satori协议通讯
     }
     class on{

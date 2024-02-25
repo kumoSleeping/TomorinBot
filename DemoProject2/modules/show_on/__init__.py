@@ -66,13 +66,13 @@ from core import on, Event
 from modules.command_matcher import match_command
 
 
-@on.message_created
-def show_on_(event: Event):
-    from core.loader import plugin_manager
-    if res := match_command(event, 'show_on',):
-        text = return_on_msg('on类监听', plugin_manager.loaded_func)
-        event.message_create(text)
-
+# @on.message_created
+# def show_on_(event: Event):
+#     from core.loader import plugin_manager
+#     if res := match_command(event, 'show_on',):
+#         text = return_on_msg('on类监听', plugin_manager.loaded_func)
+#         event.message_create(text)
+#
 
 
 

@@ -11,7 +11,8 @@ sys.path.append(parent_directory)
 
 
 def start():
-    # chick()
+    from core.ws_transmit import start_ws
+    start_ws()
     from core.loader import plugin_manager
     plugin_manager.load_plugins()
     input()

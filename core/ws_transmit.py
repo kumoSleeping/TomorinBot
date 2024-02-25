@@ -100,8 +100,6 @@ def start_ws():
     t.start()
 
 
-start_ws()
-
 
 
 
