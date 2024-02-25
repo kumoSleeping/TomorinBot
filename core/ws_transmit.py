@@ -82,16 +82,20 @@ class WebsocketLink:
 
 
 def websocket_():
-    connections = config["websocket_client"]["connections"]
-    if not connections:
-        print("\033[31m[transmit] websocket_client 未配置任何连接信息\033[0m")
+    try:
+        connections = config["core"]["websocket_connections"]
+        if not connections:
+            print("\033[31m[transmit] websocket_client 未配置任何连接信息\033[0m")
+            return
+        for connection_config in connections:
+            # 来自文件 websocket_link
+            websocket_ink = WebsocketLink(connection_config)
+            t = threading.Thread(target=websocket_ink.run)
+            t.daemon = True
+            t.start()
+    except Exception as e:
+        print(f"An error occurred: {e}\nPlease check your configuration file.")
         return
-    for connection_config in connections:
-        # 来自文件 websocket_link
-        websocket_ink = WebsocketLink(connection_config)
-        t = threading.Thread(target=websocket_ink.run)
-        t.daemon = True
-        t.start()
 
 
 def start_ws():

@@ -1,15 +1,6 @@
 core:
   hot_reload: false
-  plugins-dir:
-    - path: 'plugins_i_write'
-      priority: 1
-      static_check: true
-
-    - path: 'plugins'
-      priority: 4
-
-websocket_client:
-  connections:
+  websocket_connections:
     - self_ids: [ '11111', '22222' ]   # 平台账号，可填写一个/多个
       address: '127.0.0.1:5140/satori/v1'   # 主机地址 与 path路径 与 版本
       http_protocol: 'http' # 这个选可以不填，默认http

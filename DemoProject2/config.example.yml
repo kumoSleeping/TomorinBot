@@ -1,12 +1,14 @@
 core:
   hot_reload: true
-  plugins-dir:
-    - path: 'plugins_i_write'
-      priority: 1
-      static_check: true
+  websocket_connections:
+    - self_ids: [ '11111', '22222' ]   # 平台账号，可填写一个/多个
+      address: '127.0.0.1:5140/satori/v1'   # 主机地址 与 path路径 与 版本
+      http_protocol: 'http' # 这个选可以不填，默认http
+      token: 'Your_token' # 由前端提供
 
-    - path: 'plugins'
-      priority: 4
+    - self_ids: [ '33333' ]
+      address: '127.0.0.1:5140/satori/v1'
+      token: 'Your_token'
 
 auth:
   - platform: 'red'
@@ -26,16 +28,6 @@ asset_path:
 text_to_image:
   font_name: 't.ttf'
 
-websocket_client:
-  connections:
-    - self_ids: [ '11111', '22222' ]   # 平台账号，可填写一个/多个
-      address: '127.0.0.1:5140/satori/v1'   # 主机地址 与 path路径 与 版本
-      http_protocol: 'http' # 这个选可以不填，默认http
-      token: 'Your_token' # 由前端提供
-
-    - self_ids: [ '33333' ]
-      address: '127.0.0.1:5140/satori/v1'
-      token: 'Your_token'
 
 
 
