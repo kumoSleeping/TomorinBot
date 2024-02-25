@@ -61,7 +61,7 @@ classDiagram
     class loader{
         记录注册的函数
     }
-    class transmit ws / http{
+    class transmit{
         与服务端进行satori协议通讯
     }
     class on{
