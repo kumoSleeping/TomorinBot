@@ -10,6 +10,7 @@ core:
       address: '127.0.0.1:5140/satori/v1'
       token: 'Your_token'
 
+# 填好后修改此文件名为 config.yml
 
 
 

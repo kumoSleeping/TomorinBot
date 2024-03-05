@@ -10,12 +10,13 @@
 plugins_*
 assets
 # 忽略config.yml文件
-/DemoProject1/config.yml
-/DemoProject2/config.yml
+config.yml
+
 bin/
 test_plugin/
 DemoProject3
 
+test_plugin
 
 
 

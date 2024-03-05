@@ -21,13 +21,8 @@ from modules.text_utils import easy_to_show_text
 
 from modules.command_matcher import match_command
 
-from modules.transceiver_analysis import delete_old_records
-from modules.transceiver_analysis import save_send_message
-from modules.transceiver_analysis import save_receive_message
-from modules.transceiver_analysis import get_send_messages
-from modules.transceiver_analysis import get_receive_messages
-from modules.transceiver_analysis import EventReceive, EventSend
+# from modules.show_on import *  # 显示on类监听函数
 
-# from modules.show_on import *
 
+# 想怎么导入都可以，你甚至可以把依赖直接写在这里
 

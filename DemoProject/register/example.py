@@ -1,5 +1,5 @@
 from core import on, Event
-from modules import match_command, h
+from core import match_command, h
 
 
 @on.message_created

@@ -32,6 +32,7 @@ signal.signal(signal.SIGINT, end)
 
 
 if __name__ == '__main__':
+    from core.__init__ import __version__
 
     ascii_tmr = '''\033[34m
   ██████████╗   ███████╗    
@@ -39,8 +40,8 @@ if __name__ == '__main__':
       ██║██╔████╔██████╔╝   
       ██║██║╚██╔╝██╔══██╗   
       ██║██║ ╚═╝ ██║  █████║   
-      ╚═╝╚═╝     ╚═╝  ╚════╝  v3 @2023
-\033[0m'''
+      ╚═╝╚═╝     ╚═╝  ╚════╝  v{} @2023
+\033[0m'''.format(__version__)
 
     print(ascii_tmr)
     from core.loader import config

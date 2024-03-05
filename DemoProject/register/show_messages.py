@@ -5,7 +5,7 @@ import time
 from requests import Response
 from core import config, on, Event
 
-from modules import easy_to_show_text
+from core import easy_to_show_text
 
 
 @on.after_event

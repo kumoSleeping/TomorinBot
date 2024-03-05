@@ -7,7 +7,7 @@ import re
 # import inspect
 # import io
 # from memory_profiler import profile
-from modules import auto_asset_path
+from modules.uni_manager import auto_asset_path
 from core.loader import config
 
 current_directory = os.getcwd()

@@ -1,8 +1,6 @@
 
 
-
-[//]: # (<h1 align="center"> TomorinBOT  <img src="./DemoProject2/register/example/eg.jpg" width="30" height="30" alt="tmrn"/> </div></h1>)
-<h1 align="center"> TomorinBOT  <img src="http://q1.qlogo.cn/g?b=qq&nk=211134009&s=100" width="30" height="30" alt="tmrn"/> </div></h1>
+<h1 align="center"> TomorinBOT  <img src="http://q1.qlogo.cn/g?b=qq&nk=211134009&s=100" width="30" height="30" alt="tmrn"/> </h1>
 
 
 <p align="center">
