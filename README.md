@@ -53,8 +53,7 @@ python3 core
 ```mermaid
 
 classDiagram
-    class core { 
-    }
+
 
     class loader{
         记录注册的函数
@@ -79,19 +78,23 @@ classDiagram
         将接收到的数据加工为event对象
     }
 
-    __init__ -- core : 对外提供接口
-    loader -- core : 记录注册
-    transmit -- core : 发送请求、注册
-    on -- core : 事件、注册装饰器
-    main -- core : 数据接收、注册
-    app -- core : 启动项目
-    event -- core : 提供基础属性、方法
 
 
 ```
 
 
+## 结构
 
+```mermaid
+
+graph TD
+    A[ ] -->|启动项目| B[core]
+    C[__modules__] -->|将自己的函数交给| B[core]
+    B[core] -->|调用注册的函数| D[__register__]
+    D -->|消息| E[server]
+    D -->|不做回复| G[ ]
+    E -->|消息| B
+```
 
 
 ## 关于此模版
