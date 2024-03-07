@@ -103,5 +103,5 @@ class HExtension(H):
                 return f'<img src="{param}"/>'
 
 
-h = HExtension
+h = HExtension()
 

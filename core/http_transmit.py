@@ -1,4 +1,4 @@
-from core.loader import plugin_manager, config
+from core.config import registers_manager, config
 
 import requests
 import json
@@ -66,16 +66,16 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
     response_dict = {}
 
     # 调用before_request
-    if plugin_manager.before_request:
-        for before_request_item in plugin_manager.before_request:
+    if registers_manager.before_request:
+        for before_request_item in registers_manager.before_request:
             event, method, data, platform, self_id = before_request_item(event, method, data, platform, self_id)
     # 发送POST请求
 
     event, data, headers, full_address, response_dict = request_by_requests(event, data, headers, full_address)
 
     # 调用after_request
-    if plugin_manager.after_request:
-        for after_request_item in plugin_manager.after_request:
+    if registers_manager.after_request:
+        for after_request_item in registers_manager.after_request:
             event, method, data, platform, self_id, response_dict = after_request_item(event, method, data, platform, self_id, response_dict)
 
 

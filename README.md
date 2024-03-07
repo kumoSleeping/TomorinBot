@@ -5,7 +5,7 @@
 
 <p align="center">
 
-<a href="https://github.com/kumoSleeping/TomorinBot/blob/main/core/__init__.py#L8C1-L8C22">
+<a href="https://github.com/kumoSleeping/TomorinBot/blob/main/core/__init__.py">
     <img src="https://img.shields.io/badge/TomorinBOT%20v3-blue" alt="license">
   </a>
 
@@ -89,8 +89,8 @@ classDiagram
 
 graph TD
     A[ ] -->|启动项目| B[core]
-    C[__modules__] -->|将自己的函数交给| B[core]
-    B[core] -->|调用注册的函数| D[__register__]
+    C[modules.py] -->|将自己的函数交给| B[core]
+    B[core] -->|调用注册的函数| D[register.py]
     D -->|消息| E[server]
     D -->|不做回复| G[ ]
     E -->|消息| B

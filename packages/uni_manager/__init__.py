@@ -1,4 +1,4 @@
-from core import config
+from modules import config
 import os
 import inspect
 

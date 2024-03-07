@@ -384,3 +384,6 @@ class On:
         func.is_after_event = True
         return func
 
+
+on = On()
+

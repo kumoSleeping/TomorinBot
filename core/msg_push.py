@@ -1,7 +1,7 @@
 import threading
 
 from core.event import Event
-from core.loader import plugin_manager
+from core.config import registers_manager
 import gc
 
 
@@ -10,24 +10,24 @@ function_info_list = []
 
 def msg_push(data):
 
-    if plugin_manager.before_event:
-        for before_event_item in plugin_manager.before_event:
+    if registers_manager.before_event:
+        for before_event_item in registers_manager.before_event:
             data = before_event_item(data)
             if not data:
                 return
 
     event = Event(data)
 
-    if plugin_manager.after_event:
-        for after_event_item in plugin_manager.after_event:
+    if registers_manager.after_event:
+        for after_event_item in registers_manager.after_event:
             event = after_event_item(event)
             if not event:
                 return
 
-    for loaded_func_item in plugin_manager.loaded_func:
+    for loaded_func_item in registers_manager.loaded_func:
 
-        if plugin_manager.before_plugin_do:
-            for before_plugin_do_item in plugin_manager.before_plugin_do:
+        if registers_manager.before_plugin_do:
+            for before_plugin_do_item in registers_manager.before_plugin_do:
                 event, _ = before_plugin_do_item(event, loaded_func_item)
                 if not event:
                     return

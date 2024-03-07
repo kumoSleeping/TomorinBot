@@ -1,6 +1,6 @@
 import re
 
-from core import config
+from modules import config
 
 # 检查config['message_content_tools']['prefix']的''项是否放在最后
 if '' not in config['message_content_tools']['prefix']:

@@ -1,10 +1,8 @@
 import json
 import os
 from typing import List, Dict, TYPE_CHECKING
-from core import event, Event, on
+from modules import Event, on, auto_asset_path, match_command
 
-from modules.uni_manager import auto_asset_path
-from modules.command_matcher import match_command
 
 
 ban_dicts_path = auto_asset_path() + '/ban_dicts.json'

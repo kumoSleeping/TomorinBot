@@ -3,9 +3,9 @@ import json
 from datetime import datetime
 import time
 from requests import Response
-from core import config, on, Event
+from modules import config, on, Event
 
-from core import easy_to_show_text
+from modules import easy_to_show_text
 
 
 @on.after_event
@@ -34,7 +34,7 @@ def show_event_log(event):
     msg_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
 
     if event.type == 'internal':
-        print(f"\033[37m  [display_logs] | {msg_time} | [ {event.platform} ] < {event.type} > [{event._type}]\033[0m")
+        print(f"\033[37m  | {msg_time} | [ {event.platform} ] < {event.type} > [{event._type}]\033[0m")
         return
     # 展示日志
     cleaned_text = easy_to_show_text(event.message.content)
@@ -46,7 +46,7 @@ def show_event_log(event):
     # 获取24小时制度当前时间
 
     if event.type != 'internal':
-        print(f"\033[37m  [display_logs] | {msg_time} | [ {event.platform}: {place} ] < {event.type} >（ {user} ）{cleaned_text}\033[0m")
+        print(f"\033[37m  | {msg_time} | [ {event.platform}: {place} ] < {event.type} >（ {user} ）{cleaned_text}\033[0m")
 
 
 

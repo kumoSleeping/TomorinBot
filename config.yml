@@ -1,5 +1,5 @@
 core:
-  hot_reload: false
+  hot_reload: true
   websocket_connections:
 #    - self_ids: [ '10271142164762155356', '211134009' ]   # 平台账号，可填写一个/多个
 #      address: '124.221.153.148:5141/satori/v1'   # 主机地址 与 path路径 与 版本
@@ -13,3 +13,34 @@ core:
 #    - self_ids: [ '102057960', '211134009', '821784147' ]   # 平台账号，可填写一个/多个
 #      address: '124.221.153.148:5141/satori/v1'   # 主机地址 与 path路径 与 版本
 #      token: 'tmrn' # 由前端提供
+
+
+auth:
+  - platform: 'red'
+    admin: [ '1528593481' ]
+  - platform: 'chronocat'
+    admin: [ '1528593481' ]
+
+logger:
+  debug_package: []
+#  debug_package: ['gemimm', 'match_command']
+
+text_to_image:
+  font_name: 't.ttf'
+
+message_content_tools:
+  prefix: ['-t', '/', '']  #  指令前缀
+
+asset_path:
+  assets-dir: 'assets'
+
+
+
+
+
+
+
+
+
+
+

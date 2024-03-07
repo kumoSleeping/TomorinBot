@@ -13,8 +13,8 @@ sys.path.append(parent_directory)
 def start():
     from core.ws_transmit import start_ws
     start_ws()
-    from core.loader import plugin_manager
-    plugin_manager.load_plugins()
+    from core.config import registers_manager
+    registers_manager.load_plugins()
     input()
 
 

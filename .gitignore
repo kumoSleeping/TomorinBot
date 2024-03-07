@@ -13,10 +13,9 @@ assets
 config.yml
 
 bin/
-test_plugin/
 DemoProject3
 
-test_plugin
+kumo/
 
 
 

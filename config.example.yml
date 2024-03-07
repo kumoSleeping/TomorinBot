@@ -1,5 +1,5 @@
 core:
-  hot_reload: false
+  hot_reload: true
   websocket_connections:
     - self_ids: [ '11111', '22222' ]   # 平台账号，可填写一个/多个
       address: '127.0.0.1:5140/satori/v1'   # 主机地址 与 path路径 与 版本
@@ -10,7 +10,27 @@ core:
       address: '127.0.0.1:5140/satori/v1'
       token: 'Your_token'
 
-# 填好后修改此文件名为 config.yml
+# 下面是插件配置
+
+auth:
+  - platform: 'red'
+    admin: ['114514']
+  - platform: 'onebot'
+    admin: [ '1919810' ]
+
+logger:
+  debug_package: ['match_command']
+
+message_content_tools:
+  prefix: ['-', '']  #  指令前缀
+
+asset_path:
+  assets-dir: 'assets'
+
+text_to_image:
+  font_name: 't.ttf'
+
+
 
 
 

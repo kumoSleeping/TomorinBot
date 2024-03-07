@@ -1,4 +1,4 @@
-from core.loader import plugin_manager, config
+from core.loader import registers_manager, config
 from msg_push import msg_push
 
 import requests
@@ -13,12 +13,12 @@ def on_message(ws: websocket.WebSocketApp, message: any):
     # 展示登陆信息
     if data['op'] == 4:
         # print(data)
-        print("[transmit] Satori driver connection successful.")
+        print("Satori driver connected.")
         for login_info in data['body']['logins']:
             name = login_info['user'].get('name', login_info['user']['id'])
             status = login_info['status']
-            status_desc = "\033[32monline\033[0m" if status == 1 else "\033[31moffline\033[0m"
-            print(f"[transmit] [{name}] login [{login_info['platform']}] status: {status_desc}")
+            status_desc = "\033[32m●\033[0m" if status == 1 else "\033[31m●\033[0m"
+            print(f"{status_desc} [{name}] login [{login_info['platform']}]")
 
     # event 事件
     if data['op'] == 0:

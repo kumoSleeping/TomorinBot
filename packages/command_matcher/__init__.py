@@ -1,9 +1,9 @@
-from core import on, Event
+from modules import on, Event
 from typing import Optional, Union, List
 
-from modules.text_utils import plaintext_if_prefix, remove_all_xml, remove_first_prefix
-from modules.logger import log
-from modules.uni_manager import is_admin
+from modules import plaintext_if_prefix, remove_all_xml, remove_first_prefix
+from modules import log
+from modules import is_admin
 
 
 class MC:

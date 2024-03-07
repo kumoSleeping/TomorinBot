@@ -1,8 +1,8 @@
 import sys
 import os
 import datetime
-from modules.uni_manager import auto_asset_path
-from core.loader import config
+from modules import auto_asset_path
+from core.config import config
 import traceback
 import inspect
 
