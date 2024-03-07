@@ -7,6 +7,6 @@
 from modules import on, Event, h
 
 
-from plug.event_filter import *
-from plug.show_messages import * 
-from plug.kumo import *
+from plugs.event_filter import *
+from plugs.show_messages import * 
+from plugs.kumo import *
