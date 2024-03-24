@@ -3,11 +3,12 @@ import re
 from mods import config
 from mods import log
 
-# 检查config['message_content_tools']['prefix']的''项是否放在最后
-if '' not in config['message_content_tools']['prefix']:
+config.need('message_content_tools', {'prefix': ['/', '']})
+
+if '' not in config.get_key('message_content_tools').get('prefix'):
     log.warning('\033[33m[message_content_tools] 不存在空前缀，可能导致一些命令被拦截\033[0m')
 # 如果存在，检查是否在最后
-elif config['message_content_tools']['prefix'][-1] != '':
+elif config.get_key('message_content_tools').get('prefix')[-1] != '':
     log.warning('\033[33m[message_content_tools] 空前缀不在最后，后续前缀将失效\033[0m')
 
 
@@ -79,7 +80,7 @@ def remove_first_prefix(text):
 
     Remove the first prefix (the prefix is specified in the configuration file)
     '''
-    for prefix in config['message_content_tools']['prefix']:
+    for prefix in config.get_key('message_content_tools').get('prefix'):
         if text.startswith(prefix):
             text = text.replace(prefix, '', 1)
             break
@@ -93,7 +94,7 @@ def plaintext_if_prefix(text):
 
     If there is a prefix, remove the first prefix (the prefix is specified in the configuration file), if there is no prefix, return an empty string
     '''
-    for prefix in config['message_content_tools']['prefix']:
+    for prefix in config.get_key('message_content_tools').get('prefix'):
         text = remove_all_xml(text)
         if text.startswith(prefix):
             text = text.replace(prefix, '', 1)

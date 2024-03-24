@@ -3,12 +3,15 @@ import socket
 import zipfile
 import os
 from io import BytesIO
-import yaml
+import json
 
-config = yaml.safe_load(open('./config.yml', encoding='utf-8'))
 
+with open('config.json', 'r', encoding='utf-8') as f:
+    config = json.loads(f.read())
+    
+    
 SERVER = config['pub']['address']
-PORT = config['pub']['port']
+PORT = int(config['pub']['port'])
 
 
 def zip_folder(folder_path, output_stream):

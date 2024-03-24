@@ -1,17 +1,15 @@
 import inspect
-import yaml
-# import registers
 from typing import List, Callable
 from core.log import log
 import pkgutil
 import importlib.util
 import os
 import sys
+import json
 
 
 
-config: dict = yaml.safe_load(open('./config.yml', encoding='utf-8'))
-
+from core.external import config
 
 class RegManager:
     def __init__(self):
@@ -25,13 +23,12 @@ class RegManager:
         self.is_loaded = False
 
     def load_plugin_from_register(self):
+        config.need('off_plugs', ['event_filter'])
         plug_dir = './plugs'
-        ban_list = config['core'].get('off_plugs', [])
-        if ban_list:
-            log.warning('Plugs disabled: {}'.format(ban_list))
-        else:
-            ban_list = []
-        plug_list = [name for _, name, _ in pkgutil.iter_modules([plug_dir]) if name not in ban_list]
+        off_plugs = config.get_key('off_plugs')
+        log.warning(f'off_plugs: {off_plugs}')
+
+        plug_list = [name for _, name, _ in pkgutil.iter_modules([plug_dir]) if name not in off_plugs]
         # print(plug_list)
         sys.path.append(plug_dir)
 

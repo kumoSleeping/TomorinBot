@@ -34,8 +34,9 @@ signal.signal(signal.SIGINT, end)
 if __name__ == '__main__':
     from core.__init__ import __version__
     from core.loader import config
-    first_ascii = '\033[34m' if config['core']['log']['color'] else ''
-    second_ascii = '\033[0m' if config['core']['log']['color'] else ''
+    config.need('log', {'color': True, 'debug': False})
+    first_ascii = '\033[34m' if config.get_key('log').get('color') else ''
+    second_ascii = '\033[0m' if config.get_key('log').get('color') else ''
 
     ascii_tmr = f'''{first_ascii}
   ██████████╗   ███████╗    

@@ -37,7 +37,7 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
     """
 
     # 遍历连接配置
-    for connection in config["core"]["websocket_connections"]:
+    for connection in config.get_key('websocket_connections'):
         if self_id in connection["self_ids"]:
             this_connection = connection
             break

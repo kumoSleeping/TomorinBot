@@ -3,6 +3,7 @@ from math import ceil
 from typing import List, Tuple
 import os
 import re
+from core.log import log
 
 # import inspect
 # import io
@@ -12,10 +13,17 @@ from core.config import config
 
 
 current_directory = os.getcwd()
-font_path = auto_asset_path() + '/' + config['text_to_image']['font_name']
+
+config.need('t2i_font_path', 'font.ttf')
+font_path = auto_asset_path() + '/' + config.get_key('t2i_font_path')
 
 # print(font_path)
-
+try:
+    font: ImageFont.ImageFont = ImageFont.truetype(font=os.path.join(current_directory, font_path), size=36)
+except Exception as e:
+    # 使用默认字体
+    log.error(f"[text_to_image]字体加载失败，错误信息: {e}")
+    font = ImageFont.load_default()
 
 # @profile
 def __words2lines(words: List[str], width: int, padding: int, fill: Tuple[int, int, int], font: ImageFont.ImageFont, line_spacing: int) -> List[dict]:
@@ -117,7 +125,6 @@ def text2img(text: str,
     # words = re.findall(pattern, text)
     # 匹配所有字符
     words = re.findall(r'[a-zA-Z]+|\d+|\s|.', text)
-    font: ImageFont.ImageFont = ImageFont.truetype(font=os.path.join(current_directory, font_path), size=36)
 
     width = int(len(words)*2 + 600)
     padding: int = int(width // 20)

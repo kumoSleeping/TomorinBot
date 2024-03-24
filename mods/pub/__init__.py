@@ -6,11 +6,13 @@ from core.loader import config
 from core.log import log
 from mods.pub import logs
 
-HOST = config['pub']['address']  # Standard loopback interface address (localhost)
-PORT = config['pub']['port']  # Port to listen on (non-privileged ports are > 1023)
+config.need('pub', {'address': '0.0.0.0', 'port': "65432", 'auth_code': '1234ku'})
+
+HOST = config.get_key('pub').get('address')  # Standard loopback interface address (localhost)
+PORT = int(config.get_key('pub').get('port'))        # Port to listen on (non-privileged ports are > 1023)
 BUFFER_SIZE = 4096
 UPLOAD_FOLDER = './plugs'
-AUTH_CODE = "1234"
+AUTH_CODE = config.get_key('pub').get('auth_code')
 
 def receive_file(sock, filename):
     with open(filename, 'wb') as f:
@@ -54,8 +56,8 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
         s.listen()
-        log.success('Update plugs server listening...')
-        log.warning(f'Unsafe: [pub] not recommended for use in production environments.')
+        # log.success('Update plugs server listening...')
+        log.warning(f'Unsafe: [mods/pub] not recommended for use in production environments.')
         while True:
             conn, addr = s.accept()
             # 对每个客户端连接启动一个新线程
@@ -67,3 +69,6 @@ def main():
 # 线程
 t = threading.Thread(target=main, daemon=True)
 t.start()
+
+
+pub_demo =  ''

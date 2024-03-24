@@ -20,12 +20,7 @@
     <img src="https://img.shields.io/badge/Satori-v1-black?style=social">
   </a>
 
-</p>
-<p align="center">
-<br>  かつて忘れられない、星空は未来を照らし、次の春へ。
-<br>
-――「2024.1.30 10:54:23・東京・豊島区」
-<br> 
+
 
 ***
 ## 介绍
@@ -38,25 +33,23 @@ Tomorin是由Python编写的，结构简单、客户端低代码量、使用同�
 ## 运行
 
 ```shell
-pip install PyYAML requests hupper websocket-client
+pip install requests websocket-client
 ```
 
 ```shell
-python3 core
+python3 -m core
 ```
 
+> 通常第一次运行时会生成一个 `config.json` 文件，你需要主动关闭应用，在其中填写你的合适的配置。
 
-## 结构
+你可以使用 `hupper` 来实现热重启。
 
-```mermaid
+```shell
+pip install hupper
+```
 
-graph TD
-    A[ ] -->|启动项目| B[core]
-    C[modules.py] -->|将自己的函数交给| B[core]
-    B[core] -->|调用注册的函数| D[register.py]
-    D -->|消息| E[server]
-    D -->|不做回复| G[ ]
-    E -->|消息| B
+```shell
+hupper -m core
 ```
 
 
@@ -64,9 +57,9 @@ graph TD
 
 基于[Satori协议](https://satori.js.org/zh-CN/)的快速上手。
 
+
 ```py
-# register.py
-from modules import on, Event
+from mods import on, Event
 
 @on.message_created
 def echo_(event: Event):
@@ -74,7 +67,7 @@ def echo_(event: Event):
         event.message_create(r[5:])
 ```
 
-符合直觉的类型提示助力简单的快速开发。
+简单的快速开发。
 
 
 

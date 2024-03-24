@@ -3,23 +3,12 @@
 # 忽略macOS系统文件
 .DS_Store
 
-
-# 忽略以_开头的文件/文件夹
-#__*
---*
-plugins_*
 assets
-# 忽略config.yml文件
-config.yml
+
+config.json
 
 bin/
-DemoProject3
-
 kumo/
-
-
-
-
 
 
 
