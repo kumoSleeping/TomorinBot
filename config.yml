@@ -1,5 +1,10 @@
 core:
   hot_reload: true
+  log:
+    color: true
+    debug: false
+  off_plugs:
+    - test
   websocket_connections:
 #    - self_ids: [ '10271142164762155356', '211134009' ]   # 平台账号，可填写一个/多个
 #      address: '124.221.153.148:5141/satori/v1'   # 主机地址 与 path路径 与 版本
@@ -26,14 +31,18 @@ logger:
 #  debug_package: ['gemimm', 'match_command']
 
 text_to_image:
-  font_name: 't.ttf'
+  font_name: 'Songti.ttc'
 
 message_content_tools:
-  prefix: ['-t', '/', '']  #  指令前缀
+  prefix: ['/', '']  #  指令前缀
 
 asset_path:
   assets-dir: 'assets'
 
+pub:
+  address: '127.0.0.1'
+  port: 65432
+  auth_code: '123456'
 
 
 

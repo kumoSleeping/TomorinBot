@@ -1,4 +1,4 @@
-from modules import config
+from mods import config
 import os
 import inspect
 

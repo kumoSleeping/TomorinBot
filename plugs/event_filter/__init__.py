@@ -1,7 +1,7 @@
 import json
 import os
 from typing import List, Dict, TYPE_CHECKING
-from modules import Event, on, auto_asset_path, match_command
+from mods import Event, on, auto_asset_path, match_command
 
 
 

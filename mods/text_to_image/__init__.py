@@ -7,11 +7,14 @@ import re
 # import inspect
 # import io
 # from memory_profiler import profile
-from modules import auto_asset_path
+from mods import auto_asset_path
 from core.config import config
+
 
 current_directory = os.getcwd()
 font_path = auto_asset_path() + '/' + config['text_to_image']['font_name']
+
+# print(font_path)
 
 
 # @profile

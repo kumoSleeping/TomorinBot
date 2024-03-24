@@ -1,5 +1,8 @@
 core:
   hot_reload: true
+  log:
+    color: true
+    debug: false
   websocket_connections:
     - self_ids: [ '11111', '22222' ]   # 平台账号，可填写一个/多个
       address: '127.0.0.1:5140/satori/v1'   # 主机地址 与 path路径 与 版本

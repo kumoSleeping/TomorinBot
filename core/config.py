@@ -1,1 +1,1 @@
-from loader import registers_manager, config
+from core.loader import registers_manager, config

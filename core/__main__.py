@@ -23,7 +23,7 @@ def end(sig, frame):
 かつて忘れられない、星空は未来を照らし、次の春へ。
 ――「2024.1.30 10:54:23・東京・豊島区」
 '''
-    print(f'\n{ascii_tmr}\n[core] off.')
+    print(f'\n{ascii_tmr}')
     sys.exit(0)
 
 
@@ -33,26 +33,21 @@ signal.signal(signal.SIGINT, end)
 
 if __name__ == '__main__':
     from core.__init__ import __version__
+    from core.loader import config
+    first_ascii = '\033[34m' if config['core']['log']['color'] else ''
+    second_ascii = '\033[0m' if config['core']['log']['color'] else ''
 
-    ascii_tmr = '''\033[34m
+    ascii_tmr = f'''{first_ascii}
   ██████████╗   ███████╗    
    ╚══██╔████╗ ████╔══██╗   
       ██║██╔████╔██████╔╝   
       ██║██║╚██╔╝██╔══██╗   
       ██║██║ ╚═╝ ██║  █████║   
-      ╚═╝╚═╝     ╚═╝  ╚════╝  v{} @2023
-\033[0m'''.format(__version__)
+      ╚═╝╚═╝     ╚═╝  ╚════╝  v{__version__} @2023
+{second_ascii}'''
 
     print(ascii_tmr)
-    from core.loader import config
-
-    if config['core']['hot_reload']:
-        import hupper
-        reloader = hupper.start_reloader('core.__main__.start',)
-
-    else:
-        start()
-
+    start()
 
 
 

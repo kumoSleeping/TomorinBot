@@ -1,5 +1,7 @@
 from core.loader import registers_manager, config
-from msg_push import msg_push
+from core.msg_push import msg_push
+from core.log import log
+
 
 import requests
 import time
@@ -12,13 +14,11 @@ def on_message(ws: websocket.WebSocketApp, message: any):
     data: dict = json.loads(message)
     # 展示登陆信息
     if data['op'] == 4:
-        # print(data)
-        print("Satori driver connected.")
+        log.info("Satori driver connected.")
         for login_info in data['body']['logins']:
             name = login_info['user'].get('name', login_info['user']['id'])
             status = login_info['status']
-            status_desc = "\033[32m●\033[0m" if status == 1 else "\033[31m●\033[0m"
-            print(f"{status_desc} [{name}] login [{login_info['platform']}]")
+            log.success(f"[{name}] login [{login_info['platform']}]") if status == 1 else log.red(f"[{name}] login [{login_info['platform']}]")
 
     # event 事件
     if data['op'] == 0:
@@ -31,7 +31,6 @@ class WebsocketLink:
         self.websocket = None
         self.token: str = connection_config['token']
         self.full_address: str = f'ws://{connection_config["address"]}/events'
-        # print(self.full_address)
         # 启动心跳包发送
         self.heartbeat_thread = threading.Thread(target=self.while_send_ping_packet)
         self.heartbeat_thread.start()
@@ -55,7 +54,7 @@ class WebsocketLink:
                     # 连接已关闭，执行重新连接逻辑
                     self.run()
             except Exception as e:
-                print(f"发送心跳包时发生异常: {e}")
+                log.error(f"发送心跳包时发生异常: {e}")
 
     # 认证 IDENTIFY 信令：连接建立后，在 10s 内发送一个 IDENTIFY 信令，用于鉴权和恢复会话
     def on_open(self, ws: websocket.WebSocketApp):
@@ -67,7 +66,7 @@ class WebsocketLink:
             }
         }
         ws.send(json.dumps(identify_packet))
-        # print(f"[websocket] 尝试连接到 Satori 驱动器 ...")
+        log.debug(f"尝试连接到 Satori 驱动器 ...")
 
     def run(self):
         try:
@@ -78,14 +77,14 @@ class WebsocketLink:
             # 跑！
             self.websocket.run_forever()
         except Exception as e:
-            print(f"An error occurred: {e}\nfunction' object has no attribute 'WebSocketApp 可能是账号配置错误")
+            log.error(f"{e}\nfunction' object has no attribute 'WebSocketApp 可能是账号配置错误")
 
 
 def websocket_():
     try:
         connections = config["core"]["websocket_connections"]
         if not connections:
-            print("\033[31m[transmit] websocket_client 未配置任何连接信息\033[0m")
+            log.warning("\033[31m[transmit] websocket_client 未配置任何连接信息\033[0m")
             return
         for connection_config in connections:
             # 来自文件 websocket_link
@@ -94,7 +93,7 @@ def websocket_():
             t.daemon = True
             t.start()
     except Exception as e:
-        print(f"An error occurred: {e}\nPlease check your configuration file.")
+        log.error(f"{e}\nPlease check your configuration file.")
         return
 
 

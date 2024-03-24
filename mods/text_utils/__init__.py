@@ -1,13 +1,14 @@
 import re
 
-from modules import config
+from mods import config
+from mods import log
 
 # 检查config['message_content_tools']['prefix']的''项是否放在最后
 if '' not in config['message_content_tools']['prefix']:
-    print('\033[33m[message_content_tools] 不存在空前缀，可能导致一些命令被拦截\033[0m')
+    log.warning('\033[33m[message_content_tools] 不存在空前缀，可能导致一些命令被拦截\033[0m')
 # 如果存在，检查是否在最后
 elif config['message_content_tools']['prefix'][-1] != '':
-    print('\033[33m[message_content_tools] 空前缀不在最后，后续前缀将失效\033[0m')
+    log.warning('\033[33m[message_content_tools] 空前缀不在最后，后续前缀将失效\033[0m')
 
 
 def escape_satori_special_characters(message: str):
@@ -24,7 +25,7 @@ def escape_satori_special_characters(message: str):
     return message
 
 
-def unescape_satori_sspecial_characters(escaped_message: str):
+def unescape_satori_special_characters(escaped_message: str):
     '''
     替换转义字符为特殊字符 (对于satori协议)
 

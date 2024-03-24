@@ -318,17 +318,6 @@ class On:
 
         return decorator
 
-    # # 服务组件
-    # @staticmethod
-    # def satori_post(func):
-    #     '''
-    #     装饰器：作为服务组件，发送 Satori 的 POST 请求
-    #     被装饰函数的参数为 event:Event, data: dict, headers: dict, full_address: str
-    #     被装饰函数的返回值为event, data, headers, full_address, response_dict
-    #     '''
-    #     func.is_satori_post = True
-    #     return func
-
     @staticmethod
     def before_request(func):
         """

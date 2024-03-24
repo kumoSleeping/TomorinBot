@@ -3,30 +3,29 @@ import json
 from datetime import datetime
 import time
 from requests import Response
-from modules import config, on, Event
+from mods import config, on, Event
 
-from modules import easy_to_show_text
+from mods import easy_to_show_text, log
 
 
 @on.after_event
 def display_receive(event: Event):
-    # print(event.message.content)
     try:
         show_event_log(event)
     except Exception as e:
-        print(f'[display_logs] 无法显示日志', e)
+        log.error(f'无法显示日志 {e}')
     return event
 
 
 @on.after_request
 def display_send(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
     try:
-        print(f'\033[37m  [send] {method} -> {platform} {data.get("message_id", "")} \033[0m')
+        log.info(f'SEND {method} -> {platform} {data.get("message_id", "")}')
     except Exception as e:
         if not response:
-            print(f'[display_logs] 无法显示日志: 返回值为空')
+            log.error(f'无法显示日志 {e}')
         else:
-            print(f'[display_logs] 无法显示日志 {e}')
+            log.error(f'无法显示日志 {e} {response.text}')
     return event, method, data, platform, self_id, response
 
 
@@ -34,7 +33,7 @@ def show_event_log(event):
     msg_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
 
     if event.type == 'internal':
-        print(f"\033[37m  | {msg_time} | [ {event.platform} ] < {event.type} > [{event._type}]\033[0m")
+        log.info(f"{msg_time} <{event.platform}> | {event.type}:{event._type}")
         return
     # 展示日志
     cleaned_text = easy_to_show_text(event.message.content)
@@ -46,7 +45,7 @@ def show_event_log(event):
     # 获取24小时制度当前时间
 
     if event.type != 'internal':
-        print(f"\033[37m  | {msg_time} | [ {event.platform}: {place} ] < {event.type} >（ {user} ）{cleaned_text}\033[0m")
+        log.info(f"{msg_time} <{event.type}> | {event.platform}:{place} | {user}: {cleaned_text}")
 
 
 
