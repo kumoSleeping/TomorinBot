@@ -11,39 +11,44 @@ class Log:
         实现自定义print函数 (只有在配置文件启用的时候才会被显示的展示出来)
         Implement custom print function (only displayed when the configuration file is enabled)
         """
+        text = str(text)
         if config["log"]["debug"]:
             if config["log"]["color"]:
                 print("\033[1;31m■ " + text + "\033[0m")
             else:
-                print("[DEBUG] " + str(text))
+                print("[DEBUG] " + text)
 
     @staticmethod
     def error(text):
+        text = str(text)
         if config["log"]["color"]:
             print("\033[1;31m● " + text + "\033[0m")
         else:
-            print("[ERROR] " + str(text))
+            print("[ERROR] " + text)
 
     @staticmethod
     def info(text):
+        text = str(text)
         if config["log"]["color"]:
             print("\033[1;37m● " + text + "\033[0m")
         else:
-            print("[INFO] " + str(text))
+            print("[INFO] " + text)
 
     @staticmethod
     def warning(text):
+        text = str(text)
         if config["log"]["color"]:
             print("\033[1;33m● " + text + "\033[0m")
         else:
-            print("[WARNING] " + str(text))
+            print("[WARNING] " + text)
 
     @staticmethod
     def success(text):
+        text = str(text)
         if config["log"]["color"]:
             print("\033[1;32m● " + text + "\033[0m")
         else:
-            print("[SUCCESS] " + str(text))
+            print("[SUCCESS] " + text)
 
 
 # log 包是第一个被加载的包，所以在这里初始化配置文件
@@ -52,7 +57,7 @@ if not os.path.exists("config.json"):
         f.write(json.dumps({
             "log": {
                 "debug": False,
-                "color": True
+                "color": False
             }
         }, indent=4, ensure_ascii=False))
 

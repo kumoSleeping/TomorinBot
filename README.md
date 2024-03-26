@@ -26,9 +26,17 @@
 ## 介绍
 
 
-Tomorin是由Python编写的，结构简单、客户端低代码量、使用同步编程+线程化、使用注册+模块思想，基于**Satori协议**的**聊天机器人后端模版**。     
-因此，本程序也是一个satori协议的客户端实现，用于连接satori服务器，接收和发送消息。   
-用户可以在此模版上编写注册自己的函数，使得在收到各类信息时，对应函数被调用。    
+`Tomorin` 使用 **同步编程** + **线程** 开发core、插件、依赖，对其数据 **注册** **依赖** **分发**，基于 [Satori协议](https://satori.js.org/zh-CN/) 构建简单的 **河流形** 聊天机器人后端、协议客户端。
+
+**河流形** 指的是消息的流动，消息从上游流向下游，中间经过各种处理后，在被抽象成 `Event` 事件后分为众多支流。
+
+用户可以在此模版上使用 `on.xxx` 装饰器进行标记自己的函数，使得在收到各类信息时，对应函数被调用。
+- 支流类事件: `internal` 和各种 [标准事件](https://satori.js.org/zh-CN/resources/message.html#%E4%BA%8B%E4%BB%B6)（例如message_created，friend_request等） 会在 `Event` 事件后被分发且都会开启新的线程进行处理。   
+- 干流类事件: `before_event`, `after_request` 等等，属于干流类事件，会在 `Event` 事件被分发前调用，且会按照优先级同步等待数据处理结束后再继续。
+
+本项目简单容易理解。但缺点也显而易见，**不适用**大型项目、高量级并发、复杂功能。 
+
+`Nonebot2` 与 `Koishi` 依然是机器人构建的最佳实践。
 
 ## 运行
 
@@ -40,40 +48,16 @@ pip install requests websocket-client
 python3 -m core
 ```
 
-> 通常第一次运行时会生成一个 `config.json` 文件，你需要主动关闭应用，在其中填写你的合适的配置。
-
-你可以使用 `hupper` 来实现热重启。
-
-```shell
-pip install hupper
-```
-
-```shell
-hupper -m core
-```
-
-
-## 关于开发
-
-基于[Satori协议](https://satori.js.org/zh-CN/)的快速上手。
-
-
-```py
-from mods import on, Event
-
-@on.message_created
-def echo_(event: Event):
-    if (r := event.message.content).startswith('echo '):
-        event.message_create(r[5:])
-```
-
-简单的快速开发。
-
-
 
 ## 关于
 本模版出发点是学习与探索设计方法，让简单的功能实现可以高速产出。   
 `.gitignore`规则了忽视了一些东西，请注意检查。
+
+## 文档 (画重点！)
+
+- [ ] [Satori文档](https://satori.js.org/zh-CN/)
+- [ ] [本框架文档](docs/)
+- [ ] [Koishi文档(参考)](https://koishi.chat/zh-CN/)
 
 
 ------

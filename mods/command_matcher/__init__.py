@@ -32,7 +32,7 @@ class MC:
 
 
 def match_command(event: Event,
-                  command: Optional[Union[List[str], str]] = None,
+                  command: Optional[Union[List[str], str]] = '',
                   gap_less: bool = False, arg_less: bool = False,
                   admin_only: bool = False,
                   match_args: Optional[Union[List[str], str]] = None,
@@ -116,9 +116,9 @@ def match_command(event: Event,
         if not is_admin_(event):
             return None
 
-    if command is None:
-        log.debug('command is None')
-        return MC(event, [], event.message.content)
+    # if command is None:
+    #     log.debug('command is None')
+    #     return MC(event, [], event.message.content)
 
     pure_msg = event.message.content
 
