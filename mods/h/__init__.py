@@ -1,6 +1,9 @@
 import base64
 from typing import Union, Optional
 
+import io
+from PIL import Image
+
 
 class H:
     @staticmethod
@@ -19,14 +22,14 @@ class H:
     def quote(message_id: Union[int, str]):
         return f'<quote id="{message_id}"/>'
 
-    @staticmethod
-    def image(param: Union[bytes, str]):
-        if isinstance(param, bytes):
-            encoded_image = base64.b64encode(param).decode('utf-8')
-            return f'<img src="data:image/png;base64,{encoded_image}"/>'
-        else:
-            if str(param).startswith("http://") or str(param).startswith("https://"):
-                return f'<img src="{param}"/>'
+    # @staticmethod
+    # def image(param: Union[bytes, str]):
+    #     if isinstance(param, bytes):
+    #         encoded_image = base64.b64encode(param).decode('utf-8')
+    #         return f'<img src="data:image/png;base64,{encoded_image}"/>'
+    #     else:
+    #         if str(param).startswith("http://") or str(param).startswith("https://"):
+    #             return f'<img src="{param}"/>'
 
     @staticmethod
     def audio(param: Union[bytes, str]):
@@ -55,30 +58,6 @@ class H:
             if str(param).startswith("http://") or str(param).startswith("https://"):
                 return f'<file url="{param}"/>'
 
-
-import io
-from PIL import Image
-
-
-class HExtension(H):
-    def __init__(self):
-        '''
-        实现利用 h 函数快速转化富媒体类 -> xml 格式的内容
-        提示：可以续写需要的函数
-
-        Implement the quick conversion of rich media class to XML format content using the h function
-        tips: You can continue to write the functions you need
-        '''
-        pass
-
-    @staticmethod
-    def qq_passive(param: str):
-        '''
-        实现QQ的被动消息
-        Implement QQ's passive message
-        '''
-        return f'<passive passiveId="{param}" />'
-
     @staticmethod
     def image(param: Union[Image.Image, bytes, str]):
         '''
@@ -103,5 +82,5 @@ class HExtension(H):
                 return f'<img src="{param}"/>'
 
 
-h = HExtension()
+h = H()
 
