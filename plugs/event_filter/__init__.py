@@ -1,11 +1,11 @@
 import json
 import os
 from typing import List, Dict, TYPE_CHECKING
-from mods import Event, on, auto_asset_path, match_command
+from mods import Event, on, assets, match_command
 
 
 
-ban_dicts_path = auto_asset_path() + '/ban_dicts.json'
+ban_dicts_path = assets('ban_dicts.json')
 
 
 class BanManager:

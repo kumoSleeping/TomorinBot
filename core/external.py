@@ -38,12 +38,6 @@ class Config:
 config = Config('config.json')
 
 
-config.need('asset_path', 'assets')
-assets_path = config.get_key('asset_path')
-
-if not os.path.exists(assets_path):
-    os.mkdir(assets_path)
-
 config.need('auth', [
         {
           "platform": "red",
@@ -60,20 +54,14 @@ config.need('auth', [
       ])
 
 
-def auto_asset_path():
+def assets(file_name) -> str:
     '''
-    实现根据配置文件，自动获取该模块的所分配的资源文件夹路径
-
-
-    Automatically get the resource folder path assigned to the module according to the configuration file
+    告诉你文件在哪里
     '''
     file_path = inspect.stack()[1].filename
     folder_name = os.path.dirname(file_path)
-    pure_folder_name = os.path.basename(folder_name)
-    mixed_folder_name = f"{assets_path}/{pure_folder_name}"
-    # 创建pure_folder_name
-    if not os.path.exists(mixed_folder_name):
-        os.mkdir(mixed_folder_name)
+    # pure_folder_name = os.path.basename(folder_name)
+    mixed_folder_name = f"{folder_name}/{file_name}"
     return mixed_folder_name
 
 

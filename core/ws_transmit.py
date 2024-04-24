@@ -14,7 +14,7 @@ def on_message(ws: websocket.WebSocketApp, message: any):
     data: dict = json.loads(message)
     # 展示登陆信息
     if data["op"] == 4:
-        log.info("Satori driver connected.")
+        log.success("WEBSOCKETS >._ Satori driver connected.")
         for login_info in data["body"]["logins"]:
             name = login_info["user"].get("name", login_info["user"]["id"])
             status = login_info["status"]
@@ -66,6 +66,7 @@ class WebsocketLink:
 
     def run(self):
         try:
+            log.info(f'WEBSOCKETS >._ start...')
             # 连接 ws
             self.websocket = websocket.WebSocketApp(
                 self.full_address, on_message=on_message

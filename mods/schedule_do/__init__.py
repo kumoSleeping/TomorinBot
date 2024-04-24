@@ -30,17 +30,15 @@ def timer_do(time_or_times: str | list):
                 nonlocal last_run_time, is_executing
                 # 如果函数正在执行，则跳过
                 if is_executing:
-                    log.debug('pass: is executing')
                     return
                 current_time = datetime.now()
                 # 检查上次执行时间是否与当前时间相同（分钟级别）
                 if last_run_time and current_time.minute == last_run_time.minute and current_time.hour == last_run_time.hour:
-                    log.debug('pass: time is same')
                     return
                 last_run_time = current_time  # 更新上次执行时间
                 is_executing = True
                 try:
-                    log.debug(f"[scheduler] Do [{func.__name__}] now!")
+                    log.success(f"Do [{func.__name__}] now!")
                     func()
                 finally:
                     time.sleep(1)  # 等待1秒，确保下一次执行不会在同一分钟内
@@ -59,7 +57,7 @@ def timer_do(time_or_times: str | list):
 
             schedule_thread = Thread(target=run_schedule, daemon=True)
             schedule_thread.start()
-            log.info(f"[scheduler] [{func.__name__}] is scheduled for {times}.")
+            log.success(f"{func} is scheduled for {times}.")
             return func
         return wrapper
     return decorator
@@ -85,7 +83,7 @@ def interval_do(interval: int, do_now: bool = True):
         def wrapper(*args, **kwargs):
             def interval_task():
                 # 执行日志
-                log.success(f"[interval] Do [{func.__name__}] now!")
+                log.success(f"Do {func} now!")
                 func()
 
             # 启动一个线程来运行定时任务检查
@@ -100,7 +98,7 @@ def interval_do(interval: int, do_now: bool = True):
             interval_thread = Thread(target=run_interval, daemon=True)
             interval_thread.start()
 
-            log.info(f"[interval] Then [{func.__name__}] is scheduled for every {interval} seconds.")
+            log.success(f"{func} is scheduled for every {interval} seconds.")
             return func
 
         return wrapper

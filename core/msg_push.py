@@ -17,7 +17,7 @@ def msg_push(data):
                 # 确保返回值符合预期，否则跳过当前循环或执行其他操作
                 if not isinstance(data, (dict, list, str)):  # 根据实际需要调整期望的类型
                     log.error("An error occurred, perhaps returned value count is not correct.")
-                    raise e
+                    return
 
         event = Event(data)
 
@@ -27,17 +27,17 @@ def msg_push(data):
                 # 同样确保返回值符合预期
                 if not isinstance(event, Event):  # 确保event是Event类型的实例
                     log.error("An error occurred, perhaps returned value count is not correct.")
-                    raise e
+                    return
 
-        for loaded_func_item in registers_manager.loaded_func:
+        for loaded_func_item in registers_manager.standard_event:
 
-            if registers_manager.before_plugin_do:
-                for before_plugin_do_item in registers_manager.before_plugin_do:
+            if registers_manager.before_event:
+                for before_plugin_do_item in registers_manager.before_event:
                     event, _ = before_plugin_do_item(event, loaded_func_item)
                     # 验证event的类型，防止错误
                     if not isinstance(event, Event):
                         log.error("An error occurred, perhaps returned value count is not correct.")
-                        raise e
+                        return
 
             plugin_thread = threading.Thread(target=loaded_func_item, args=(event,))
             plugin_thread.start()

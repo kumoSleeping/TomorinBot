@@ -19,11 +19,10 @@ def start():
 
 
 def end(sig, frame):
-    ascii_tmr = '''
-かつて忘れられない、星空は未来を照らし、次の春へ。
+    from core.log import log
+    log.info(f'''かつて忘れられない、星空は未来を照らし、次の春へ。
 ――「2024.1.30 10:54:23・東京・豊島区」
-'''
-    print(f'\n{ascii_tmr}')
+''')
     sys.exit(0)
 
 
@@ -35,19 +34,9 @@ if __name__ == '__main__':
     from core.__init__ import __version__
     from core.loader import config
     config.need('log', {'color': True, 'debug': False})
-    first_ascii = '\033[34m' if config.get_key('log').get('color') else ''
-    second_ascii = '\033[0m' if config.get_key('log').get('color') else ''
+    from core.log import log
+    log.success(f'RUNNING >._ Tomorin BOT - v{__version__} @2023-2024')
 
-    ascii_tmr = f'''{first_ascii}
-  ██████████╗   ███████╗    
-   ╚══██╔████╗ ████╔══██╗   
-      ██║██╔████╔██████╔╝   
-      ██║██║╚██╔╝██╔══██╗   
-      ██║██║ ╚═╝ ██║  █████║   
-      ╚═╝╚═╝     ╚═╝  ╚════╝  v{__version__} @2023
-{second_ascii}'''
-
-    print(ascii_tmr)
     start()
 
 

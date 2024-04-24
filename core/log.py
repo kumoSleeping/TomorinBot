@@ -1,6 +1,8 @@
 import time
 import json
 import os
+import inspect
+from datetime import datetime
 
 
 class Log:
@@ -11,7 +13,9 @@ class Log:
         实现自定义print函数 (只有在配置文件启用的时候才会被显示的展示出来)
         Implement custom print function (only displayed when the configuration file is enabled)
         """
-        text = str(text)
+        log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
+        filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
+        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
         if config["log"]["debug"]:
             if config["log"]["color"]:
                 print("\033[1;31m■ " + text + "\033[0m")
@@ -20,7 +24,9 @@ class Log:
 
     @staticmethod
     def error(text):
-        text = str(text)
+        log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
+        filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
+        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
         if config["log"]["color"]:
             print("\033[1;31m● " + text + "\033[0m")
         else:
@@ -28,15 +34,19 @@ class Log:
 
     @staticmethod
     def info(text):
-        text = str(text)
+        log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
+        filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
+        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
         if config["log"]["color"]:
-            print("\033[1;37m● " + text + "\033[0m")
+            print("\033[1;37m● " + "\033[0m" + text)
         else:
             print("[INFO] " + text)
 
     @staticmethod
     def warning(text):
-        text = str(text)
+        log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
+        filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
+        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
         if config["log"]["color"]:
             print("\033[1;33m● " + text + "\033[0m")
         else:
@@ -44,9 +54,11 @@ class Log:
 
     @staticmethod
     def success(text):
-        text = str(text)
+        log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
+        filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
+        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
         if config["log"]["color"]:
-            print("\033[1;32m● " + text + "\033[0m")
+            print("\033[1;32m● " + "\033[0m" + text)
         else:
             print("[SUCCESS] " + text)
 

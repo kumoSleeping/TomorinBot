@@ -1,89 +1,45 @@
 import inspect
-from typing import List, Callable
 from core.log import log
-import pkgutil
-import importlib.util
-import os
-import sys
-import json
-
-
-
 from core.external import config
+
 
 class RegManager:
     def __init__(self):
-        self.loaded_func = []
+        self.standard_event = []
         self.before_request = []
         self.before_event = []
-        self.before_plugin_do = []
+        self.before_plugs = []
         self.after_request = []
         self.after_event = []
-        
-        self.is_loaded = False
 
-    def load_plugin_from_register(self):
-        config.need('off_plugs', ['event_filter'])
-        plug_dir = './plugs'
-        off_plugs = config.get_key('off_plugs')
-        log.warning(f'off_plugs: {off_plugs}')
-
-        plug_list = [name for _, name, _ in pkgutil.iter_modules([plug_dir]) if name not in off_plugs]
-        # print(plug_list)
-        sys.path.append(plug_dir)
-
-        module_list = []
-        for plug in plug_list:
-            spec = importlib.util.spec_from_file_location(plug, os.path.join(plug_dir, plug, '__init__.py'))
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            module_list.append((plug, module))
-        
-        # print(module_list)
-
-        # 遍历所有模块，找到函数并根据其属性进行分类
-        for _, module in module_list:
-            # 获取模块中所有的函数
-            for name, obj in inspect.getmembers(module, inspect.isfunction):
-                # 使用字典映射属性到对应的列表
-                attr_to_list = {
-                    'enable_feature': self.loaded_func,
-                    'is_before_request': self.before_request,
-                    'is_before_event': self.before_event,
-                    'is_before_plugin_do': self.before_plugin_do,
-                    'is_after_request': self.after_request,
-                    'is_after_event': self.after_event,
-                }
-                # 检查每个属性并在必要时将函数添加到对应的列表中
-                for attr, list_ref in attr_to_list.items():
-                    if hasattr(obj, attr):
-                        list_ref.append(obj)
-                        break  # 假设一个函数只符合一个分类，找到即停止
-      
-    def print_msg(self, on_list=None):
-        if not on_list:
-            log.error('No functions loaded.')
-            return
-        max_name_length = max(len(func.__name__) for func in on_list)
-        for i, func in enumerate(on_list):
-            # 格式化序号前的空格
-            num_space = '   ' if i < 9 else '  ' if i < 99 else ' '
-            # 计算每个函数名后需要填充的空格数，以确保点（.）对齐
-            padding = max_name_length - len(func.__name__)
-            log.success('[{}]{}{}   {}.'.format(i+1, num_space, func.__name__, ' ' * padding))
-
-    
     def load_plugins(self):
-        self.load_plugin_from_register()
-        log.info('registers loaded.')
-        all_on = registers_manager.loaded_func + registers_manager.before_request + registers_manager.before_event + registers_manager.before_plugin_do + registers_manager.after_request + registers_manager.after_event
-        self.print_msg(all_on)
-
-        self.is_loaded = True
+        import plugs
+        module_list = [(name, module) for name, module in inspect.getmembers(plugs, inspect.isfunction)]
+        # 遍历所有模块，找到函数并根据其属性进行分类
+        log.info(f'RUNNING >._ load registry...')
+        log.info('IDX    FUNCTION NAME       ATTRIBUTE')
+        idx = 0
+        for name, module in module_list:
+            # 使用字典映射属性到对应的列表
+            attr_to_list = {
+                'standard_event': self.standard_event,
+                'before_request': self.before_request,
+                'before_event': self.before_event,
+                'before_plugs': self.before_plugs,
+                'after_request': self.after_request,
+                'after_event': self.after_event,
+            }
+            # 检查每个属性并在必要时将函数添加到对应的列表中
+            for attr, list_ref in attr_to_list.items():
+                if hasattr(module, attr):
+                    num_space = '   ' if idx < 9 else '  ' if idx < 99 else ' '
+                    idx += 1
+                    padding = 18 - len(name)
+                    log.success('{}.{}  {} {} [{}]'.format(idx, num_space, name, ' ' * padding, attr))
+                    list_ref.append(module)
+                    break  # 假设一个函数只符合一个分类，找到即停止
+        log.success(f'RUNNING >._ load registry complete.')
 
 
 registers_manager = RegManager()
-
-
-
 

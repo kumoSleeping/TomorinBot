@@ -7,7 +7,7 @@ assets
 
 config.json
 
-bin/
+__bin__/
 kumo/
 
 

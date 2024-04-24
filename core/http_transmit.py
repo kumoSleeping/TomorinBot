@@ -15,7 +15,6 @@ def request_by_requests(event, data: dict, headers: dict, full_address: str):
             rep_dict = response_data
             return event, data, headers, full_address, rep_dict
         except Exception:
-            # raise Exception(f'[core] 未能解析响应为JSON格式，响应：{response.text}')
             raise Exception(log.error(f'未能解析响应为JSON格式，响应：{response.text}'))
     else:
         # 抛出错误
@@ -73,7 +72,7 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
                 # 验证返回值包含所有必要的元素
                 if not isinstance(result, tuple) or len(result) != 5:
                     log.error("Perhaps returned value count is not correct.")
-                    raise e
+                    return
                 event, method, data, platform, self_id = result
 
         # 发送POST请求
@@ -82,7 +81,7 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
         # 验证返回值包含所有必要的元素
         if not isinstance(result, tuple) or len(result) != 5:
             log.error("Perhaps returned value count is not correct.")
-            raise e
+            return
         event, data, headers, full_address, response_dict = result
 
         # 调用after_request
@@ -92,7 +91,7 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
                 # 验证返回值包含所有必要的元素
                 if not isinstance(result, tuple) or len(result) != 6:
                     log.error("Perhaps returned value count is not correct.")
-                    raise e
+                    return
                 event, method, data, platform, self_id, response_dict = result
 
     except Exception as e:
