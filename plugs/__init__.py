@@ -50,14 +50,15 @@ from PIL import Image, ImageDraw, ImageFont
 def bzl_pic(event: mods.Event):
     # print(0)
     if res := mods.match_command(event, ['bzl'], allow_gap_less=True):
-        print(res)
+        # print(res)
         # print(1)
         if res.text.isdigit():
             # print(2)
             num = int(res.text)
-            img = Image.open('plugs/bzl/bzl.png')
+            img = Image.open(mods.assets('bzl.png'))
             # 设置字体
-            font = ImageFont.truetype('assets/text_to_image/font.ttf', 50)
+            # print(mods.assets('font.ttf'))
+            font = ImageFont.truetype(mods.assets('font.ttf'), 50)
             # 左上角写字，白色
             draw = ImageDraw.Draw(img)
             # 测量文字宽度

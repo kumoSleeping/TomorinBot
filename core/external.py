@@ -54,7 +54,7 @@ config.need('auth', [
       ])
 
 
-def assets(file_name) -> str:
+def assets(file_name: str) -> str:
     '''
     告诉你文件在哪里
     '''
