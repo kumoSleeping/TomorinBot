@@ -31,7 +31,7 @@ def echo_bdb(event):
         event.message_create('伙伴管理')
     if res := mods.match_command(event, ' schb'):
         res.args = res.text.split()
-#         只保留数字
+        #         只保留数字
         res.args = [x for x in res.args if x.isdigit()]
         for i in list(set(res.args)):
             event.message_create(f'删除伙伴 {i}')
@@ -64,16 +64,14 @@ def bzl_pic(event: mods.Event):
             # 测量文字宽度
             width = draw.textlength(f'{num}名', font)
             draw.text((240 - width / 2, 275), f'{num}名', fill=(255, 255, 255), font=font)
-            draw.text((1387 - width / 2, 448), f'{num+1}名', fill=(255, 255, 255), font=font)
+            draw.text((1387 - width / 2, 448), f'{num + 1}名', fill=(255, 255, 255), font=font)
             # 保存
             res.send(mods.h.image(img))
             img.close()
 
 
-
 import re
 from bs4 import BeautifulSoup
-
 
 bot_self_id = '211134009'
 bdb_channel_id = '666808414'
@@ -87,7 +85,7 @@ def auto_bdb(event):
     全自动笨蛋读博机
     """
     # 保证发消息者是笨蛋，被quote者是bot
-#    print(event.message.content)
+    #    print(event.message.content)
     # print(bd_id)
     if event.user.id != bd_id:
         # print('发消息者不是笨蛋')
@@ -115,7 +113,9 @@ def auto_bdb(event):
 
 
 # 每天定时n次发消息
-@mods.timer_do(['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'])
+@mods.timer_do(
+    ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
+     '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'])
 def clock1():
     event = Event()
     event.platform = bdb_platform
@@ -135,7 +135,6 @@ def chb():
 chb()
 clock1()
 
-
 import json
 import os
 
@@ -148,6 +147,7 @@ else:
     with open(mods.assets('mcp.json'), 'w', encoding='utf-8') as f:
         json.dump(data_gm, f, ensure_ascii=False, indent=4)
 
+
 def save_gm():
     with open(mods.assets('mcp.json'), 'w', encoding='utf-8') as f:
         json.dump(data_gm, f, ensure_ascii=False, indent=4)
@@ -155,12 +155,12 @@ def save_gm():
 
 @mods.on.message_created
 def grp_mem(event: mods.Event):
-    if res := mods.match_command(event, ['mcp add', 'mcpadd', '群备忘录添加', '+mcp']):
+    if res := mods.match_command(event, ['mcp add', 'mcpadd', '+mcp']):
         data_gm.append(res.text)
         save_gm()
         all_gm = '\n'.join([f'{i + 1}. {v}' for i, v in enumerate(data_gm)])
         res.send(all_gm)
-    elif res := mods.match_command(event, ['mcp del', 'mcpdel', '群备忘录删除', '-mcp']):
+    elif res := mods.match_command(event, ['mcp del', 'mcpdel', '-mcp']):
         try:
             del data_gm[int(res.text) - 1]
             save_gm()
@@ -170,13 +170,29 @@ def grp_mem(event: mods.Event):
         except:
             res.send('删除失败')
     elif res := mods.match_command(event, ['mcp']):
-        all_gm = '\n'.join([f'{i+1}. {v}' for i, v in enumerate(data_gm)])
+        all_gm = '\n'.join([f'{i + 1}. {v}' for i, v in enumerate(data_gm)])
         res.send(all_gm)
+
+
+import pil_utils
+import mods
+import io
+
+
+@mods.on.message_created
+def test2(event: mods.Event):
+    if res := mods.match_command(event, ['test2']):
+        img = pil_utils.Text2Image.from_text(
+            text="宝宝你是一个宝宝😊",
+            fontsize=50,
+
+        ).to_image(bg_color="white")
+        # img_bytes_io = img.save_jpg()
+        res.send(mods.h.image(img))
 
 
 from plugs.tsugu_ import *
 from plugs.rec import *
-
 
 # @mods.on.before_event
 # def deas(e):

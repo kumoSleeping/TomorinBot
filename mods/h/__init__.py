@@ -59,7 +59,7 @@ class H:
                 return f'<file url="{param}"/>'
 
     @staticmethod
-    def image(param: Union[Image.Image, bytes, str]):
+    def image(param: Union[Image.Image, bytes, str, io.BytesIO]):
         '''
         实现图片的转换
         Implement image conversion
@@ -76,6 +76,10 @@ class H:
             return f'<img src="data:image/png;base64,{encoded_image}"/>'
         elif isinstance(param, bytes):
             encoded_image = base64.b64encode(param).decode('utf-8')
+            return f'<img src="data:image/png;base64,{encoded_image}"/>'
+        elif isinstance(param, io.BytesIO):
+            image_binary = param.getvalue()
+            encoded_image = base64.b64encode(image_binary).decode('utf-8')
             return f'<img src="data:image/png;base64,{encoded_image}"/>'
         else:
             if str(param).startswith("http://") or str(param).startswith("https://"):

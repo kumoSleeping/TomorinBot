@@ -134,6 +134,23 @@ def back_up():
     os.system('cp db.sqlite3 db.sqlite3.bak')
  ```
 
+> 利用来自 `core` 的 `config` 与 `assets` 实现资源配置
+```py
+import mods
+mods.config.need('my_img_path', mods.assets("my_img.png"))
+img = mods.assets(mods.config.get_key('my_img_path'))
+```
+
+> 利用来自 `core` 的 `log` 打印日志
+```py   
+import mods
+mods.log.info('info')
+mods.log.warning('warning')
+mods.log.error('error')
+mods.log.debug('debug') # only in debug mode
+mods.log.success('success')
+```
+
 > 利用 `json` 实现一个备忘录 (本例用于记录mc地图坐标)
 
 ```py
@@ -173,23 +190,6 @@ def grp_mem(event: mods.Event):
             res.send('删除失败')
     elif res := mods.match_command(event, ['mcp']):
         res.send(generate_list(data_gm))
-```
-
-> 利用来自 `core` 的 `config` 与 `assets` 实现资源配置
-```py
-import mods
-mods.config.need('my_img_path', mods.assets("my_img.png"))
-img = mods.assets(mods.config.get_key('my_img_path'))
-```
-
-> 利用来自 `core` 的 `log` 打印日志
-```py   
-import mods
-mods.log.info('info')
-mods.log.warning('warning')
-mods.log.error('error')
-mods.log.debug('debug') # only in debug mode
-mods.log.success('success')
 ```
 
 
