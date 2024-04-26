@@ -66,12 +66,12 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
 
     try:
         # 调用before_request
-        if registers_manager.before_request:
-            for before_request_item in registers_manager.before_request:
+        if registers_manager.before_api_request_tag:
+            for before_request_item in registers_manager.before_api_request_tag:
                 result = before_request_item(event, method, data, platform, self_id)
                 # 验证返回值包含所有必要的元素
                 if not isinstance(result, tuple) or len(result) != 5:
-                    log.error("Perhaps returned value count is not correct.")
+                    log.error("An error occurred, perhaps <on.before_api_request> returned value count is not correct.")
                     return
                 event, method, data, platform, self_id = result
 
@@ -80,17 +80,17 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
         result = request_by_requests(event, data, headers, full_address)
         # 验证返回值包含所有必要的元素
         if not isinstance(result, tuple) or len(result) != 5:
-            log.error("Perhaps returned value count is not correct.")
+            log.error("An error occurred, perhaps <request_by_requests> returned value count is not correct.")
             return
         event, data, headers, full_address, response_dict = result
 
         # 调用after_request
-        if registers_manager.after_request:
-            for after_request_item in registers_manager.after_request:
+        if registers_manager.after_data_to_event_tag:
+            for after_request_item in registers_manager.after_api_request_tag:
                 result = after_request_item(event, method, data, platform, self_id, response_dict)
                 # 验证返回值包含所有必要的元素
                 if not isinstance(result, tuple) or len(result) != 6:
-                    log.error("Perhaps returned value count is not correct.")
+                    log.error("An error occurred, perhaps <on.after_api_request> returned value count is not correct.")
                     return
                 event, method, data, platform, self_id, response_dict = result
 

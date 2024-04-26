@@ -4,7 +4,7 @@ from mods import config, on, Event
 from mods import easy_to_show_text, log
 
 
-@on.after_event
+@on.after_data_to_event
 def display_receive(event: Event):
     try:
         show_event_log(event)
@@ -13,7 +13,7 @@ def display_receive(event: Event):
     return event
 
 
-@on.after_request
+@on.after_api_request
 def display_send(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
     try:
         log.info(f'SEND {method} -> {platform} {data.get("message_id", "")}')

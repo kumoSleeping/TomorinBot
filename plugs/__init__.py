@@ -179,6 +179,12 @@ import mods
 import io
 
 
+# @mods.on.after_data_to_event
+# def dede(event):
+#     print(event.type)
+#     return event
+
+
 @mods.on.message_created
 def test2(event: mods.Event):
     if res := mods.match_command(event, ['test2']):
@@ -194,7 +200,4 @@ def test2(event: mods.Event):
 from plugs.tsugu_ import *
 from plugs.rec import *
 
-# @mods.on.before_event
-# def deas(e):
-#     print(e)
-#     return e
+

@@ -97,7 +97,7 @@ def websocket_():
 
         connections = config.get_key("websocket_connections")
         if not connections:
-            log.warning("\033[31m[transmit] websocket_client 未配置任何连接信息\033[0m")
+            log.warning("\033[31m websocket_client 未配置任何连接信息\033[0m")
             return
         for connection_config in connections:
             # 来自文件 websocket_link

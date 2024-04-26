@@ -5,12 +5,12 @@ from core.external import config
 
 class RegManager:
     def __init__(self):
-        self.standard_event = []
-        self.before_request = []
-        self.before_event = []
-        self.before_plugs = []
-        self.after_request = []
-        self.after_event = []
+        self.standard_event_tag = []
+        self.before_api_request_tag = []
+        self.before_data_to_event_tag = []
+        self.before_plugin_handler_tag = []
+        self.after_api_request_tag = []
+        self.after_data_to_event_tag = []
 
     def load_plugins(self):
         import plugs
@@ -22,12 +22,12 @@ class RegManager:
         for name, module in module_list:
             # 使用字典映射属性到对应的列表
             attr_to_list = {
-                'standard_event': self.standard_event,
-                'before_request': self.before_request,
-                'before_event': self.before_event,
-                'before_plugs': self.before_plugs,
-                'after_request': self.after_request,
-                'after_event': self.after_event,
+                'standard_event_tag': self.standard_event_tag,
+                'before_api_request_tag': self.before_api_request_tag,
+                'before_data_to_event_tag': self.before_data_to_event_tag,
+                'before_plugin_handler_tag': self.before_plugin_handler_tag,
+                'after_api_request_tag': self.after_api_request_tag,
+                'after_data_to_event_tag': self.after_data_to_event_tag,
             }
             # 检查每个属性并在必要时将函数添加到对应的列表中
             for attr, list_ref in attr_to_list.items():
