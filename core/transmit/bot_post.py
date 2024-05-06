@@ -1,5 +1,5 @@
-from core.config import registers_manager, config
-from core.log import log
+from core.__main__ import initialize_manager, config
+from core.classes.utils import log
 
 import requests
 import json
@@ -21,7 +21,7 @@ def request_by_requests(event, data: dict, headers: dict, full_address: str):
         raise Exception(log.error(f'请求失败，状态码：{response.status_code}，响应：{response.text}'))
 
 
-def send_request(event, method: str, data: dict, platform: str, self_id: str, internal=False):
+def api_request(event, method: str, data: dict, platform: str, self_id: str, internal=False):
     """
     发送消息到指定频道。
 
@@ -66,8 +66,8 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
 
     try:
         # 调用before_request
-        if registers_manager.before_api_request_tag:
-            for before_request_item in registers_manager.before_api_request_tag:
+        if initialize_manager.before_api_request_tag:
+            for before_request_item in initialize_manager.before_api_request_tag:
                 result = before_request_item(event, method, data, platform, self_id)
                 # 验证返回值包含所有必要的元素
                 if not isinstance(result, tuple) or len(result) != 5:
@@ -85,8 +85,8 @@ def send_request(event, method: str, data: dict, platform: str, self_id: str, in
         event, data, headers, full_address, response_dict = result
 
         # 调用after_request
-        if registers_manager.after_data_to_event_tag:
-            for after_request_item in registers_manager.after_api_request_tag:
+        if initialize_manager.after_data_to_event_tag:
+            for after_request_item in initialize_manager.after_api_request_tag:
                 result = after_request_item(event, method, data, platform, self_id, response_dict)
                 # 验证返回值包含所有必要的元素
                 if not isinstance(result, tuple) or len(result) != 6:

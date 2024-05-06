@@ -1,13 +1,58 @@
-from core.loader import registers_manager, config
-from core.msg_push import msg_push
-from core.log import log
+from core.__main__ import config
+from core.classes.event import Event
+from core.classes.utils import log
 
-
-import requests
-import time
-import threading
 import websocket
 import json
+import threading
+import gc
+import time
+
+
+from __main__ import initialize_manager
+
+
+def build_session(data):
+    '''
+    构建会话的流程，会在 ws 接收到消息时调用。
+
+    :param data: satori 标准事件数据
+    :return: None
+    '''
+    try:
+        if initialize_manager.before_data_to_event_tag:
+            for before_event_item in initialize_manager.before_data_to_event_tag:
+                data = before_event_item(data)
+                # 确保返回值符合预期，否则跳过当前循环或执行其他操作
+                # if not data:
+                #     return
+
+        event = Event(data)
+
+        if initialize_manager.after_data_to_event_tag:
+            for after_event_item in initialize_manager.after_data_to_event_tag:
+                event = after_event_item(event)
+                # if not event:
+                #     return
+
+        for loaded_func_item in initialize_manager.standard_event_tag:
+
+            if initialize_manager.before_plugin_handler_tag:
+                for before_plugin_handler_item in initialize_manager.before_plugin_handler_tag:
+                    event, loaded_func_item = before_plugin_handler_item(event, loaded_func_item)
+                    # if not event or not loaded_func_item:
+                    #     return
+
+            plugin_thread = threading.Thread(target=loaded_func_item, args=(event,))
+            plugin_thread.start()
+
+    except Exception as e:
+        log.error('Error occurred.')
+        raise e
+
+    finally:
+        # 无论如何都会执行的清理代码
+        gc.collect()
 
 
 def on_message(ws: websocket.WebSocketApp, message: any):
@@ -26,7 +71,7 @@ def on_message(ws: websocket.WebSocketApp, message: any):
 
     # event 事件
     if data["op"] == 0:
-        thread = threading.Thread(target=msg_push, args=(data["body"],))
+        thread = threading.Thread(target=build_session, args=(data["body"],))
         thread.start()
 
 

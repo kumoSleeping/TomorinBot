@@ -1,9 +1,11 @@
-from core.event import Event
-from core.on import on
-from core.config import registers_manager, config
-from core.log import log
-from core.external import is_admin
-from core.external import assets
+from core.classes.event import Event
+from core.classes.on import on
+from core.classes.utils import log
+
+from core.__main__ import initialize_manager, config
+
+from mods.utils import is_admin
+from mods.utils import assets
 
 
 from mods.h import h

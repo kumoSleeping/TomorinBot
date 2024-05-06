@@ -1,7 +1,7 @@
 from enum import IntEnum
 from typing import Union, Optional
 
-from core.http_transmit import send_request
+from core.transmit.bot_post import api_request
 
 
 class ChannelType(IntEnum):
@@ -120,7 +120,7 @@ class Event:
     # message
     def message_create(self,content: str = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return send_request(event=self, method='message.create', data={
+        return api_request(event=self, method='message.create', data={
             'channel_id': channel_id,
             'content': content,
         }, platform=self.platform, self_id=self.self_id)
@@ -128,7 +128,7 @@ class Event:
     def message_delete(self, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return send_request(event=self, method='message.delete', data={
+        return api_request(event=self, method='message.delete', data={
             'channel_id': channel_id,
             'message_id': message_id,
         }, platform=self.platform, self_id=self.self_id)
@@ -136,7 +136,7 @@ class Event:
     def message_update(self, content: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return send_request(event=self, method='message.update', data={
+        return api_request(event=self, method='message.update', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'content': content,
@@ -144,58 +144,58 @@ class Event:
 
     def message_list(self, next_token: str = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return send_request(event=self, method='message.list', data={
+        return api_request(event=self, method='message.list', data={
             'channel_id': channel_id,
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_get(self, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return send_request(event=self, method='channel.get', data={
+        return api_request(event=self, method='channel.get', data={
             'channel_id': channel_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_list(self, next_token: str = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        return send_request(event=self, method='channel.list', data={
+        return api_request(event=self, method='channel.list', data={
             'guild_id': guild_id,
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_create(self, channel_data: dict = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        return send_request(event=self, method='channel.create', data={
+        return api_request(event=self, method='channel.create', data={
             'guild_id': guild_id,
             'data': channel_data,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_update(self, channel_data: dict = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return send_request(event=self, method='channel.update', data={
+        return api_request(event=self, method='channel.update', data={
             'channel_id': channel_id,
             'data': channel_data,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_delete(self, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return send_request(event=self, method='channel.delete', data={
+        return api_request(event=self, method='channel.delete', data={
             'channel_id': channel_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def guild_get(self, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        return send_request(event=self, method='guild.get', data={
+        return api_request(event=self, method='guild.get', data={
             'guild_id': guild_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def guild_list(self, next_token: str = None):
-        return send_request(event=self, method='guild.list', data={
+        return api_request(event=self, method='guild.list', data={
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
     def guild_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
-        return send_request(event=self, method='guild.approve', data={
+        return api_request(event=self, method='guild.approve', data={
             'message_id': message_id,
             'approve': approve,
             'comment': comment,
@@ -204,14 +204,14 @@ class Event:
     def guild_member_get(self, guild_id: str = None, user_id: str = None):
         guild_id = guild_id or self.guild.id
         user_id = user_id or self.user.id
-        return send_request(event=self, method='guild.member.get', data={
+        return api_request(event=self, method='guild.member.get', data={
             'guild_id': guild_id,
             'user_id': user_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def guild_member_list(self, next_token: str = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        return send_request(event=self, method='guild.member.list', data={
+        return api_request(event=self, method='guild.member.list', data={
             'guild_id': guild_id,
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
@@ -219,7 +219,7 @@ class Event:
     def guild_member_kick(self, permanent: bool = False, guild_id: str = None, user_id: str = None):
         guild_id = guild_id or self.guild.id
         user_id = user_id or self.user.id
-        return send_request(event=self, method='guild.member.kick', data={
+        return api_request(event=self, method='guild.member.kick', data={
             'guild_id': guild_id,
             'user_id': user_id,
             'permanent': permanent,
@@ -227,29 +227,29 @@ class Event:
 
     def guild_member_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
-        return send_request(event=self, method='guild.member.approve', data={
+        return api_request(event=self, method='guild.member.approve', data={
             'message_id': message_id,
             'approve': approve,
             'comment': comment,
         }, platform=self.platform, self_id=self.self_id)
 
     def login_get(self):
-        return send_request(event=self, method='login.get', data={}, platform=self.platform, self_id=self.self_id)
+        return api_request(event=self, method='login.get', data={}, platform=self.platform, self_id=self.self_id)
 
     def user_get(self, user_id: str = None):
         user_id = user_id or self.user.id
-        return send_request(event=self, method='user.get', data={
+        return api_request(event=self, method='user.get', data={
             'user_id': user_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def friend_list(self, next_token: str = None):
-        return send_request(event=self, method='friend.list', data={
+        return api_request(event=self, method='friend.list', data={
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
     def friend_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
-        return send_request(event=self, method='friend.approve', data={
+        return api_request(event=self, method='friend.approve', data={
             'message_id': message_id,
             'approve': approve,
             'comment': comment,
@@ -258,7 +258,7 @@ class Event:
     def reaction_create(self, emoji: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return send_request(event=self, method='reaction.create', data={
+        return api_request(event=self, method='reaction.create', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'emoji': emoji,
@@ -268,7 +268,7 @@ class Event:
         user_id = user_id or self.user.id
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return send_request(event=self, method='reaction.delete', data={
+        return api_request(event=self, method='reaction.delete', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'emoji': emoji,
@@ -278,7 +278,7 @@ class Event:
     def reaction_clear(self, emoji: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return send_request(event=self, method='reaction.clear', data={
+        return api_request(event=self, method='reaction.clear', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'emoji': emoji,
@@ -287,7 +287,7 @@ class Event:
     def reaction_list(self, emoji: str = None, next_token: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return send_request(event=self, method='reaction.list', data={
+        return api_request(event=self, method='reaction.list', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'emoji': emoji,

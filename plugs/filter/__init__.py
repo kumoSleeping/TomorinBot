@@ -1,9 +1,9 @@
 import json
 import os
 from typing import List, Dict, TYPE_CHECKING
+
+import mods
 from mods import Event, on, assets, match_command
-
-
 
 ban_dicts_path = assets('ban_dicts.json')
 
@@ -37,42 +37,27 @@ class BanManager:
             del cls.ALL_BAN_DICTS[index]
             BanManager.save_data()
         else:
-            print("索引超出范围")
+            mods.log.info("索引超出范围")
 
     @staticmethod
     def check_before_plugin(event: Event, plugin_name: str):
-        # print(BanManager.ALL_BAN_DICTS)
+        if mods.is_admin(event.platform, event.user.id):
+            return True
+
         for ban_config in BanManager.ALL_BAN_DICTS:
-            # print(ban_config)
-            # print(plugin_name)
-            # print(event.platform)
-            # print(event.guild.id)
-            # print(event.channel.id)
-            if plugin_name == 'soyo_0':
-                return True
             # 初始化变量
-            guild_ = ban_config.get('G', ban_config.get('G', 'N/A'))
             channel_ = ban_config.get('C', ban_config.get('C', 'N/A'))
             platform_ = ban_config.get('P', ban_config.get('P', 'N/A'))
             user_ = ban_config.get('U', ban_config.get('U', 'N/A'))
-            func_ = ban_config.get('F', ban_config.get('F', 'N/A'))
-            message_ = ban_config.get('M', ban_config.get('M', 'N/A'))
-
-            if guild_ != event.guild.id and guild_ != 'N/A':
-                continue
             if channel_ != event.channel.id and channel_ != 'N/A':
                 continue
             if platform_ != event.platform and platform_ != 'N/A':
                 continue
             if user_ != event.user.id and user_ != 'N/A':
                 continue
-            if func_ != plugin_name and func_ != 'N/A':
-                continue
-            if message_ != event.message and message_ != 'N/A':
-                continue
-            # print("不通过")
+            # mods.log.error(f"Plugin {plugin_name} failed the ban check.")
             return False  # 此消息审核 不过
-        # print('通过')
+        # mods.log.success(f"Plugin {plugin_name} passed the ban check.")
         return True  # 此消息审核 过
 
 
@@ -80,20 +65,17 @@ if not os.path.exists(ban_dicts_path):
     with open(ban_dicts_path, 'w', encoding='utf-8') as file:
         json.dump([], file, ensure_ascii=False, indent=4)
 BanManager.load_data()
-ban_manager = BanManager
 
 
-@on.before_plugin_do
-def soyo_filter(event: Event, plugin: callable):
-    plugin_name = plugin.__name__
-    if not ban_manager.check_before_plugin(event, plugin_name):
-        # print(f'[filter] ID 为 {event.message.id} 的消息被过滤')
+@on.before_plugin_handler
+def filter_match(event: Event, plugin):
+    if not BanManager.check_before_plugin(event, plugin.__name__):
         return None, None
     return event, plugin
 
 
 @on.message_created
-def soyo_0(event: Event):
+def e_f(event: Event):
 
     if res := match_command(event, 'ign', limit_admin=True):
 
@@ -107,21 +89,20 @@ def soyo_0(event: Event):
 
             rpl = '\n'.join(output_lines)
             res.send(
-                f'<at id="{event.user.id}"/> 目前支持的保留字有: G、U、P、M、F\n分别表示 Guild User Message Platform Func\n目前的逻辑列表为:\n{rpl}')
+                f'<at id="{event.user.id}"/> 目前支持的保留字有: C、U、P\n分别表示 Channel User Platform\n目前的逻辑列表为:\n{rpl}')
             return
 
         # 有参数时，添加忽略
         ele_list = res.args
 
-        replacement_values = {'G': event.guild.id, 'U': 'Default', 'P': event.platform,
-                              'M': event.message.content, 'F': 'Default'}
+        replacement_values = {'C': event.channel.id, 'U': 'Default', 'P': event.platform, }
         ban_dict = {part[0]: part[1:] if part[1:] else replacement_values.get(part[0], 'Default') for part in
                     ele_list if part[0] in replacement_values}
         BanManager.add_item(ban_dict)
         res.send(f'已执行·添加逻辑成功')
 
     # 按照顺序移除忽略
-    if res := match_command(event, ['rmign', '-ign'], limit_admin=True):
+    if res := match_command(event, ['-ign'], limit_admin=True):
         try:
             item_index = int(res.text)
             BanManager.delete_item(item_index)

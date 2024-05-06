@@ -373,6 +373,17 @@ class On:
         func.after_data_to_event_tag = True
         return func
 
+    @staticmethod
+    def bot_started(func):
+        """
+        装饰器：在机器人启动时执行函数
+
+        被装饰函数的参数 无
+        被装饰函数的返回值 无
+        """
+        func.bot_started_tag = True
+        return func
+
 
 on = On()
 

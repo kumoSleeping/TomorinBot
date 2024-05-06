@@ -43,6 +43,39 @@
 对于初学者来说，异步的学习曲线是很陡的，而简单的功能同步编程较为舒适，功能优化一般也是否异步无关的。  
 在测试了一段时间的 `Tomorin BOT Async` 后，即使一定压力下功能符合预期，但我依然认为 `Python` 机器人项目下异步对我来说没有优势，故不用。   
 `Tomorin BOT Async` 会在完善后开源 (大概) 。
+
+## 项目结构
+
+### core
+
+`core` 是 tmrn 的核心，提供了必要工具与运行流程。
+> `core` 包含 `classes`、`transmit` 文件夹，以及 `__init__` 与 `__main__` 脚本。
+
+#### __init__.py
+只包含一个版本号识别，用于识别为包.
+
+#### __main__.py
+项目启动运行 `initialize`:
+
+1.加载 `plugs` 所有插件   
+2.执行所有 `on.bot_start` 事件   
+3.启动 `transmit` 传输类的 `bot_websocket`   
+
+#### transmit
+`transmit` 文件夹内的 `bot_http` `bot_websocket` 为 `satori` 协议的 `http` `websocket` 传输类。`tmrn` 与 `satori` 协议绑定，因此 `http` `websocket` 格式已与 `satori` 协议保持一致。   
+这两个脚本同时包含了 `event` 从消息触发构建，到结束的全部流程。
+
+#### `classes`
+`classes` 类中有必须的类，还请查看。
+
+### mods
+`mods` 模块从 `core` 导入了需要的函数、方法作为依赖，并扩展了各种工具。你也可以在其中写入你的模块包，然后在 `mods/__init__.py` 中引入。    
+
+### plugs
+`plugs` 模块会被`core` 引入为插件，你可以在其中 `__init__.py` 写入你的的一个功能，也可以单独在此包内建立子模块并导入。   
+
+
+
 ## 运行
 
 ```shell
@@ -50,7 +83,7 @@ pip install requests websocket-client
 ```
 
 ```shell
-python core
+python -m core
 ```
 
 你可以使用 `hupper` 来实现热重启。
@@ -66,13 +99,6 @@ hupper -m core
 本项目第一次运行时会生成一个 `config.json` 文件，你需要主动关闭应用，在其中填写你的合适的配置后重启以加载新的配置。
 
 ## 快速上手
-
-
-- `core` 是 tmrn 的核心，提供了必要工具与运行流程。
-
-- `mods` 模块从 `core` 导入了需要的函数、方法作为依赖，并扩展了各种工具。你也可以在其中写入你的模块包，然后在 `mods/__init__.py` 中引入。    
-
-- `plugs` 模块会被`core` 引入为插件，你可以在其中 `__init__.py` 写入你的的一个功能，也可以单独在此包内建立子模块并导入。   
 
 
 下面的例子可以直接写在 `mods/__init__.py` 中，也可以在 `plugs` 中建立一个模块包，然后在 `plugs/__init__.py` 中引入。
@@ -134,7 +160,9 @@ def back_up():
     os.system('cp db.sqlite3 db.sqlite3.bak')
  ```
 
-> 利用来自 `core` 的 `config` 与 `assets` 实现资源配置
+> 利用来自 `mods` 的 `config` 与 `assets` 实现资源配置
+
+need 用于检查配置是否存在，不存在则写入默认值。(需要重启)
 ```py
 import mods
 mods.config.need('my_img_path', mods.assets("my_img.png"))
