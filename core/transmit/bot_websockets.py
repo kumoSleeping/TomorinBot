@@ -59,7 +59,7 @@ def on_message(ws: websocket.WebSocketApp, message: any):
     data: dict = json.loads(message)
     # 展示登陆信息
     if data["op"] == 4:
-        log.success("WEBSOCKETS >._ Satori driver connected.")
+        log.success("✓ Satori driver connected.")
         for login_info in data["body"]["logins"]:
             name = login_info["user"].get("name", login_info["user"]["id"])
             status = login_info["status"]
@@ -79,7 +79,7 @@ class WebsocketLink:
     def __init__(self, connection_config):
         self.websocket = None
         self.token: str = connection_config["token"]
-        self.full_address: str = f'ws://{connection_config["address"]}/events'
+        self.full_address: str = f'ws://{connection_config["address"]}/v1/events'  # 目前只支持 v1
         # 启动心跳包发送
         self.heartbeat_thread = threading.Thread(target=self.while_send_ping_packet)
         self.heartbeat_thread.start()
@@ -107,11 +107,11 @@ class WebsocketLink:
     def on_open(self, ws: websocket.WebSocketApp):
         identify_packet = {"op": 3, "body": {"token": self.token, "sequence": None}}
         ws.send(json.dumps(identify_packet))
-        log.debug(f"尝试连接到 Satori 驱动器 ...")
+        # log.debug(f"尝试连接到 Satori 驱动器 ...")
 
     def run(self):
         try:
-            log.info(f'WEBSOCKETS >._ start...')
+            log.info(f'>> link start...')
             # 连接 ws
             self.websocket = websocket.WebSocketApp(
                 self.full_address, on_message=on_message
@@ -133,7 +133,7 @@ def websocket_():
             [
                 {
                     "self_ids": ["11111", "22222"],
-                    "address": "127.0.0.1:5140/satori/v1",
+                    "address": "127.0.0.1:5140/satori",
                     "http_protocol": "http",
                     "token": "Your_token",
                 }

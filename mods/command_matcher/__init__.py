@@ -6,7 +6,7 @@ from .text_utils import log
 from mods import is_admin
 
 
-# seq = 1
+seq = 1
 
 
 class MC:
@@ -24,12 +24,15 @@ class MC:
         self.text: str = text
 
     def send(self, content: str):
-        # global seq
-        # # seq 自增
-        # seq += 1
-        # log.debug('seq: ' + str(seq))
-        # msg = content + f'<passive id="{self.event.message.id}" seq="{seq}"/>'
         return self.event.message_create(content=content)
+
+    def qq_passive_send(self, content: str):
+        global seq
+        # seq 自增
+        seq += 1
+        # log.debug('seq: ' + str(seq))
+        msg = content + f'<qq:passive id="{self.event.message.id}" seq="{seq}"/>'
+        return self.event.message_create(content=msg)
 
 
 def match_command(event: Event,
@@ -90,7 +93,7 @@ def match_command(event: Event,
 
     pure_msg = plaintext_if_prefix(pure_msg).strip()
 
-    log.debug('pure_msg: ' + pure_msg)
+    # log.debug('pure_msg: ' + pure_msg)
 
     # 统一处理为列表
     if isinstance(commands, str):
@@ -101,10 +104,10 @@ def match_command(event: Event,
         return None
 
     for item in command_list:
-        log.debug('item: ' + item)
+        # log.debug('item: ' + item)
         # 如果命令为空，就会理解为任何消息都会触发
         if item == '':
-            log.debug('command is empty')
+            # log.debug('command is empty')
             return MC(event, [], pure_msg)
 
         # 从此处开始，下方四个分支只会有一个会被触发

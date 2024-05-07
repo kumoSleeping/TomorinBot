@@ -1,15 +1,29 @@
-import os
-import inspect
-import json
 import time
 import json
 import os
 import inspect
 from datetime import datetime
+import sys
+
+
+def supports_ansi():
+    """
+    Returns True if the running system's terminal supports ANSI escape sequences,
+    and False otherwise.
+    """
+    # ANSI转义序列用于设置终端文本颜色，这里尝试输出一个设置文本颜色的转义序列
+    try:
+        sys.stdout.write("\x1b[1;31m\x1b[0m")
+    except Exception:
+        return False
+    else:
+        return True
+
+
+ansi_color = supports_ansi()
 
 
 class Log:
-
     @staticmethod
     def debug(text):
         """
@@ -19,38 +33,38 @@ class Log:
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
         text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if config["log"]["debug"]:
-            if config["log"]["color"]:
-                print("\033[1;31m■ " + text + "\033[0m")
-            else:
-                print("DEBUG - " + text)
+        # if config["log"]["debug"]:
+        if ansi_color:
+            print("\033[1;31m■ " + text + "\033[0m")
+        else:
+            print("DEBUG__ - " + text)
 
     @staticmethod
     def error(text):
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
         text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if config["log"]["color"]:
+        if ansi_color:
             print("\033[1;31m● " + text + "\033[0m")
         else:
-            print("ERROR - " + text)
+            print("ERROR__ - " + text)
 
     @staticmethod
     def info(text):
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
         text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if config["log"]["color"]:
+        if ansi_color:
             print("\033[1;37m● " + "\033[0m" + text)
         else:
-            print("INFO - " + text)
+            print("INFO___ - " + text)
 
     @staticmethod
     def warning(text):
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
         text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if config["log"]["color"]:
+        if ansi_color:
             print("\033[1;33m● " + text + "\033[0m")
         else:
             print("WARNING - " + text)
@@ -60,7 +74,7 @@ class Log:
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
         text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if config["log"]["color"]:
+        if ansi_color:
             print("\033[1;32m● " + "\033[0m" + text)
         else:
             print("SUCCESS - " + text)
@@ -68,17 +82,9 @@ class Log:
 
 # log 包是第一个被加载的包，所以在这里初始化配置文件
 if not os.path.exists("config.json"):
-    # config.need('log', {'color': True, 'debug': False})
+    # 写入空配置文件
     with open("config.json", "w", encoding="utf-8") as f:
-        f.write(json.dumps({
-            "log": {
-                "debug": False,
-                "color": False
-            }
-        }, indent=4, ensure_ascii=False))
-
-    with open("config.json", "r", encoding="utf-8") as f:
-        config = json.loads(f.read())
+        f.write(json.dumps({}, indent=4))
     log = Log()
     log.warning("Config file not found, created a new one.")
 else:

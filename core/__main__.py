@@ -25,21 +25,21 @@ class IManager:
 
     def run_on_bot_started(self):
         if len(self.bot_started_tag) > 0:
-            log.info(f'RUNNING >._ on bot started...')
+            log.info(f'>> <bot_started> function started...')
             for func in self.bot_started_tag:
                 try:
                     func()
-                    log.info(f"Function {func.__name__} executed.")
+                    log.info(f"✓ Function {func.__name__} executed.")
                 except Exception as e:
-                    log.error(f"Error in bot_started function {func.__name__}: {e}")
+                    log.error(f"✗ Error in bot_started function {func.__name__}: {e}")
         else:
-            log.info(f'RUNNING >._ no bot started function found.')
+            log.info(f'✓ <bot_started> function not found.')
 
     def load_plugins(self):
         import plugs
         module_list = [(name, module) for name, module in inspect.getmembers(plugs, inspect.isfunction)]
         # 遍历所有模块，找到函数并根据其属性进行分类
-        log.info(f'RUNNING >._ load registry...')
+        log.info(f'>> load registry...')
         log.info('IDX    FUNCTION NAME       ATTRIBUTE')
         idx = 0
         for name, module in module_list:
@@ -62,7 +62,7 @@ class IManager:
                     log.success('{}.{}  {} {} [{}]'.format(idx, num_space, name, ' ' * padding, attr))
                     list_ref.append(module)
                     break  # 假设一个函数只符合一个分类，找到即停止
-        log.success(f'RUNNING >._ load registry complete.')
+        log.success(f'✓ load registry complete.')
         self.loaded = True
 
     def initialize(self):
@@ -78,7 +78,7 @@ initialize_manager = IManager()
 if __name__ == '__main__':
     from core.__init__ import __version__
     from core.classes.utils import log
-    log.success(f'RUNNING >._ Tomorin BOT - v{__version__} @2023-2024')
+    log.success(f'>> Tomorin BOT - v{__version__} @2023-2024')
     try:
         initialize_manager.initialize()
         input()  # 阻塞主线程，保持程序运行
