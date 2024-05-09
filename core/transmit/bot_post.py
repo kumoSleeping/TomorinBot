@@ -1,8 +1,10 @@
-from core.__main__ import initialize_manager, config
+from core.__main__ import config
 from core.classes.utils import log
 
 import requests
 import json
+
+from __main__ import initialize_manager
 
 
 def request_by_requests(event, data: dict, headers: dict, full_address: str):
@@ -50,9 +52,9 @@ def api_request(event, method: str, data: dict, platform: str, self_id: str, int
     token = this_connection['token']
     http_protocol = this_connection.get('http_protocol', 'http')
     # 构建完整的API地址
-    full_address = f'{http_protocol}://{address}/{method}'
+    full_address = f'{http_protocol}://{address}/v1/{method}'
     if internal:
-        full_address = f'{http_protocol}://{address}/internal/{method}'
+        full_address = f'{http_protocol}://{address}/v1/internal/{method}'
 
     # 构建请求头
     headers = {
@@ -62,37 +64,13 @@ def api_request(event, method: str, data: dict, platform: str, self_id: str, int
         'X-Self-ID': self_id
     }
 
-    response_dict = {}
-
     try:
-        # 调用before_request
-        if initialize_manager.before_api_request_tag:
-            for before_request_item in initialize_manager.before_api_request_tag:
-                result = before_request_item(event, method, data, platform, self_id)
-                # 验证返回值包含所有必要的元素
-                if not isinstance(result, tuple) or len(result) != 5:
-                    log.error("An error occurred, perhaps <on.before_api_request> returned value count is not correct.")
-                    return
-                event, method, data, platform, self_id = result
-
-        # 发送POST请求
-        response_dict = {}  # 假设存在此变量以便于示例编译通过
         result = request_by_requests(event, data, headers, full_address)
-        # 验证返回值包含所有必要的元素
-        if not isinstance(result, tuple) or len(result) != 5:
-            log.error("An error occurred, perhaps <request_by_requests> returned value count is not correct.")
-            return
         event, data, headers, full_address, response_dict = result
-
         # 调用after_request
-        if initialize_manager.after_data_to_event_tag:
-            for after_request_item in initialize_manager.after_api_request_tag:
-                result = after_request_item(event, method, data, platform, self_id, response_dict)
-                # 验证返回值包含所有必要的元素
-                if not isinstance(result, tuple) or len(result) != 6:
-                    log.error("An error occurred, perhaps <on.after_api_request> returned value count is not correct.")
-                    return
-                event, method, data, platform, self_id, response_dict = result
+        if initialize_manager._api_requested:
+            for item in initialize_manager._api_requested:
+                item(event, method, data, platform, self_id, response_dict)
 
     except Exception as e:
         log.error('Error occurred.')

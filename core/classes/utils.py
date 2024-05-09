@@ -6,21 +6,7 @@ from datetime import datetime
 import sys
 
 
-def supports_ansi():
-    """
-    Returns True if the running system's terminal supports ANSI escape sequences,
-    and False otherwise.
-    """
-    # ANSI转义序列用于设置终端文本颜色，这里尝试输出一个设置文本颜色的转义序列
-    try:
-        sys.stdout.write("\x1b[1;31m\x1b[0m")
-    except Exception:
-        return False
-    else:
-        return True
-
-
-ansi_color = supports_ansi()
+ansi_color = True
 
 
 class Log:
@@ -120,8 +106,6 @@ class Config:
 
 
 config_pre = Config('config.json')
-
-
 
 
 

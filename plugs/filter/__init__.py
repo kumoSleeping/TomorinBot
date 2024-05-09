@@ -67,11 +67,11 @@ if not os.path.exists(ban_dicts_path):
 BanManager.load_data()
 
 
-@on.before_plugin_handler
+@on.bot_event_built
 def filter_match(event: Event, plugin):
     if not BanManager.check_before_plugin(event, plugin.__name__):
-        return None, None
-    return event, plugin
+        return None
+    return event
 
 
 @on.message_created

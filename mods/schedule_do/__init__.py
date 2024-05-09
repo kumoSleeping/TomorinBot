@@ -3,11 +3,18 @@ from datetime import datetime
 from functools import wraps
 from threading import Thread
 import schedule
+import typing
 
 from mods import log
 
+import time
+from datetime import datetime
+from functools import wraps
+from threading import Thread
+import schedule
 
-def timer_do(time_or_times: str | list):
+
+def timer_do(time_or_times: typing.Union[str, typing.List[str]]):
     """
     实现装饰器：定时执行器，以本地时间为基准，到达了预定的时间 (24小时制) 就执行一次任务
 
@@ -57,7 +64,7 @@ def timer_do(time_or_times: str | list):
 
             schedule_thread = Thread(target=run_schedule, daemon=True)
             schedule_thread.start()
-            log.success(f"{func} is scheduled for {times}.")
+            log.success(f"{func.__name__} is scheduled for {times}.")
             return func
         return wrapper
     return decorator
@@ -98,7 +105,7 @@ def interval_do(interval: int, do_now: bool = True):
             interval_thread = Thread(target=run_interval, daemon=True)
             interval_thread.start()
 
-            log.success(f"{func} is scheduled for every {interval} seconds.")
+            log.success(f"{func.__name__} is scheduled for every {interval} seconds.")
             return func
 
         return wrapper

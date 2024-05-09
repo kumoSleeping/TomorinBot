@@ -12,39 +12,24 @@ import time
 from __main__ import initialize_manager
 
 
-def build_session(data):
-    '''
+def build_session(data: dict):
+    """
     构建会话的流程，会在 ws 接收到消息时调用。
 
     :param data: satori 标准事件数据
     :return: None
-    '''
+    """
     try:
-        if initialize_manager.before_data_to_event_tag:
-            for before_event_item in initialize_manager.before_data_to_event_tag:
-                data = before_event_item(data)
-                # 确保返回值符合预期，否则跳过当前循环或执行其他操作
-                # if not data:
-                #     return
+        event: Event = Event(data)
 
-        event = Event(data)
-
-        if initialize_manager.after_data_to_event_tag:
-            for after_event_item in initialize_manager.after_data_to_event_tag:
-                event = after_event_item(event)
-                # if not event:
-                #     return
-
-        for loaded_func_item in initialize_manager.standard_event_tag:
-
-            if initialize_manager.before_plugin_handler_tag:
-                for before_plugin_handler_item in initialize_manager.before_plugin_handler_tag:
-                    event, loaded_func_item = before_plugin_handler_item(event, loaded_func_item)
-                    # if not event or not loaded_func_item:
-                    #     return
-
-            plugin_thread = threading.Thread(target=loaded_func_item, args=(event,))
-            plugin_thread.start()
+        if initialize_manager._event_built:
+            for after_event_item in initialize_manager._event_built:
+                if event:
+                    event = after_event_item(event)
+        for loaded_func_item in initialize_manager._satori_event:
+            if initialize_manager._satori_event:
+                plugin_thread = threading.Thread(target=loaded_func_item, args=(event,))
+                plugin_thread.start()
 
     except Exception as e:
         log.error('Error occurred.')
@@ -55,7 +40,8 @@ def build_session(data):
         gc.collect()
 
 
-def on_message(ws: websocket.WebSocketApp, message: any):
+def on_message(ws, message):
+    # 按照要求，这里 ws 和 message 都是必须的参数，而且类型为 any （为什么啊！）
     data: dict = json.loads(message)
     # 展示登陆信息
     if data["op"] == 4:
@@ -111,10 +97,10 @@ class WebsocketLink:
 
     def run(self):
         try:
-            log.info(f'>> link start...')
+            log.info(f'> link start...')
             # 连接 ws
             self.websocket = websocket.WebSocketApp(
-                self.full_address, on_message=on_message
+                url=self.full_address, on_message=on_message
             )
             # 认证 IDENTIFY 信令
             self.websocket.on_open = self.on_open

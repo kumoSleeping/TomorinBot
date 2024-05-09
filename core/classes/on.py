@@ -7,7 +7,7 @@ class On:
         """
         当消息被创建时触发。必需资源：channel，message，user。
         """
-        func.standard_event_tag = True
+        func._satori_event = 'message-created'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -22,7 +22,7 @@ class On:
         '''
         当消息被编辑时触发。必需资源：channel，message，user。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'message-updated'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -37,7 +37,7 @@ class On:
         '''
         当消息被删除时触发。必需资源：channel，message，user。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'message-deleted'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -52,7 +52,7 @@ class On:
         '''
         当按钮被点击时触发。必需资源：button。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'interaction/button'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -67,7 +67,7 @@ class On:
         '''
         调用斜线指令时触发。资源 argv 或 message 中至少包含其一。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'interaction/command'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -82,7 +82,7 @@ class On:
         '''
         加入群组时触发。必需资源：guild。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-added'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -97,7 +97,7 @@ class On:
         '''
         群组被修改时触发。必需资源：guild。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-updated'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -112,7 +112,7 @@ class On:
         '''
         退出群组时触发。必需资源：guild。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-removed'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -127,7 +127,7 @@ class On:
         '''
         接收到新的入群邀请时触发。必需资源：guild。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-request'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -142,7 +142,7 @@ class On:
         '''
         登录被创建时触发。必需资源：login。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'login-added'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -157,7 +157,7 @@ class On:
         '''
         登录被删除时触发。必需资源：login。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'login-removed'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -172,7 +172,7 @@ class On:
         '''
         登录信息更新时触发。必需资源：login。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'login-updated'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -187,7 +187,7 @@ class On:
         '''
         群组成员增加时触发。必需资源：guild，member，user。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-member-added'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -202,7 +202,7 @@ class On:
         '''
         群组成员信息更新时触发。必需资源：guild，member，user。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-member-updated'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -217,7 +217,7 @@ class On:
         '''
         群组成员移除时触发。必需资源：guild，member，user。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-member-removed'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -232,7 +232,7 @@ class On:
         '''
         接收到新的加群请求时触发。必需资源：guild，member，user。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-member-request'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -247,7 +247,7 @@ class On:
         '''
         接收到新的好友申请时触发。必需资源：user。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'friend-request'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -262,7 +262,7 @@ class On:
         '''
         群组角色被创建时触发。必需资源：guild，role。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-role-created'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -277,7 +277,7 @@ class On:
         '''
         群组角色被修改时触发。必需资源：guild，role。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-role-updated'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -292,7 +292,7 @@ class On:
         '''
         群组角色被删除时触发。必需资源：guild，role。
         '''
-        func.standard_event_tag = True
+        func._satori_event = 'guild-role-deleted'
 
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
@@ -307,7 +307,7 @@ class On:
     def internal(target_event_type):
 
         def decorator(func):
-            func.standard_event_tag = True
+            func._satori_event = True
 
             @wraps(func)
             def inner_wrapper(*args, **kwargs):
@@ -319,69 +319,27 @@ class On:
         return decorator
 
     @staticmethod
-    def before_api_request(func):
-        """
-        装饰器：在发送消息前执行函数
-
-        被装饰函数的参数 event:Event, method: str, data: dict, platform: str, self_id: str
-        被装饰函数的返回值 event:Event, method: str, data: dict, platform: str, self_id: str
-        """
-        func.before_api_request_tag = True
-        return func
-
-    @staticmethod
-    def after_api_request(func):
-        """
-        装饰器：在发送消息后执行函数
-
-        被装饰函数的参数 event:Event, method: str, data: dict, platform: str, self_id: str, response_dict: dict
-        被装饰函数的返回值 event:Event, method: str, data: dict, platform: str, self_id: str, response_dict: dict
-        """
-        func.after_api_request_tag = True
-        return func
-
-    @staticmethod
-    def before_data_to_event(func):
-        """
-        装饰器：在事件处理前执行函数
-
-        被装饰函数的参数 data: dict
-        被装饰函数的返回值 data: dict
-        """
-        func.before_data_to_event_tag = True
-        return func
-
-    @staticmethod
-    def before_plugin_handler(func):
-        """
-        装饰器：在插件执行前执行函数
-
-        被装饰函数的参数 event:Event, plugin_name: str
-        被装饰函数的返回值 event:Event, plugin_name: str
-        """
-        func.before_plugin_handler_tag = True
-        return func
-
-    @staticmethod
-    def after_data_to_event(func):
-        """
-        装饰器：在事件处理后执行函数
-
-        被装饰函数的参数 event:Event
-        被装饰函数的返回值 event:Event
-        """
-        func.after_data_to_event_tag = True
-        return func
-
-    @staticmethod
-    def bot_started(func):
+    def bot_start_up(func):
         """
         装饰器：在机器人启动时执行函数
-
-        被装饰函数的参数 无
-        被装饰函数的返回值 无
         """
-        func.bot_started_tag = True
+        func._startup = 'bot:start-up'
+        return func
+
+    @staticmethod
+    def bot_event_built(func):
+        """
+        装饰器：在机器人启动时执行函数
+        """
+        func._event_built = 'bot:event-built'
+        return func
+
+    @staticmethod
+    def bot_api_requested(func):
+        """
+        装饰器：在机器人启动时执行函数
+        """
+        func._api_requested = 'bot:api-requested'
         return func
 
 

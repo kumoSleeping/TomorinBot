@@ -58,7 +58,7 @@
 项目启动运行 `initialize`:
 
 1.加载 `plugs` 所有插件   
-2.执行所有 `on.bot_start` 事件   
+2.执行所有 `on.bot_start_up` 事件   
 3.启动 `transmit` 传输类的 `bot_websocket`   
 
 #### transmit
@@ -97,6 +97,34 @@ hupper -m core
 ```
 
 本项目第一次运行时会生成一个 `config.json` 文件，你需要主动关闭应用，在其中填写你的合适的配置后重启以加载新的配置。
+
+
+```
+ ----------------------------------------------------------------- 
+| TomorinBOT - v4.3.0 - @2023-2024 Compliant with Satori Protocol |
+ ----------------------------------------------------------------- 
+● 18:51:12 [TomorinBot-core] > load registry...
+● 18:51:12 [TomorinBot-core] IDX     FUNCTION NAME      ATTRIBUTES_TAG
+● 18:51:12 [TomorinBot-core] ---     -------------      --------------
+● 18:51:12 [TomorinBot-core] (1)     display_receive    bot:event-built
+● 18:51:12 [TomorinBot-core] (2)     display_send       bot:api-requested
+● 18:51:12 [TomorinBot-core] (3)     echo               message-created
+● 18:51:12 [TomorinBot-core] (4)     refresh_data       bot:start-up
+● 18:51:13 [TomorinBot-core] ✓ load registry complete.
+● 18:51:13 [TomorinBot-core] > bot:started function started...
+● 18:51:13 [mods-schedule_do] refresh_data is scheduled for every 86400 seconds.
+● 18:51:13 [TomorinBot-core] ✓ bot:started function <refresh_data> executed.
+● 18:51:13 [TomorinBot-core] ✓ bot:started function completed.
+● 18:51:13 [core-transmit] > link start...
+● 18:51:13 [core-transmit] ✓ Satori driver connected.
+● 18:51:13 [core-transmit] [] login [chronocat]
+● 18:51:13 [mods-schedule_do] Do <function refresh_data at 0x139f6f920> now!
+● 18:51:15 [TomorinBot-core] かつて忘れられない、星空は未来を照らし、次の春へ。    ―― 2024.1.30 10:54:23・東京・豊島区
+
+Process finished with exit code 143 (interrupted by signal 15:SIGTERM)
+```
+
+
 
 ## 快速上手
 
@@ -137,7 +165,9 @@ def a_cat(event: mods.Event):
         event.message_create(f'Welcome {event.user.name}!{mods.h.image(cat_pic, 'cat.jpg')}')
 ```
 
-> 使用来自 `mods` 的 定时器 与 间隔器 实现常规定时任务
+> 使用来自 `mods` 的 定时器 与 间隔器 实现常规定时任务   
+> 请注意，定时器与间隔器的时间单位为秒，且定时器会在启动时立即执行一次，可以通过 `do_now` 参数控制是否立即执行。   
+> 通过 `@mods.on.bot_start_up` 装饰器可以在启动时执行一次，也可以自己指定启动时机，但请注意这是一个永不停止的线程不安全，使用与停止时还请注意。
 ```py
 import mods
 
@@ -145,6 +175,7 @@ bot_self_id= '1234567890'
 my_channel_id = '1234567890'
 
 
+@mods.on.bot_start_up
 @mods.timer_do('23:00')
 def clock1():
     event = mods.Event()
@@ -152,7 +183,8 @@ def clock1():
     event.self_id = bot_self_id
     event.message_create(channel_id=my_channel_id, content='你今天贴瓷砖了吗！')
 
-
+    
+@mods.on.bot_start_up
 @mods.interval_do(8*60*60,do_now=False)
 def back_up():
     # 备份数据库
@@ -162,7 +194,7 @@ def back_up():
 
 > 利用来自 `mods` 的 `config` 与 `assets` 实现资源配置
 
-need 用于检查配置是否存在，不存在则写入默认值。(需要重启)
+need 用于检查配置是否存在，不存在则写入默认值。(需要重启重载)
 ```py
 import mods
 mods.config.need('my_img_path', mods.assets("my_img.png"))
@@ -175,49 +207,9 @@ import mods
 mods.log.info('info')
 mods.log.warning('warning')
 mods.log.error('error')
-mods.log.debug('debug') # only in debug mode
+mods.log.debug('debug')
 mods.log.success('success')
 ```
 
-> 利用 `json` 实现一个备忘录 (本例用于记录mc地图坐标)
-
-```py
-import json
-import os
-import mods
-
-def load_data(file_path):
-    if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as file:
-            return json.load(file)
-    else:
-        return []
-
-def save_data(data, file_path):
-    with open(file_path, 'w', encoding='utf-8') as file:
-        json.dump(data, file, ensure_ascii=False, indent=4)
-
-def generate_list(data):
-    return '\n'.join(f'{i + 1}. {item}' for i, item in enumerate(data))
-
-data_file = mods.assets('mcp.json')
-data_gm = load_data(data_file)
-
-@mods.on.message_created
-def grp_mem(event: mods.Event):
-    if res := mods.match_command(event, ['mcp add', 'mcpadd', '+mcp']):
-        data_gm.append(res.text)
-        save_data(data_gm, data_file)
-        res.send(generate_list(data_gm))
-    elif res := mods.match_command(event, ['mcp del', 'mcpdel', '-mcp']):
-        try:
-            del data_gm[int(res.text) - 1]
-            save_data(data_gm, data_file)
-            res.send(generate_list(data_gm))
-        except:
-            res.send('删除失败')
-    elif res := mods.match_command(event, ['mcp']):
-        res.send(generate_list(data_gm))
-```
 
 

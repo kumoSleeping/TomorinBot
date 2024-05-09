@@ -83,15 +83,15 @@ class Message:
         self.created_at: Optional[int] = message_info.get('created_at', -1)
         self.updated_at: Optional[int] = message_info.get('updated_at', -1)
 
-        self.quote: Quote = Quote(message_info.get('quote', {}))
+        # self.quote: Quote = Quote(message_info.get('quote', {}))
 
 
-class Quote:
-    def __init__(self, quote_info: dict):
-        self.id: Optional[str] = quote_info.get('id', '')
-        self.message_id: Optional[str] = quote_info.get('message_id', '')
-        self.content: Optional[str] = quote_info.get('content', '')
-        self.user = User(quote_info.get('user', {}))
+# class Quote:
+#     def __init__(self, quote_info: dict):
+#         self.id: Optional[str] = quote_info.get('id', '')
+#         self.message_id: Optional[str] = quote_info.get('message_id', '')
+#         self.content: Optional[str] = quote_info.get('content', '')
+#         self.user = User(quote_info.get('user', {}))
 
 
 class Event:

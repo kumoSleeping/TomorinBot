@@ -11,6 +11,9 @@ config.json
 __bin__/
 kumo/
 
+config*
+plugs/plugs_ksm
+plugs/test
 
 
 # Byte-compiled / optimized / DLL files
