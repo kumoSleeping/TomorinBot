@@ -3,10 +3,55 @@ import json
 import os
 import inspect
 from datetime import datetime
-import sys
 
 
-ansi_color = True
+class C:
+    reset = "\033[0m"
+    red = "\033[31m"
+    green = "\033[32m"
+    yellow = "\033[33m"
+    blue = "\033[34m"
+    magenta = "\033[35m"
+    cyan = "\033[36m"
+    white = "\033[37m"
+    # Bright variants
+    bright_red = "\033[91m"
+    bright_green = "\033[92m"
+    bright_yellow = "\033[93m"
+    bright_blue = "\033[94m"
+    bright_magenta = "\033[95m"
+    bright_cyan = "\033[96m"
+    bright_white = "\033[97m"
+
+    class bg:  # Background colors
+        black = "\033[40m"
+        red = "\033[41m"
+        green = "\033[42m"
+        yellow = "\033[43m"
+        blue = "\033[44m"
+        magenta = "\033[45m"
+        cyan = "\033[46m"
+        white = "\033[47m"
+        # Bright variants
+        bright_black = "\033[100m"
+        bright_red = "\033[101m"
+        bright_green = "\033[102m"
+        bright_yellow = "\033[103m"
+        bright_blue = "\033[104m"
+        bright_magenta = "\033[105m"
+        bright_cyan = "\033[106m"
+        bright_white = "\033[107m"
+
+    class style:
+        bold = "\033[1m"
+        underline = "\033[4m"
+        reversed = "\033[7m"
+        dim = "\033[2m"
+        italic = "\033[3m"
+        blink = "\033[5m"
+
+
+c = C()
 
 
 class Log:
@@ -18,52 +63,51 @@ class Log:
         """
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
-        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        # if config["log"]["debug"]:
-        if ansi_color:
-            print("\033[1;31m■ " + text + "\033[0m")
+        if filename_parts[-1] in ['core', 'mods', 'plugs']:
+            selected_parts = filename_parts[-1]
         else:
-            print("DEBUG__ - " + text)
+            selected_parts = '-'.join(filename_parts)
+        print(f'{c.red}▶{c.white} {log_time} {c.cyan} {selected_parts} {c.white} {text} {c.reset}')
 
     @staticmethod
     def error(text):
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
-        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if ansi_color:
-            print("\033[1;31m● " + text + "\033[0m")
+        if filename_parts[-1] in ['core', 'mods', 'plugs']:
+            selected_parts = filename_parts[-1]
         else:
-            print("ERROR__ - " + text)
+            selected_parts = '-'.join(filename_parts)
+        print(f'✗{c.white} {log_time} {c.cyan} {selected_parts} {c.red} {text} {c.reset}')
 
     @staticmethod
     def info(text):
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
-        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if ansi_color:
-            print("\033[1;37m● " + "\033[0m" + text)
+        if filename_parts[-1] in ['core', 'mods', 'plugs']:
+            selected_parts = filename_parts[-1]
         else:
-            print("INFO___ - " + text)
+            selected_parts = '-'.join(filename_parts)
+        print(f'●{c.white} {log_time} {c.cyan} {selected_parts} {c.reset} {text}')
 
     @staticmethod
     def warning(text):
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
-        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if ansi_color:
-            print("\033[1;33m● " + text + "\033[0m")
+        if filename_parts[-1] in ['core', 'mods', 'plugs']:
+            selected_parts = filename_parts[-1]
         else:
-            print("WARNING - " + text)
+            selected_parts = '-'.join(filename_parts)
+        print(f'{c.yellow}⚠{c.white} {log_time} {c.cyan} {selected_parts} {c.yellow} {text} {c.reset}')
 
     @staticmethod
     def success(text):
         log_time = datetime.fromtimestamp(time.time()).strftime('%H:%M:%S')
         filename_parts = inspect.stack()[1].filename.split(os.path.sep)[-3:-1]
-        text = log_time + ' [' + '-'.join(filename_parts) + '] ' + str(text)
-        if ansi_color:
-            print("\033[1;32m● " + "\033[0m" + text)
+        if filename_parts[-1] in ['core', 'mods', 'plugs']:
+            selected_parts = filename_parts[-1]
         else:
-            print("SUCCESS - " + text)
+            selected_parts = '-'.join(filename_parts)
+        print(f'{c.bright_green}✓{c.white} {log_time} {c.cyan} {selected_parts} {c.reset} {text}')
 
 
 # log 包是第一个被加载的包，所以在这里初始化配置文件
@@ -106,9 +150,6 @@ class Config:
 
 
 config_pre = Config('config.json')
-
-
-
 
 
 

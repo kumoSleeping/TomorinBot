@@ -1,7 +1,7 @@
 from requests import Response
 from mods import config, on, Event
 
-from mods import easy_to_show_text, log
+from mods import easy_to_show_text, log, c
 
 
 @on.bot_event_built
@@ -16,7 +16,7 @@ def display_receive(event: Event):
 @on.bot_api_requested
 def display_send(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
     try:
-        log.info(f'SEND {method} -> {platform} {data.get("message_id", "")}')
+        log.info(f'{c.bright_magenta}{method}{c.reset} -> {c.bright_green}{platform}{c.reset}')
     except Exception as e:
         if not response:
             log.error(f'无法显示日志 {e}')
@@ -39,7 +39,7 @@ def show_event_log(event):
     # 获取24小时制度当前时间
 
     if event.type != 'internal':
-        log.info(f"<{event.type}> | {event.platform}:{place} | {user}: {cleaned_text}")
+        log.info(f"{c.bright_magenta}{event.type}{c.reset} {c.bright_green}{event.platform}{c.reset}:{c.bright_blue}{place}{c.reset} | {c.bright_yellow}{user}{c.reset}: {cleaned_text}")
 
 
 

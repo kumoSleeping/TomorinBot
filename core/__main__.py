@@ -4,6 +4,7 @@ import inspect
 import signal
 from core.classes.utils import config_pre as config
 from core.classes.utils import log
+from core.classes.utils import c
 
 
 # 获取当前文件的父目录并切换工作目录
@@ -22,24 +23,23 @@ class IManager:
 
     def run_on_bot_started(self):
         if len(self._startup) > 0:
-            log.info(f'> bot:started function started...')
+            # log.info(f'> bot:started function started...')
             for func in self._startup:
                 try:
                     func()
-                    log.info(f"✓ bot:started function <{func.__name__}> executed.")
+                    log.info(f"{c.blue}<bot_started>{c.reset} {c.bright_green}{func.__name__}{c.reset} executed.")
                 except Exception as e:
-                    log.error(f"✗ Error in bot_started function {func.__name__}: {e}")
-            log.success(f'✓ bot:started function completed.')
+                    log.error(f"Error in {c.blue}<bot_started>{c.reset} function {func.__name__}: {e}")
         else:
-            log.info(f'✓ bot:started function not found.')
+            log.info(f'not found any {c.blue}<bot_started>{c.reset}')
 
     def load_plugins(self):
         import plugs
         module_list = [(name, module) for name, module in inspect.getmembers(plugs, inspect.isfunction)]
         # 遍历所有模块，找到函数并根据其属性进行分类
-        log.info(f'> load registry...')
-        log.info('IDX     FUNCTION NAME      ATTRIBUTES_TAG')
-        log.info('---     -------------      --------------')
+        # log.info(f'> load registry...')
+        # log.info('IDX     FUNCTION NAME      ATTRIBUTES_TAG')
+        # log.info('---     -------------      --------------')
         idx = 0
         for name, module in module_list:
             # 使用字典映射属性到对应的列表
@@ -56,13 +56,13 @@ class IManager:
                     # 输出函数 attr 的值
                     # print(type(module))
                     # print(f"{attr} value: {getattr(module, attr)}")
-                    num_space = '   ' if idx < 9 else '  ' if idx < 99 else ' '
-                    idx += 1
-                    padding = 18 - len(name)
-                    log.success('({}){}  {} {}{}'.format(idx, num_space, name, ' ' * padding, getattr(module, attr)))
+                    # num_space = '   ' if idx < 9 else '  ' if idx < 99 else ' '
+                    # idx += 1
+                    # padding = 18 - len(name)
+                    # log.success('apply plugin {}  {} {}{}'.format(idx, num_space, name, ' ' * padding, getattr(module, attr)))
+                    log.success(f'apply {c.bright_green}{name} {c.blue}<{getattr(module, attr)}>{c.reset}')
                     list_ref.append(module)
                     break  # 假设一个函数只符合一个分类，找到即停止
-        log.success(f'✓ load registry complete.')
         self.loaded = True
 
     def initialize(self):
@@ -76,10 +76,13 @@ initialize_manager = IManager()
 
 
 if __name__ == '__main__':
+    import os
+    # Windows终端启用ANSI
+    if sys.platform == "win32":
+        os.system('')  # 这将启用 ANSI 序列支持
     from core.__init__ import __version__
-    print(f' ----------------------------------------------------------------- ')
-    print(f'| TomorinBOT - v{__version__} - @2023-2024 Compliant with Satori Protocol |')
-    print(f' ----------------------------------------------------------------- ')
+    from core.classes.utils import log
+    print(f'{c.bright_white}B{c.bg.green}OTTo{c.reset}{c.bright_white}morin {c.bright_magenta}v{__version__}{c.reset} {c.white}@2023-2024{c.reset} Compliant with {c.bright_red}Satori Protocol{c.reset}')
     try:
         initialize_manager.initialize()
         while True:

@@ -33,6 +33,8 @@ def assets(file_name: str) -> str:
     else:
         # 定位 plugs 文件夹下的文件夹
         folder_name = os.path.dirname(file_path[i].filename)
+        if file_name in ['core', 'mods', 'plugs']:
+            return f"{file_name}"
         mixed_folder_name = f"{folder_name}/{file_name}"
         return mixed_folder_name
 

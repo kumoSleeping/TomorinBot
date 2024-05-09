@@ -1,6 +1,7 @@
 from core.__main__ import config
 from core.classes.event import Event
 from core.classes.utils import log
+from core.classes.utils import c
 
 import websocket
 import json
@@ -45,14 +46,16 @@ def on_message(ws, message):
     data: dict = json.loads(message)
     # 展示登陆信息
     if data["op"] == 4:
-        log.success("✓ Satori driver connected.")
+        log.success("satori driver connected")
         for login_info in data["body"]["logins"]:
             name = login_info["user"].get("name", login_info["user"]["id"])
+            if name == '':
+                name = '<SOMEBOT>'
             status = login_info["status"]
             (
-                log.success(f"[{name}] login [{login_info['platform']}]")
+                log.success(f"bot {c.bg.green}{c.bright_white}{name}{c.reset} login {c.bright_green}{login_info['platform']}{c.reset}")
                 if status == 1
-                else log.red(f"[{name}] login [{login_info['platform']}]")
+                else log.red(f"{name} login {login_info['platform']}")
             )
 
     # event 事件
@@ -97,7 +100,7 @@ class WebsocketLink:
 
     def run(self):
         try:
-            log.info(f'> link start...')
+            log.info(f'link start...')
             # 连接 ws
             self.websocket = websocket.WebSocketApp(
                 url=self.full_address, on_message=on_message
