@@ -20,7 +20,12 @@ def request_by_requests(event, data: dict, headers: dict, full_address: str):
             raise Exception(log.error(f'未能解析响应为JSON格式，响应：{response.text}'))
     else:
         # 抛出错误
-        raise Exception(log.error(f'请求失败，状态码：{response.status_code}，响应：{response.text}'))
+        if response.text:
+            raise Exception(log.error(f'请求失败，状态码：{response.status_code}，响应：{response.text}'))
+        elif response.status_code:
+            raise Exception(log.error(f'请求失败，状态码：{response.status_code}'))
+        else:
+            raise Exception(log.error(f'请求失败，状态未知'))
 
 
 def api_request(event, method: str, data: dict, platform: str, self_id: str, internal=False):

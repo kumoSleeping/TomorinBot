@@ -2,6 +2,7 @@ import re
 
 from mods import config
 from mods import log
+from mods import c
 
 config.need('message_content_tools', {'prefix': ['/', '']})
 
@@ -113,7 +114,7 @@ def easy_to_show_text(text):
     '''
     html_tag_pattern = re.compile(r'<.*?>')
     # 将所有HTML标签替换为占位符
-    cleaned_text = re.sub(html_tag_pattern, '[媒体消息]', text)
+    cleaned_text = re.sub(html_tag_pattern, f'{c.blue}[媒体消息]{c.reset}', text)
     cleaned_text = cleaned_text[0:15] + '...' if len(cleaned_text) > 15 else cleaned_text
     cleaned_text = cleaned_text.replace("\n", " ").replace("\r", " ")
     return cleaned_text

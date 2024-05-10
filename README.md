@@ -99,33 +99,6 @@ hupper -m core
 本项目第一次运行时会生成一个 `config.json` 文件，你需要主动关闭应用，在其中填写你的合适的配置后重启以加载新的配置。
 
 
-```
- ----------------------------------------------------------------- 
-| TomorinBOT - v4.3.0 - @2023-2024 Compliant with Satori Protocol |
- ----------------------------------------------------------------- 
-● 18:51:12 [TomorinBot-core] > load registry...
-● 18:51:12 [TomorinBot-core] IDX     FUNCTION NAME      ATTRIBUTES_TAG
-● 18:51:12 [TomorinBot-core] ---     -------------      --------------
-● 18:51:12 [TomorinBot-core] (1)     display_receive    bot:event-built
-● 18:51:12 [TomorinBot-core] (2)     display_send       bot:api-requested
-● 18:51:12 [TomorinBot-core] (3)     echo               message-created
-● 18:51:12 [TomorinBot-core] (4)     refresh_data       bot:start-up
-● 18:51:13 [TomorinBot-core] ✓ load registry complete.
-● 18:51:13 [TomorinBot-core] > bot:started function started...
-● 18:51:13 [mods-schedule_do] refresh_data is scheduled for every 86400 seconds.
-● 18:51:13 [TomorinBot-core] ✓ bot:started function <refresh_data> executed.
-● 18:51:13 [TomorinBot-core] ✓ bot:started function completed.
-● 18:51:13 [core-transmit] > link start...
-● 18:51:13 [core-transmit] ✓ Satori driver connected.
-● 18:51:13 [core-transmit] [] login [chronocat]
-● 18:51:13 [mods-schedule_do] Do <function refresh_data at 0x139f6f920> now!
-● 18:51:15 [TomorinBot-core] かつて忘れられない、星空は未来を照らし、次の春へ。    ―― 2024.1.30 10:54:23・東京・豊島区
-
-Process finished with exit code 143 (interrupted by signal 15:SIGTERM)
-```
-
-
-
 ## 快速上手
 
 

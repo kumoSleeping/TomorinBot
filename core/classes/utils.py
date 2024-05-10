@@ -67,7 +67,7 @@ class Log:
             selected_parts = filename_parts[-1]
         else:
             selected_parts = '-'.join(filename_parts)
-        print(f'{c.red}▶{c.white} {log_time} {c.cyan} {selected_parts} {c.white} {text} {c.reset}')
+        print(f'{c.bright_magenta}▶{c.white} {log_time} {c.cyan}{selected_parts} {c.bright_magenta}{text}{c.reset}')
 
     @staticmethod
     def error(text):
@@ -77,7 +77,7 @@ class Log:
             selected_parts = filename_parts[-1]
         else:
             selected_parts = '-'.join(filename_parts)
-        print(f'✗{c.white} {log_time} {c.cyan} {selected_parts} {c.red} {text} {c.reset}')
+        print(f'{c.bright_red}✗{c.white} {log_time} {c.cyan}{selected_parts} {c.bg.red}{c.bright_white}{text}{c.reset}')
 
     @staticmethod
     def info(text):
@@ -87,7 +87,7 @@ class Log:
             selected_parts = filename_parts[-1]
         else:
             selected_parts = '-'.join(filename_parts)
-        print(f'●{c.white} {log_time} {c.cyan} {selected_parts} {c.reset} {text}')
+        print(f'●{c.white} {log_time} {c.cyan}{selected_parts}{c.reset} {text}')
 
     @staticmethod
     def warning(text):
@@ -97,7 +97,7 @@ class Log:
             selected_parts = filename_parts[-1]
         else:
             selected_parts = '-'.join(filename_parts)
-        print(f'{c.yellow}⚠{c.white} {log_time} {c.cyan} {selected_parts} {c.yellow} {text} {c.reset}')
+        print(f'{c.yellow}⚠{c.white} {log_time} {c.cyan}{selected_parts}{c.bright_yellow} {c.bg.yellow}{c.bright_white}{text}{c.reset}')
 
     @staticmethod
     def success(text):
@@ -107,7 +107,7 @@ class Log:
             selected_parts = filename_parts[-1]
         else:
             selected_parts = '-'.join(filename_parts)
-        print(f'{c.bright_green}✓{c.white} {log_time} {c.cyan} {selected_parts} {c.reset} {text}')
+        print(f'{c.bright_green}✓{c.white} {log_time} {c.cyan}{selected_parts} {c.reset}{text}')
 
 
 # log 包是第一个被加载的包，所以在这里初始化配置文件
