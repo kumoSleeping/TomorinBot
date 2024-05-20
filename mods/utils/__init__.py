@@ -19,24 +19,9 @@ config.need('auth', [
       ])
 
 
-def assets(file_name: str) -> str:
-    '''
-    自动分配 assets 文件路径
-    '''
-    file_path = inspect.stack()
-    # 定位 plugs 文件夹
-    for i in range(len(file_path)):
-        if 'plugs' in file_path[i].filename:
-            break
-    if i == len(file_path):
-        raise Exception('未找到 plugs 文件夹')
-    else:
-        # 定位 plugs 文件夹下的文件夹
-        folder_name = os.path.dirname(file_path[i].filename)
-        if file_name in ['core', 'mods', 'plugs']:
-            return f"{file_name}"
-        mixed_folder_name = f"{folder_name}/{file_name}"
-        return mixed_folder_name
+# Create the 'assets' directory if it doesn't exist
+if not os.path.exists('assets'):
+    os.makedirs('assets')
 
 
 def is_admin(platform, user_id):

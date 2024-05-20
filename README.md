@@ -182,6 +182,11 @@ mods.log.warning('warning')
 mods.log.error('error')
 mods.log.debug('debug')
 mods.log.success('success')
+
+
+mods.log.info(f'{mods.c.bright_green}这是绿色的字{mods.c.reset}')
+mods.log.info(f'{mods.c.bg.red}{mods.c.bright_white}这是红色背景的字{mods.c.reset}')
+mods.log.info(f'{mods.c.style.underline}这是下划线{mods.c.reset}')
 ```
 
 

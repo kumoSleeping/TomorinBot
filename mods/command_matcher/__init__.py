@@ -119,7 +119,7 @@ def match_command(event: Event,
 
         # gap_less：容许不加空格
         elif allow_gap_less and pure_msg.startswith(item) and not limit_arg_less:
-            args = pure_msg.split()[1:]
+            args = pure_msg.replace(item, '', 1).split()
             text = pure_msg.replace(item, '', 1)
             return MC(event, args, text)
 

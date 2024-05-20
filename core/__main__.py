@@ -90,6 +90,8 @@ if __name__ == '__main__':
             if cmd in ['exit', 'kill', 'quit', 'stop']:
                 log.warning(f'kill signal received.')
                 os.kill(os.getpid(), signal.SIGTERM)
+                # from core.classes.event import Event
+                
             log.warning(f'Command not found: {cmd}')
     except KeyboardInterrupt:
         log.info(f'かつて忘れられない、星空は未来を照らし、次の春へ。    ―― 2024.1.30 10:54:23・東京・豊島区')

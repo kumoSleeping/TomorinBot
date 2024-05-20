@@ -50,10 +50,10 @@ def on_message(ws, message):
         for login_info in data["body"]["logins"]:
             name = login_info["user"].get("name", login_info["user"]["id"])
             if name == '':
-                name = '<SOMEBOT>'
+                name = 'SOMEBOT'
             status = login_info["status"]
             (
-                log.success(f"bot {c.bg.green}{c.bright_white}{name}{c.reset} login {c.bright_green}{login_info['platform']}{c.reset}")
+                log.success(f"bot {c.bright_yellow}{c.style.bold}{c.style.underline}{name}{c.reset} login {c.bright_green}{login_info['platform']}{c.reset}")
                 if status == 1
                 else log.red(f"{name} login {login_info['platform']}")
             )
