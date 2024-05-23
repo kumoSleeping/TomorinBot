@@ -1,4 +1,4 @@
-from mods import on, Event
+from mods import on, Event, EventAsync
 from typing import Optional, Union, List
 
 from .text_utils import plaintext_if_prefix, remove_all_xml, remove_first_prefix
@@ -35,7 +35,7 @@ class MC:
         return self.event.message_create(content=msg)
 
 
-def match_command(event: Event,
+def match_command(event: Union[Event, EventAsync],
                   commands: Optional[Union[List[str], str]] = '',
                   limit_arg_less: bool = False,
                   limit_admin: bool = False,

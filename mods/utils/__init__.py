@@ -1,5 +1,3 @@
-import os
-import inspect
 from mods import config
 
 
@@ -17,11 +15,6 @@ config.need('auth', [
           ]
         }
       ])
-
-
-# Create the 'assets' directory if it doesn't exist
-if not os.path.exists('assets'):
-    os.makedirs('assets')
 
 
 def is_admin(platform, user_id):

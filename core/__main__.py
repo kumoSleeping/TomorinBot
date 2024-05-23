@@ -2,9 +2,13 @@ import os
 import sys
 import inspect
 import signal
-from core.classes.utils import config_pre as config
-from core.classes.utils import log
-from core.classes.utils import c
+import importlib
+import threading
+
+from core.classes.config import config_pre as config
+from core.classes.log import log
+from core.classes.log import c
+from core.invoker.startup import run_on_bot_started_async, run_on_bot_started
 
 
 # 获取当前文件的父目录并切换工作目录
@@ -21,26 +25,8 @@ class IManager:
         self._event_built = []
         self.loaded = False
 
-    def run_on_bot_started(self):
-        if len(self._startup) > 0:
-            # log.info(f'> bot:started function started...')
-            for func in self._startup:
-                try:
-                    func()
-                    log.info(f"{c.blue}<bot_started>{c.reset} {c.bright_green}{func.__name__}{c.reset} executed.")
-                except Exception as e:
-                    log.error(f"Error in {c.blue}<bot_started>{c.reset} function {func.__name__}: {e}")
-        else:
-            log.info(f'not found any {c.blue}<bot_started>{c.reset}')
-
-    def load_plugins(self):
-        import plugs
+    async def load_plugins(self, plugs):
         module_list = [(name, module) for name, module in inspect.getmembers(plugs, inspect.isfunction)]
-        # 遍历所有模块，找到函数并根据其属性进行分类
-        # log.info(f'> load registry...')
-        # log.info('IDX     FUNCTION NAME      ATTRIBUTES_TAG')
-        # log.info('---     -------------      --------------')
-        idx = 0
         for name, module in module_list:
             # 使用字典映射属性到对应的列表
             attr_to_list = {
@@ -53,23 +39,42 @@ class IManager:
             for attr, list_ref in attr_to_list.items():
                 # print(attr, list_ref)
                 if hasattr(module, attr):
-                    # 输出函数 attr 的值
-                    # print(type(module))
-                    # print(f"{attr} value: {getattr(module, attr)}")
-                    # num_space = '   ' if idx < 9 else '  ' if idx < 99 else ' '
-                    # idx += 1
-                    # padding = 18 - len(name)
-                    # log.success('apply plugin {}  {} {}{}'.format(idx, num_space, name, ' ' * padding, getattr(module, attr)))
-                    log.success(f'apply {c.bright_green}{name} {c.blue}<{getattr(module, attr)}>{c.reset}')
+                    if inspect.iscoroutinefunction(module):
+                        log.success(f'apply {c.red}async:{c.bright_green}{name} {c.blue}<{getattr(module, attr)}>{c.reset}')
+                    else:
+                        log.success(f'apply {c.bright_yellow}sync:{c.bright_green}{name} {c.blue}<{getattr(module, attr)}>{c.reset}')
                     list_ref.append(module)
                     break  # 假设一个函数只符合一个分类，找到即停止
         self.loaded = True
 
-    def initialize(self):
-        self.load_plugins()  # 加载插件
-        self.run_on_bot_started()  # 执行机器人启动时执行函数
-        from core.transmit.bot_websockets import start_ws
-        start_ws()  # 启动 websocket
+    async def auto_load_all_plugins(self):
+        # 扫描文件夹下所有表层文件夹
+        root_pkg = os.walk('./').__next__()[1]
+        root_files = os.walk('./').__next__()[2]
+        filtered_folders = [folder for folder in root_pkg if not (folder.startswith(('.', '_', 'core')))]
+        filtered_files = [file[:-3] for file in root_files if file.endswith('.py') and not file.startswith(('.', '_'))]
+        import_list = filtered_folders + filtered_files
+        if len(import_list) == 0:
+            log.warning(f'not found {c.red}any{c.reset} {c.bright_magenta}plugs{c.reset}')
+        elif len(import_list) == 1:
+            log.info(f'found {c.bright_magenta}plug{c.reset}: {c.bright_magenta}{import_list[0]}{c.reset}')
+        else:
+            log.info(f'found {c.bright_green}{len(import_list)}{c.reset} {c.bright_magenta}plugs{c.reset}: {c.bright_magenta}{' '.join(import_list)}{c.reset}')
+        for i in import_list:
+            try:
+                # 尝试导入模块
+                plugs = importlib.import_module(i)
+                # 尝试加载插件
+                await self.load_plugins(plugs)
+            except Exception as e:
+                log.error(f'Error occurred while loading {i}: {e}')
+
+    async def run(self):
+        await self.auto_load_all_plugins()  # 加载插件
+        from core.transmit.ws import start_ws
+        await run_on_bot_started_async(self)  # 执行启动函数
+        threading.Thread(target=run_on_bot_started, args=(self,)).start()  # 启动函数
+        await start_ws()
 
 
 initialize_manager = IManager()
@@ -77,26 +82,22 @@ initialize_manager = IManager()
 
 if __name__ == '__main__':
     import os
+
     # Windows终端启用ANSI
     if sys.platform == "win32":
         os.system('')  # 这将启用 ANSI 序列支持
     from core.__init__ import __version__
-    from core.classes.utils import log
-    print(f'{c.bright_white}B{c.bg.green}OTTo{c.reset}{c.bright_white}morin {c.bright_magenta}v{__version__}{c.reset} {c.white}@2023-2024{c.reset} Compliant with {c.bright_red}Satori Protocol{c.reset}')
-    try:
-        initialize_manager.initialize()
-        while True:
-            cmd = input()  # 阻塞主线程，保持程序运行
-            if cmd in ['exit', 'kill', 'quit', 'stop']:
-                log.warning(f'kill signal received.')
-                os.kill(os.getpid(), signal.SIGTERM)
-                # from core.classes.event import Event
-                
-            log.warning(f'Command not found: {cmd}')
-    except KeyboardInterrupt:
-        log.info(f'かつて忘れられない、星空は未来を照らし、次の春へ。    ―― 2024.1.30 10:54:23・東京・豊島区')
-        os.kill(os.getpid(), signal.SIGTERM)
+    from core.classes.log import log
 
+    print(
+        f'{c.bright_white}B{c.bg.green}OTTo{c.reset}{c.bright_white}morin {c.bright_magenta}v{__version__}{c.reset} {c.white}@2023-2024{c.reset} Compliant with {c.bright_red}Satori Protocol{c.reset}')
+    try:
+        import asyncio
+        asyncio.run(initialize_manager.run())
+
+    except KeyboardInterrupt:
+        log.info(f'かつて忘れられない、{c.bg.blue}星空{c.reset}は未来を照らし、次の{c.bg.green}春{c.reset}へ。 ({c.blue}{c.style.underline}2024.1.30 10:54:23・東京・豊島区{c.reset})')
+        os.kill(os.getpid(), signal.SIGTERM)
 
 
 

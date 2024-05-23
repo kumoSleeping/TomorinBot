@@ -4,6 +4,12 @@
 .DS_Store
 
 assets
+__Kanonbot
+__nonebot_plugin_kanonbot-master
+
+tsugu
+nonebot_plugin_kanonbot
+hello.py
 
 
 config.json

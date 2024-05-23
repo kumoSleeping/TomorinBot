@@ -4,15 +4,6 @@ from mods import config, on, Event
 from mods import easy_to_show_text, log, c
 
 
-@on.bot_event_built
-def display_receive(event: Event):
-    try:
-        show_event_log(event)
-    except Exception as e:
-        log.error(f'无法显示日志 {e}')
-    return event
-
-
 @on.bot_api_requested
 def display_send(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
     try:
@@ -23,6 +14,27 @@ def display_send(event: Event, method: str, data: dict, platform: str, self_id: 
         else:
             log.error(f'无法显示日志 {e} {response.text}')
     return event, method, data, platform, self_id, response
+
+
+@on.bot_api_requested
+async def display_send_async(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
+    try:
+        log.info(f'{c.bright_magenta}{method}{c.reset} -> {c.bright_green}{platform}{c.reset}')
+    except Exception as e:
+        if not response:
+            log.error(f'无法显示日志 {e}')
+        else:
+            log.error(f'无法显示日志 {e} {response.text}')
+    return event, method, data, platform, self_id, response
+
+
+@on.bot_event_built
+def display_receive(event: Event):
+    try:
+        show_event_log(event)
+    except Exception as e:
+        log.error(f'无法显示日志 {e}')
+    return event
 
 
 def show_event_log(event):

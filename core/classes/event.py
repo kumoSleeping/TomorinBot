@@ -1,7 +1,6 @@
 from enum import IntEnum
 from typing import Union, Optional
-
-from core.transmit.bot_post import api_request
+from core.transmit.api import sync_api_request, async_api_request
 
 
 class ChannelType(IntEnum):
@@ -83,16 +82,6 @@ class Message:
         self.created_at: Optional[int] = message_info.get('created_at', -1)
         self.updated_at: Optional[int] = message_info.get('updated_at', -1)
 
-        # self.quote: Quote = Quote(message_info.get('quote', {}))
-
-
-# class Quote:
-#     def __init__(self, quote_info: dict):
-#         self.id: Optional[str] = quote_info.get('id', '')
-#         self.message_id: Optional[str] = quote_info.get('message_id', '')
-#         self.content: Optional[str] = quote_info.get('content', '')
-#         self.user = User(quote_info.get('user', {}))
-
 
 class Event:
     def __init__(self, body=None):
@@ -120,7 +109,7 @@ class Event:
     # message
     def message_create(self,content: str = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return api_request(event=self, method='message.create', data={
+        return sync_api_request(event=self, method='message.create', data={
             'channel_id': channel_id,
             'content': content,
         }, platform=self.platform, self_id=self.self_id)
@@ -128,7 +117,7 @@ class Event:
     def message_delete(self, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return api_request(event=self, method='message.delete', data={
+        return sync_api_request(event=self, method='message.delete', data={
             'channel_id': channel_id,
             'message_id': message_id,
         }, platform=self.platform, self_id=self.self_id)
@@ -136,7 +125,7 @@ class Event:
     def message_update(self, content: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return api_request(event=self, method='message.update', data={
+        return sync_api_request(event=self, method='message.update', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'content': content,
@@ -144,58 +133,58 @@ class Event:
 
     def message_list(self, next_token: str = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return api_request(event=self, method='message.list', data={
+        return sync_api_request(event=self, method='message.list', data={
             'channel_id': channel_id,
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_get(self, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return api_request(event=self, method='channel.get', data={
+        return sync_api_request(event=self, method='channel.get', data={
             'channel_id': channel_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_list(self, next_token: str = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        return api_request(event=self, method='channel.list', data={
+        return sync_api_request(event=self, method='channel.list', data={
             'guild_id': guild_id,
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_create(self, channel_data: dict = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        return api_request(event=self, method='channel.create', data={
+        return sync_api_request(event=self, method='channel.create', data={
             'guild_id': guild_id,
             'data': channel_data,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_update(self, channel_data: dict = None, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return api_request(event=self, method='channel.update', data={
+        return sync_api_request(event=self, method='channel.update', data={
             'channel_id': channel_id,
             'data': channel_data,
         }, platform=self.platform, self_id=self.self_id)
 
     def channel_delete(self, channel_id: str = None):
         channel_id = channel_id or self.channel.id
-        return api_request(event=self, method='channel.delete', data={
+        return sync_api_request(event=self, method='channel.delete', data={
             'channel_id': channel_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def guild_get(self, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        return api_request(event=self, method='guild.get', data={
+        return sync_api_request(event=self, method='guild.get', data={
             'guild_id': guild_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def guild_list(self, next_token: str = None):
-        return api_request(event=self, method='guild.list', data={
+        return sync_api_request(event=self, method='guild.list', data={
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
     def guild_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
-        return api_request(event=self, method='guild.approve', data={
+        return sync_api_request(event=self, method='guild.approve', data={
             'message_id': message_id,
             'approve': approve,
             'comment': comment,
@@ -204,14 +193,14 @@ class Event:
     def guild_member_get(self, guild_id: str = None, user_id: str = None):
         guild_id = guild_id or self.guild.id
         user_id = user_id or self.user.id
-        return api_request(event=self, method='guild.member.get', data={
+        return sync_api_request(event=self, method='guild.member.get', data={
             'guild_id': guild_id,
             'user_id': user_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def guild_member_list(self, next_token: str = None, guild_id: str = None):
         guild_id = guild_id or self.guild.id
-        return api_request(event=self, method='guild.member.list', data={
+        return sync_api_request(event=self, method='guild.member.list', data={
             'guild_id': guild_id,
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
@@ -219,7 +208,7 @@ class Event:
     def guild_member_kick(self, permanent: bool = False, guild_id: str = None, user_id: str = None):
         guild_id = guild_id or self.guild.id
         user_id = user_id or self.user.id
-        return api_request(event=self, method='guild.member.kick', data={
+        return sync_api_request(event=self, method='guild.member.kick', data={
             'guild_id': guild_id,
             'user_id': user_id,
             'permanent': permanent,
@@ -227,29 +216,29 @@ class Event:
 
     def guild_member_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
-        return api_request(event=self, method='guild.member.approve', data={
+        return sync_api_request(event=self, method='guild.member.approve', data={
             'message_id': message_id,
             'approve': approve,
             'comment': comment,
         }, platform=self.platform, self_id=self.self_id)
 
     def login_get(self):
-        return api_request(event=self, method='login.get', data={}, platform=self.platform, self_id=self.self_id)
+        return sync_api_request(event=self, method='login.get', data={}, platform=self.platform, self_id=self.self_id)
 
     def user_get(self, user_id: str = None):
         user_id = user_id or self.user.id
-        return api_request(event=self, method='user.get', data={
+        return sync_api_request(event=self, method='user.get', data={
             'user_id': user_id,
         }, platform=self.platform, self_id=self.self_id)
 
     def friend_list(self, next_token: str = None):
-        return api_request(event=self, method='friend.list', data={
+        return sync_api_request(event=self, method='friend.list', data={
             'next': next_token,
         }, platform=self.platform, self_id=self.self_id)
 
     def friend_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
         message_id = message_id or self.message.id
-        return api_request(event=self, method='friend.approve', data={
+        return sync_api_request(event=self, method='friend.approve', data={
             'message_id': message_id,
             'approve': approve,
             'comment': comment,
@@ -258,7 +247,7 @@ class Event:
     def reaction_create(self, emoji: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return api_request(event=self, method='reaction.create', data={
+        return sync_api_request(event=self, method='reaction.create', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'emoji': emoji,
@@ -268,7 +257,7 @@ class Event:
         user_id = user_id or self.user.id
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return api_request(event=self, method='reaction.delete', data={
+        return sync_api_request(event=self, method='reaction.delete', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'emoji': emoji,
@@ -278,7 +267,7 @@ class Event:
     def reaction_clear(self, emoji: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return api_request(event=self, method='reaction.clear', data={
+        return sync_api_request(event=self, method='reaction.clear', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'emoji': emoji,
@@ -287,7 +276,7 @@ class Event:
     def reaction_list(self, emoji: str = None, next_token: str = None, channel_id: str = None, message_id: str = None):
         channel_id = channel_id or self.channel.id
         message_id = message_id or self.message.id
-        return api_request(event=self, method='reaction.list', data={
+        return sync_api_request(event=self, method='reaction.list', data={
             'channel_id': channel_id,
             'message_id': message_id,
             'emoji': emoji,
@@ -295,7 +284,209 @@ class Event:
         }, platform=self.platform, self_id=self.self_id)
 
 
-class SessionInternal:
+class EventAsync:
+    def __init__(self, body=None):
+        if body is None:
+            body = {}
+        self.id: int = body.get('id', -1)
+        self.type: str = body.get('type', '')
+        self.platform: str = body.get('platform', '')
+        self.self_id: str = body.get('self_id', '')
+        self.timestamp: int = body.get('timestamp', -1)
+
+        self.member: Optional[Member] = Member(body.get('member', {}))
+        self.user: Optional[User] = User(body.get('user', {}))
+        self.channel: Optional[Channel] = Channel(body.get('channel', {}))
+        self.guild: Optional[Guild] = Guild(body.get('guild', {}))
+        self.message: Optional[Message] = Message(body.get('message', {}))
+        self.role: Optional[Role] = Role(body.get('role', {}))
+        self.login: Optional[Login] = Login(body.get('login', {}))
+        self.operator: Optional[User] = User(body.get('operator', {}))
+        self._type: str = body.get('_type', '')  # 内部
+        self._data: dict = body.get('_data', {})  # 内部
+
+        self.data: dict = body  # 原始数据
+
+    # message
+
+    async def message_create(self, content: str = None, channel_id: str = None):
+        channel_id = channel_id or self.channel.id
+        return await async_api_request(event=self, method='message.create', data={
+            'channel_id': channel_id,
+            'content': content,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def message_delete(self, channel_id: str = None, message_id: str = None):
+        channel_id = channel_id or self.channel.id
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='message.delete', data={
+            'channel_id': channel_id,
+            'message_id': message_id,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def message_update(self, content: str = None, channel_id: str = None, message_id: str = None):
+        channel_id = channel_id or self.channel.id
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='message.update', data={
+            'channel_id': channel_id,
+            'message_id': message_id,
+            'content': content,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def message_list(self, next_token: str = None, channel_id: str = None):
+        channel_id = channel_id or self.channel.id
+        return await async_api_request(event=self, method='message.list', data={
+            'channel_id': channel_id,
+            'next': next_token,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def channel_get(self, channel_id: str = None):
+        channel_id = channel_id or self.channel.id
+        return await async_api_request(event=self, method='channel.get', data={
+            'channel_id': channel_id,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def channel_list(self, next_token: str = None, guild_id: str = None):
+        guild_id = guild_id or self.guild.id
+        return await async_api_request(event=self, method='channel.list', data={
+            'guild_id': guild_id,
+            'next': next_token,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def channel_create(self, channel_data: dict = None, guild_id: str = None):
+        guild_id = guild_id or self.guild.id
+        return await async_api_request(event=self, method='channel.create', data={
+            'guild_id': guild_id,
+            'data': channel_data,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def channel_update(self, channel_data: dict = None, channel_id: str = None):
+        channel_id = channel_id or self.channel.id
+        return await async_api_request(event=self, method='channel.update', data={
+            'channel_id': channel_id,
+            'data': channel_data,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def channel_delete(self, channel_id: str = None):
+        channel_id = channel_id or self.channel.id
+        return await async_api_request(event=self, method='channel.delete', data={
+            'channel_id': channel_id,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def guild_get(self, guild_id: str = None):
+        guild_id = guild_id or self.guild.id
+        return await async_api_request(event=self, method='guild.get', data={
+            'guild_id': guild_id,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def guild_list(self, next_token: str = None):
+        return await async_api_request(event=self, method='guild.list', data={
+            'next': next_token,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def guild_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='guild.approve', data={
+            'message_id': message_id,
+            'approve': approve,
+            'comment': comment,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def guild_member_get(self, guild_id: str = None, user_id: str = None):
+        guild_id = guild_id or self.guild.id
+        user_id = user_id or self.user.id
+        return await async_api_request(event=self, method='guild.member.get', data={
+            'guild_id': guild_id,
+            'user_id': user_id,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def guild_member_list(self, next_token: str = None, guild_id: str = None):
+        guild_id = guild_id or self.guild.id
+        return await async_api_request(event=self, method='guild.member.list', data={
+            'guild_id': guild_id,
+            'next': next_token,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def guild_member_kick(self, permanent: bool = False, guild_id: str = None, user_id: str = None):
+        guild_id = guild_id or self.guild.id
+        user_id = user_id or self.user.id
+        return await async_api_request(event=self, method='guild.member.kick', data={
+            'guild_id': guild_id,
+            'user_id': user_id,
+            'permanent': permanent,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def guild_member_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='guild.member.approve', data={
+            'message_id': message_id,
+            'approve': approve,
+            'comment': comment,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def login_get(self):
+        return await async_api_request(event=self, method='login.get', data={}, platform=self.platform, self_id=self.self_id)
+
+    async def user_get(self, user_id: str = None):
+        user_id = user_id or self.user.id
+        return await async_api_request(event=self, method='user.get', data={
+            'user_id': user_id,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def friend_list(self, next_token: str = None):
+        return await async_api_request(event=self, method='friend.list', data={
+            'next': next_token,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def friend_approve(self, approve: bool = False, comment: str = None, message_id: str = None):
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='friend.approve', data={
+            'message_id': message_id,
+            'approve': approve,
+            'comment': comment,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def reaction_create(self, emoji: str = None, channel_id: str = None, message_id: str = None):
+        channel_id = channel_id or self.channel.id
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='reaction.create', data={
+            'channel_id': channel_id,
+            'message_id': message_id,
+            'emoji': emoji,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def reaction_delete(self, emoji: str = None, user_id: str = None, channel_id: str = None, message_id: str = None):
+        user_id = user_id or self.user.id
+        channel_id = channel_id or self.channel.id
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='reaction.delete', data={
+            'channel_id': channel_id,
+            'message_id': message_id,
+            'emoji': emoji,
+            'user_id': user_id,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def reaction_clear(self, emoji: str = None, channel_id: str = None, message_id: str = None):
+        channel_id = channel_id or self.channel.id
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='reaction.clear', data={
+            'channel_id': channel_id,
+            'message_id': message_id,
+            'emoji': emoji,
+        }, platform=self.platform, self_id=self.self_id)
+
+    async def reaction_list(self, emoji: str = None, next_token: str = None, channel_id: str = None, message_id: str = None):
+        channel_id = channel_id or self.channel.id
+        message_id = message_id or self.message.id
+        return await async_api_request(event=self, method='reaction.list', data={
+            'channel_id': channel_id,
+            'message_id': message_id,
+            'emoji': emoji,
+            'next': next_token,
+        }, platform=self.platform, self_id=self.self_id)
+
+
+class EventInternal:
     def __init__(self, body=None):
         """
         内部使用的 Session
@@ -319,8 +510,40 @@ class SessionInternal:
         self._type: str = body.get('_type', '')
         self._data: dict = body.get('_data', {})
 
+    def internal_event_create(self, data: dict, internal_method: str = None):
+        if internal_method is None:
+            internal_method = self._type
+        return sync_api_request(event=self, method=internal_method, data=data, platform=self.platform, self_id=self.self_id, internal=True)
 
 
+class EventInternalAsync:
+    def __init__(self, body=None):
+        """
+        内部使用的 Session
+        # 字段	类型	说明
+        # id	number	事件 ID
+        # type	string	事件类型 (固定为 internal)
+        # platform	string	接收者的平台名称
+        # self_id	string	接收者的平台账号
+        # timestamp	number	事件的时间戳
+        # _type	string	原生事件类型
+        # _data	object	原生事件数据
+        """
+        if body is None:
+            body = {}
+        self.id: int = body.get('id', -1)
+        self.type: str = body.get('type', '')
+        self.platform: str = body.get('platform', '')
+        self.self_id: str = body.get('self_id', '')
+        self.timestamp: int = body.get('timestamp', -1)
+
+        self._type: str = body.get('_type', '')
+        self._data: dict = body.get('_data', {})
+
+    async def internal_event_create(self, data: dict, internal_method: str = None):
+        if internal_method is None:
+            internal_method = self._type
+        return await async_api_request(event=self, method=internal_method, data=data, platform=self.platform, self_id=self.self_id, internal=True)
 
 
 

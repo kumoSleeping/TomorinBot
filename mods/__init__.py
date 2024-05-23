@@ -1,12 +1,7 @@
-from core.classes.event import Event
-from core.classes.on import on
-from core.classes.utils import log
-from core.classes.utils import c
+from core.interfaces import on, initialize_manager, log, c, config, Event, EventInternal, EventAsync, EventInternalAsync
 
-from core.__main__ import initialize_manager, config
 
 from mods.utils import is_admin
-from mods.utils import assets
 
 
 from mods.h import h
