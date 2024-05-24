@@ -8,7 +8,7 @@ import threading
 from core.classes.config import config_pre as config
 from core.classes.log import log
 from core.classes.log import c
-from core.invoker.startup import run_on_bot_started_async, run_on_bot_started
+from core.invoker.star import run_on_bot_started_async, run_on_bot_started
 
 
 # 获取当前文件的父目录并切换工作目录

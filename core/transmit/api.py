@@ -1,6 +1,10 @@
-import httpx
+import aiohttp
+import asyncio
 import inspect
 import threading
+import urllib.request
+import urllib.error
+import json
 
 from core.__main__ import config
 from core.classes.log import log
@@ -8,35 +12,50 @@ from core.classes.log import log
 from __main__ import initialize_manager
 
 
-async def async_request_by_httpx(event, data: dict, headers: dict, full_address: str):
+def sync_request_by_urllib(event, data: dict, headers: dict, full_address: str):
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(full_address, json=data, headers=headers)
-        response.raise_for_status()
-        return event, data, headers, full_address, response.json()
-    except httpx.HTTPStatusError as exc:
-        log.error(f"请求失败，状态码：{exc.response.status_code}, 响应：{exc.response.text}")
+        data_bytes = json.dumps(data).encode('utf-8')  # 编码 JSON 数据
+        req = urllib.request.Request(full_address, data=data_bytes, headers=headers, method='POST')
+        with urllib.request.urlopen(req) as response:
+            response_data = response.read()
+            json_response = json.loads(response_data.decode('utf-8'))
+            if response.status != 200:
+                raise urllib.error.HTTPError(full_address, response.status, "HTTP request failed", response.getheaders(), None)
+        return event, data, headers, full_address, json_response
+    except urllib.error.HTTPError as exc:
+        log.error(f"请求失败，状态码：{exc.code}, 响应：{exc.read().decode('utf-8')}")
         raise
     except Exception as exc:
         log.error(f"请求错误：{str(exc)}")
         raise
 
 
-def sync_request_by_httpx(event, data: dict, headers: dict, full_address: str):
+async def async_request_by_aiohttp(event, data: dict, headers: dict, full_address: str):
     try:
-        with httpx.Client() as client:
-            response = client.post(full_address, json=data, headers=headers)
-        response.raise_for_status()
-        return event, data, headers, full_address, response.json()
-    except httpx.HTTPStatusError as exc:
-        log.error(f"请求失败，状态码：{exc.response.status_code}, 响应：{exc.response.text}")
+        async with aiohttp.ClientSession() as session:
+            async with session.post(full_address, json=data, headers=headers) as response:
+                response.raise_for_status()
+                json_response = await response.json()
+        return event, data, headers, full_address, json_response
+    except aiohttp.ClientResponseError as exc:
+        log.error(f"请求失败，状态码：{exc.status}, 响应：{await exc.response.text()}")
         raise
     except Exception as exc:
         log.error(f"请求错误：{str(exc)}")
         raise
 
 
-async def async_api_request(event, method: str, data: dict, platform: str, self_id: str, internal=False):
+def call_api(event, method: str, data: dict, platform: str, self_id: str, internal=False):
+    try:
+        loop = asyncio.get_running_loop()
+        if loop.is_running():
+            return call_api_async(event, method, data, platform, self_id, internal)
+    except RuntimeError:
+        # 没有运行中的事件循环，使用同步函数
+        return call_api_sync(event, method, data, platform, self_id, internal)
+
+
+async def call_api_async(event, method: str, data: dict, platform: str, self_id: str, internal=False):
     connection = find_connection(self_id)
     if connection is None:
         return None
@@ -44,7 +63,7 @@ async def async_api_request(event, method: str, data: dict, platform: str, self_
     full_address = build_full_address(connection, method, internal)
     headers = build_headers(connection, platform, self_id)
 
-    response_dict = await async_request_by_httpx(event, data, headers, full_address)
+    response_dict = await async_request_by_aiohttp(event, data, headers, full_address)
     if initialize_manager._api_requested:
         for item in initialize_manager._api_requested:
             if inspect.iscoroutinefunction(item):
@@ -52,7 +71,7 @@ async def async_api_request(event, method: str, data: dict, platform: str, self_
     return response_dict
 
 
-def sync_api_request(event, method: str, data: dict, platform: str, self_id: str, internal=False):
+def call_api_sync(event, method: str, data: dict, platform: str, self_id: str, internal=False):
     connection = find_connection(self_id)
     if connection is None:
         return None
@@ -60,7 +79,7 @@ def sync_api_request(event, method: str, data: dict, platform: str, self_id: str
     full_address = build_full_address(connection, method, internal)
     headers = build_headers(connection, platform, self_id)
 
-    response_dict = sync_request_by_httpx(event, data, headers, full_address)
+    response_dict = sync_request_by_urllib(event, data, headers, full_address)
     if initialize_manager._api_requested:
         for item in initialize_manager._api_requested:
             if not inspect.iscoroutinefunction(item):
@@ -75,11 +94,13 @@ def find_connection(self_id):
     log.error(f'未找到匹配的连接配置，self_id：{self_id}')
     return None
 
+
 def build_full_address(connection, method, internal):
     address = connection['address']
     http_protocol = connection.get('http_protocol', 'http')
     api_segment = 'v1/internal' if internal else 'v1'
     return f'{http_protocol}://{address}/{api_segment}/{method}'
+
 
 def build_headers(connection, platform, self_id):
     return {
@@ -88,3 +109,6 @@ def build_headers(connection, platform, self_id):
         'X-Platform': platform,
         'X-Self-ID': self_id
     }
+
+
+

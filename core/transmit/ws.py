@@ -1,11 +1,11 @@
 import asyncio
-import websockets
+import aiohttp
 import json
 import threading
 
 from core.__main__ import config
 from core.classes.log import log, c
-from core.invoker.dispatcher import build_session_async, build_session_sync
+from core.invoker.dispatcher import parse_event
 
 
 async def on_message(websocket, path, message):
@@ -18,20 +18,18 @@ async def on_message(websocket, path, message):
                 name = 'NO-NAME-BOT'
             status = login_info["status"]
             if status == 1:
-                log.success(f"apply {c.bright_red}Satori Driver{c.reset} {c.bright_yellow}{c.style.bold}{c.style.underline}{name}{c.reset} login {c.bright_green}{login_info['platform']}{c.reset}.")
+                log.success(f"linked {c.bright_red}Satori Driver{c.reset} {c.bright_yellow}{c.style.bold}{c.style.underline}{name}{c.reset} login {c.bright_green}{login_info['platform']}{c.reset}.")
             else:
-                log.warning(f"apply {c.bright_red}Satori Driver{c.reset} {c.bright_yellow}{c.style.bold}{c.style.underline}{name}{c.reset} sleep in {c.bright_green}{login_info['platform']}{c.reset}.")
+                log.warning(f"linked {c.bright_red}Satori Driver{c.reset} {c.bright_yellow}{c.style.bold}{c.style.underline}{name}{c.reset} sleep in {c.bright_green}{login_info['platform']}{c.reset}.")
     if data["op"] == 0:
-        # sync with threading
-        threading.Thread(target=build_session_sync, args=(data["body"],)).start()
-        # async
-        task = asyncio.create_task(build_session_async(data["body"]))
+        task = asyncio.create_task(parse_event(data["body"]))
 
 
 class WebsocketLink:
     def __init__(self, connection_config):
         self.token = connection_config["token"]
         self.full_address = f'ws://{connection_config["address"]}/v1/events'
+        self.session = aiohttp.ClientSession()
         self.websocket = None
 
     async def send_ping(self):
@@ -43,27 +41,46 @@ class WebsocketLink:
                         "op": 1,
                         "body": {"美少女客服": "我是一只心跳猫猫"},
                     }
-                    await self.websocket.send(json.dumps(identify_packet))
+                    await self.websocket.send_json(identify_packet)
             except Exception as e:
                 log.error(f"发送心跳包时发生异常: {e}")
                 break
 
-    async def on_open(self, websocket):
+    async def on_open(self):
         identify_packet = {"op": 3, "body": {"token": self.token, "sequence": None}}
-        await websocket.send(json.dumps(identify_packet))
+        await self.websocket.send_json(identify_packet)
 
     async def run(self):
-        async with websockets.connect(self.full_address) as websocket:
-            self.websocket = websocket
-            await self.on_open(websocket)
-            await asyncio.gather(
-                self.send_ping(),
-                self.receive_messages(websocket)
-            )
+        while True:
+            try:
+                async with self.session.ws_connect(self.full_address) as self.websocket:
+                    log.info(f'linking {c.bright_red}Satori Driver{c.reset} ...')
+                    await self.on_open()
+                    await asyncio.gather(
+                        self.send_ping(),
+                        self.receive_messages()
+                    )
+            except aiohttp.WSServerHandshakeError as e:
+                log.error(f"WebSocket handshake error: {e}. Retrying in 5 seconds...")
+                await asyncio.sleep(5)
+            except OSError as e:
+                log.error(f"Network error: {e}. Retrying in 5 seconds...")
+                await asyncio.sleep(5)
+            except Exception as e:
+                log.error(f"An unexpected error occurred: {e}. Retrying in 5 seconds...")
+                await asyncio.sleep(5)
 
-    async def receive_messages(self, websocket):
-        async for message in websocket:
-            await on_message(websocket, self.full_address, message)
+    async def receive_messages(self):
+        async for msg in self.websocket:
+            if msg.type == aiohttp.WSMsgType.TEXT:
+                await on_message(self.websocket, self.full_address, msg.data)
+            elif msg.type == aiohttp.WSMsgType.CLOSED:
+                break
+            elif msg.type == aiohttp.WSMsgType.ERROR:
+                break
+
+    async def close(self):
+        await self.session.close()
 
 
 async def websocket_():
@@ -83,14 +100,16 @@ async def websocket_():
         if not connections:
             log.warning("websocket_client 未配置任何连接信息")
             return
-        log.info(f'linking {c.bright_red}Satori Driver{c.reset} ...')
-        # 启动所有WebSocket连接
-        await asyncio.gather(
-            *(WebsocketLink(config_ws).run() for config_ws in connections)
-        )
+        links = [WebsocketLink(config_ws) for config_ws in connections]
+        # 启动所有连接
+        await asyncio.gather(*(link.run() for link in links))
     except Exception as e:
-        log.error(f"{e}\nWebsocket-client: Please check your configuration file.")
+        print(f"An unexpected error occurred: {e}")
+    finally:
+        # 确保所有 session 被关闭
+        await asyncio.gather(*(link.close() for link in links if link.session))
 
 
 async def start_ws():
     await websocket_()
+

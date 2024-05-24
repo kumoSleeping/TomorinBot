@@ -6,14 +6,14 @@
 <p align="center">
 
 <a href="https://github.com/kumoSleeping/TomorinBot/blob/main/core/__init__.py">
-    <img src="https://img.shields.io/badge/TomorinBOT%20v4-blue" alt="license">
+    <img src="https://img.shields.io/badge/TomorinBOT%20v5-blue" alt="license">
   </a>
 
 <a href="https://github.com/kumoSleeping/TomorinBot/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/kumoSleeping/TomorinBot" alt="license">
   </a>
 <a href="https://www.python.org/">
-    <img src="https://img.shields.io/badge/python-3.7+-blue?logo=python&logoColor=edb641" alt="license">
+    <img src="https://img.shields.io/badge/python-3.9+-blue?logo=python&logoColor=edb641" alt="license">
   </a>
 
   <a href="https://satori.js.org/zh-CN/">
@@ -28,10 +28,10 @@
 `Tomorin` 是一个基于 [Satori协议](https://satori.js.org/zh-CN/) 的迷你家用聊天机器人框架。
 使用装饰器标记函数，使得在收到各类信息时或指定状态时，对应函数被调用。
 
-## 💫 运行
+## 💫 快速起航
 
 ```shell
-pip install httpx websocket-client
+pip install satori-python-core aiohttp
 ```
 
 ```shell
@@ -71,7 +71,7 @@ python -m core
 📂 foo   
 └── 📜 __init__.py   
 ```
-这个时候包 `foo` 同样是一个合法的插件，插件内容可以在 `__init__.py` 文件中编写。
+这个时候包 `foo` 同样是一个合法的插件，插件内容可以在 `__init__.py` 文件中编写，例如项目代码中的 `rec` 插件。
 
 但 `Tomorin` 的插件也只起到被导入的作用，而要做到在某种情况下调用函数，请看 `on` 装饰器。
 ## 📦 插件编写
@@ -83,7 +83,7 @@ from core.interfaces import Event, on
 @on.message_created
 async def echo_(event: Event):
     if (r := event.message.content).startswith('echo '):
-        await event.message_create(r[5:])
+        await event.message_create_async(r[5:])
         
 # 同步
 @on.message_created
@@ -119,63 +119,3 @@ log.info(f'{c.style.underline}这是下划线{c.reset}')
 
 ## 📄 关于
 本模版出发点是学习与探索设计方法，让简单的功能实现可以高速产出。   
-
-## 🧩 `mods` 扩展
-
-
-> `mods` 扩展并不是框架行为，而是一个方便使用的依赖包。
-> 如果你不喜欢这种形式，可以删除 `mods` 。
-
-
-- 使用 match_command 扩展实现一个 `echo` 命令
-```py
-import mods
-
-# mods 继承了 core 的 interface，所以可以直接使用
-@mods.on.message_created
-def echo_(event: mods.Event):
-    if res := mods.match_command(event, 'echo', limit_admin=True, allow_gap_less=True):
-        res.send(res.text)
-```
-
-- 使用来自 mods` 的 `h` 在入群时发送一张图片
-```py
-import mods
-
-path = mods.assets('cat.jpg')
-with open(path, 'rb') as f:
-    cat_pic = f.read()
-
-@mods.on.guild_member_added
-def a_cat(event: mods.Event):
-    if event.guild.id == 1234567890:
-        event.message_create(f'Welcome {event.user.name}!{mods.h.image(cat_pic, 'cat.jpg')}')
-```
-
-- 使用来自 `mods` 的 定时器 与 间隔器 实现常规定时任务。   
-- 
-> 请注意，定时器与间隔器的时间单位为秒，且定时器会在启动时立即执行一次，可以通过 `do_now` 参数控制是否立即执行。   
-通过 `@mods.on.bot_start_up` 装饰器可以在启动时执行一次，也可以自己指定启动时机，但请注意这是一个永不停止的线程不安全，使用与停止时还请注意。
-```py
-import mods
-
-bot_self_id= '1234567890'
-my_channel_id = '1234567890'
-
-
-@mods.on.bot_start_up
-@mods.timer_do('23:00')
-def clock1():
-    event = mods.Event()
-    event.platform = 'red'
-    event.self_id = bot_self_id
-    event.message_create(channel_id=my_channel_id, content='你今天贴瓷砖了吗！')
-
-    
-@mods.on.bot_start_up
-@mods.interval_do(8*60*60,do_now=False)
-def back_up():
-    # 备份数据库
-    import os
-    os.system('cp db.sqlite3 db.sqlite3.bak')
- ```
