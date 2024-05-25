@@ -96,8 +96,8 @@ from core.interfaces import Event, on, config, log, initialize_manager
 例如上面的例子中，`on.message_created` 即是一个装饰器，用于注册一个函数，当 bot 收到 message-created 事件时调用。
 此外还提供了三种 `bot` 装饰器。 
 - `on.bot_start_up`: bot 启动后调用
-- `on.bot_event_built`: bot 事件构建完成后调用
-- `on.bot_api_requested`: bot 请求 api 时的事件完成(标准事件发送成功)后调用
+- `on.bot_event_built`: `Event` 事件构建完成后调用
+- `on.bot_api_requested`: 请求 `saotri` 事件 API 后调用
 
 ### `config` 配置对象
 
@@ -119,6 +119,7 @@ from core.interfaces import Event, on, config, log, initialize_manager
 `c` 用于输出彩色 `ANSI` 转义颜色。
 
 此模块利用 ANSI 转义序列实现，在最新的 Windows cmd 中，我们尝试使用 `os.system('')` 唤醒 ANSI 支持。
+
 
 ### initialize_manager 
 
