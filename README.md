@@ -96,7 +96,7 @@ from core.interfaces import Event, on, config, log, initialize_manager
 此外还提供了三种 `bot` 装饰器。 
 - `on.bot_start_up`: bot 启动后调用
 - `on.bot_event_built`: `Event` 事件构建完成后调用
-- `on.bot_api_requested`: 请求 `saotri` 事件 API 后调用
+- `on.bot_api_requested`: 请求 `satori` 事件 API 后调用
 
 ### `config` 配置对象
 
