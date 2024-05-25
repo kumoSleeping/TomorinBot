@@ -28,7 +28,7 @@
 `Tomorin` 是一个基于 [Satori协议](https://satori.js.org/zh-CN/) 的家用异步聊天机器人 `client`。
 使用装饰器标记函数，使得在收到各类信息时或指定状态时，对应函数被调用。
 
-> Event & E -> [satori-python](https://github.com/RF-Tar-Railt/satori-python/blob/main/docs.md) 
+> Event & E -> [satori-python-core](https://github.com/RF-Tar-Railt/satori-python/blob/main/docs.md) 
 ## 💫 快速起航
 
 ```shell
