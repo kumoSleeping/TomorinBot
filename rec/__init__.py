@@ -6,17 +6,6 @@ from typing import List, Union
 
 
 @on.bot_api_requested
-def display_send(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
-    try:
-        log.info(f'{c.bright_magenta}{method}{c.reset} -> {c.bright_green}{platform}{c.reset}')
-    except Exception as e:
-        if not response:
-            log.error(f'无法显示日志 {e}')
-        else:
-            log.error(f'无法显示日志 {e} {response.text}')
-
-
-@on.bot_api_requested
 async def display_send_async(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
     try:
         log.info(f'{c.bright_magenta}{method}{c.reset} -> {c.bright_green}{platform}{c.reset}')
@@ -28,7 +17,7 @@ async def display_send_async(event: Event, method: str, data: dict, platform: st
 
 
 @on.bot_event_built
-def display_receive(event: Event):
+async def display_receive(event: Event):
     def log_msg(message: List[Element]):
         new_msg = ''
         for item in message:

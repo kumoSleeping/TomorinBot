@@ -7,7 +7,7 @@ from core.classes.log import log
 from core.classes.event import Event
 from core.classes.event_nonstandard import EventNonstandard
 
-from __main__ import initialize_manager, config
+from __main__ import initialize_manager
 
 
 async def parse_event(data: dict):
@@ -20,12 +20,10 @@ async def parse_event(data: dict):
         except Exception as e:
             log.error(f'Error occurred, data: {data}')
             raise e
-    if config.get_key('support_async'):
-        threading.Thread(target=build_session_sync, args=(event,)).start()
-    await build_session_async(event)
+    task = asyncio.create_task(build_session(event))
 
 
-async def build_session_async(event: Event):
+async def build_session(event: Event):
     try:
         if initialize_manager._event_built:
             for after_event_item in initialize_manager._event_built:
@@ -44,22 +42,3 @@ async def build_session_async(event: Event):
         gc.collect()
 
 
-def build_session_sync(event: Event):
-    try:
-        if initialize_manager._event_built:
-            for after_event_item in initialize_manager._event_built:
-                if event:
-                    if not inspect.iscoroutinefunction(after_event_item):
-                        threading.Thread(target=after_event_item, args=(event,)).start()
-        for loaded_func_item in initialize_manager._satori_event:
-            if initialize_manager._satori_event:
-                if not inspect.iscoroutinefunction(loaded_func_item):
-                    threading.Thread(target=loaded_func_item, args=(event,)).start()
-
-    except Exception as e:
-        log.error('Error occurred.')
-        raise e
-
-    finally:
-        # 无论如何都会执行的清理代码
-        gc.collect()

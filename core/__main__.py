@@ -39,21 +39,15 @@ class IManager:
             for attr, list_ref in attr_to_list.items():
                 if hasattr(module, attr):
                     if inspect.iscoroutinefunction(module):
-                        log.success(f'apply {c.red}async:{c.bright_green}{name} {c.blue}<{getattr(module, attr)}>{c.reset}')
+                        log.success(f'apply {c.bright_green}{name} {c.blue}<{getattr(module, attr)}>{c.reset}')
                     else:
-                        if not config.get_key('support_sync'):
-                            log.info(f'ignore {c.red}sync:{c.bright_green}{name} {c.blue}<{getattr(module, attr)}>{c.reset}')
-                            continue
-                        else:
-                            log.success(f'apply {c.bright_yellow}sync:{c.bright_green}{name} {c.blue}<{getattr(module, attr)}>{c.reset}')
+                        log.warning(f'only coroutine function can be applied, ignore {name}')
+                        continue
                     list_ref.append(module)
-                    break  # 假设一个函数只符合一个分类，找到即停止
+                    break  # 一个函数只符合一个分类，找到即停止
         self.loaded = True
 
     async def auto_load_all_plugins(self):
-        config.need(key='support_sync', default_value=True)
-        if config.get_key('support_sync') == False:
-            log.warning(f'ignore sync plugins')
         # 扫描文件夹下所有表层文件夹
         root_pkg = os.walk('./').__next__()[1]
         root_files = os.walk('./').__next__()[2]
