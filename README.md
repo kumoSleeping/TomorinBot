@@ -25,12 +25,11 @@
 ## 📖 介绍
 
 
-`Tomorin` 是一个基于 [Satori协议](https://satori.js.org/zh-CN/) 的家用异步聊天机器人框架。
+`Tomorin` 是一个基于 [Satori协议](https://satori.js.org/zh-CN/) 的家用异步聊天机器人 `client`。
 使用装饰器标记函数，使得在收到各类信息时或指定状态时，对应函数被调用。
 
+> Event & E -> [satori-python](https://github.com/RF-Tar-Railt/satori-python/blob/main/docs.md) 
 ## 💫 快速起航
-
-`Tomorin` 非常注重依赖的的轻小，你只需要安装 `satori-python-core` 与 `aiohttp` 即可运行。
 
 ```shell
 pip install satori-python-core aiohttp
@@ -40,8 +39,8 @@ pip install satori-python-core aiohttp
 python -m core
 ```
 
-
 首次运行时会生成一个 `config.json` 文件，你需要主动关闭应用，在其中填写你的合适的配置后重启以加载新的配置。
+
 
 
 ## 📚 编写前的准备
@@ -167,14 +166,19 @@ async def async_test(event: Event):
 
 
 ## 📄 关于
-> 有框架能做到的事，也就一定有框架做不到的事情。
+
+直接去使用 `satori-python-client` （？
+
+`satori-python` 是一个基于 `satori` 协议的 `SDK` 。  
+本项目的设计思路在很多方面与 `satori-python-client` 有异曲同工之妙，但很明显，`satori-python-client` 更加完善。本项目更是直接使用了 `satori-python-core`。  
+我早就知道这是同一条赛道上不可能赢的竞争，但我总有自己喜欢的方式。
+你现在看到的就是。
+
+    有能做到的事，也就一定有做不到的事情。
 
 本模版出发点是学习与探索设计方法，让简单的功能实现可以高速产出。   
 
-`Tomorin` 追求不过度、不刻意、不耦合。   
-一直在学习与向前，感谢一路陪伴与支持。
-
-
+`Tomorin` 追求不过度、不刻意、不耦合。一直在学习与向前，感谢一路陪伴与支持。
 
 
 

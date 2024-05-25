@@ -1,4 +1,3 @@
-from requests import Response
 import re
 from core.interfaces import config, on, Event, log, c
 from satori import Element, E
@@ -6,7 +5,7 @@ from typing import List, Union
 
 
 @on.bot_api_requested
-async def display_send_async(event: Event, method: str, data: dict, platform: str, self_id: str, response: Response):
+async def display_send_async(event: Event, method: str, data: dict, platform: str, self_id: str, response):
     try:
         log.info(f'{c.bright_magenta}{method}{c.reset} -> {c.bright_green}{platform}{c.reset}')
     except Exception as e:
@@ -34,7 +33,7 @@ async def display_receive(event: Event):
                         if chlid_item.tag == 'author':
                             new_msg += f'{c.style.underline}{c.bright_yellow}{chlid_item["name"]}: {c.reset}'
                         elif chlid_item.tag == 'text':
-                            new_msg += f'{c.style.underline}{c.style.blink}{chlid_item}{c.reset}'
+                            new_msg += f'{c.style.underline}{chlid_item}{c.reset}'
                         else:
                             new_msg += f'{c.style.underline}{c.blue}[{chlid_item.tag}]{c.reset}'
                 new_msg += f'{c.style.underline}{c.style.bold}{c.blue}]{c.reset} '
