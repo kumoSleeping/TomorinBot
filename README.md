@@ -70,19 +70,18 @@ from tmrn import app, cmd_select
 # 注册
 @app.register_on(EventType.MESSAGE_CREATED)
 async def on_message_(account: Account, event: Event):
-    if msg := cmd_select(event, prefix=['/', '']):
-        if msg == 'ping':
-            send_msg = E.text('pong').dumps()
+    if cmd_select(event, prefix=['/', '']) == 'ping':
+        send_msg = E.text('pong').dumps()
 
-            # from PIL import Image
-            # import io
-            # img = Image.new('RGB', (100, 100), color='red')
-            # img_bytes = io.BytesIO()
-            # img.save(img_bytes, format='PNG')
-            # send_msg += E.image(raw=img_bytes, mime='image/png').dumps()
+        # from PIL import Image
+        # import io
+        # img = Image.new('RGB', (100, 100), color='red')
+        # img_bytes = io.BytesIO()
+        # img.save(img_bytes, format='PNG')
+        # send_msg += E.image(raw=img_bytes, mime='image/png').dumps()
 
-            # 发送消息
-            await account.send(event, send_msg)
+        # 发送消息
+        await account.send(event, send_msg)
 ```
 本例中，我们定义了一个简单的插件，当收到消息时，如果消息是 `/ping`，则回复 `pong`。
 注释部分是发送图片的示例，你可以取消注释并将图片发送到聊天中。
