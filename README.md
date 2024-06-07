@@ -21,7 +21,7 @@
 ***
 ## 📖 介绍
 
-你现在看到的 `satomori` 分支是基于 `[satori-python](https://github.com/RF-Tar-Railt/satori-python/blob/main/docs.md) 的小框架。
+你现在看到的 `satomori` 分支是基于 [satori-python](https://github.com/RF-Tar-Railt/satori-python/blob/main/docs.md) 的小框架。
 
 ## 💫 快速起航
 
