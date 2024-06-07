@@ -21,9 +21,8 @@
 ***
 ## 📖 介绍
 
-> 你现在看到的 `satomori` 分支是基于 `satori-python` 的小工具包。
+你现在看到的 `satomori` 分支是基于 `[satori-python](https://github.com/RF-Tar-Railt/satori-python/blob/main/docs.md) 的小框架。
 
-> Based on -> [satori-python](https://github.com/RF-Tar-Railt/satori-python/blob/main/docs.md) 
 ## 💫 快速起航
 
 ```shell
@@ -31,31 +30,28 @@ pip install satori-python
 ```
 
 ```shell
-python tmrn
+python bot.py
 ```
 
 
 
 ## 📚 编写前的准备
 
-打开 `tmrn/__main__.py` 文件，你会看到这样的代码：
+打开 `bot.py` 文件，你会看到这样的代码：
 
 ```python
-from satori.client import WebsocketsInfo
-from tmrn.__init__ import app
-
-import bar  # 导入插件
-
 # app.apply(
 #     WebsocketsInfo(
 #     ...
 #     )
 # )
 
+load_modules('bar')
+load_modules('foo')
 ```
 
 `app` 是一个 `App` 类的实例，此处用于注册连接信息。   
-`import bar` 是导入模块的示例，与 `tmrn` 文件夹同级。
+`load_modules` 函数用于加载模块，你可以在此处加载你的插件模块。
 
 
 ## 📂 简单插件
@@ -86,11 +82,44 @@ async def on_message_(account: Account, event: Event):
 本例中，我们定义了一个简单的插件，当收到消息时，如果消息是 `/ping`，则回复 `pong`。
 注释部分是发送图片的示例，你可以取消注释并将图片发送到聊天中。
 
+
+```py
+from tmrn import cmd_select, app, sub_input
+from satori import Event, EventType
+from satori.client import Account
+
+
+@app.register_on(EventType.MESSAGE_CREATED)
+async def on_message_miao(account: Account, event: Event):
+    if 't' == cmd_select(event, prefix=['.'], white_user='1528593481'):
+        await account.send(event, 'y/n?')
+        while True:
+            event_ = await sub_input(event, timeout=60)
+
+            if not event_:  # 如果超时或没有输入
+                await account.send(event, '没有收到输入，会话结束。')
+                break  # 退出循环
+
+            match cmd_select(event_):
+                case 'y':
+                    await account.send(event_, '🐱！')
+                    break
+                case 'n':
+                    await account.send(event_, '退出会话。')
+                    break
+                case _:
+                    await account.send(event_, '请输入 y 或 n。')
+
+```
+
+第二个例子中，我们定义了一个简单的插件，当收到消息时，如果消息是 `.t`，则会话开始，询问用户是否喜欢猫。
+如果用户回复 `y`，则回复 `🐱！`，否则回复 `退出会话。`。
+
 ## 🔧 实用工具
 
 ### `log` 日志对象
 
-`log` 对象用于输出日志。
+> 用于输出标准输出。
 
 - `info` 方法: 输出信息日志
 - `error` 方法: 输出错误日志
@@ -105,7 +134,6 @@ async def on_message_(account: Account, event: Event):
 
 ### `cmd_select` 命令文本选择器
 
-
 > 用于在在合适的时候获取适合于命令的纯文本信息
 
 - 当消息中有 at 时，如果at的是bot，返回 pure_text，否则返回 None
@@ -114,6 +142,10 @@ async def on_message_(account: Account, event: Event):
 - 如果 white_user 被规定时，消息发送者在 white_user 中才会触发，否则不会触发
 
 使用方法详见函数注释。
+
+### `sub_input` 子输入
+
+> 用于获取该用户&该群组的下一条输入的 event ，注册事件类型为 `EventType.MESSAGE_CREATED`。
 
 ## 📜 许可证
 
