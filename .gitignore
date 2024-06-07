@@ -3,23 +3,9 @@
 # 忽略macOS系统文件
 .DS_Store
 
-assets
-__Kanonbot
-__nonebot_plugin_kanonbot-master
+bot_1.py
 
-tsugu
-nonebot_plugin_kanonbot
-hello.py
-tsugu_bot
-schedule_do_old
-config.json
 
-__bin__/
-kumo/
-
-config*
-plugs/plugs_ksm
-plugs/test
 
 
 # Byte-compiled / optimized / DLL files

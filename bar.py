@@ -1,7 +1,8 @@
 from satori import Event, WebsocketsInfo, EventType
 from satori.element import E
 from satori.client import Account, App
-from tmrn import app, cmd_select
+from tmrn import app
+from tmrn import cmd_select
 
 
 @app.register_on(EventType.MESSAGE_CREATED)
