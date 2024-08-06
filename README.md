@@ -46,12 +46,11 @@ python bot.py
 #     )
 # )
 
-load_modules('bar')
 load_modules('foo')
 ```
 
 `app` 是一个 `App` 类的实例，此处用于注册连接信息。   
-`load_modules` 函数用于加载模块，你可以在此处加载你的插件模块。
+`load_modules` 函数用于加载模块，你可以在此处加载你的插件模块。 （用import也是一样的）
 
 
 ## 📂 简单插件
