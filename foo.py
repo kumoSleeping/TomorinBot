@@ -1,10 +1,28 @@
 import asyncio
 from random import randint
 
-from tmrn import cmd_select, app, sub_input, sub_channel_input
-from satori import Event, EventType
+from tmrn import app
+from tmrn import cmd_select
+from tmrn import sub_input, sub_channel_input
+from satori import Event, EventType, E
 from satori.client import Account
 from arclet.alconna import Alconna, Args, output_manager, CommandMeta
+
+
+@app.register_on(EventType.MESSAGE_CREATED)
+async def on_message_(account: Account, event: Event):
+    if cmd_select(event, prefix=['/', '']) == 'ping':
+        send_msg = E.text('pong').dumps()
+
+        # from PIL import Image
+        # import io
+        # img = Image.new('RGB', (100, 100), color='red')
+        # img_bytes = io.BytesIO()
+        # img.save(img_bytes, format='PNG')
+        # send_msg += E.image(raw=img_bytes, mime='image/png').dumps()
+
+        # 发送消息
+        await account.send(event, send_msg)
 
 
 @app.register_on(EventType.MESSAGE_CREATED)
@@ -31,14 +49,9 @@ async def on_message_miao(account: Account, event: Event):
 
 @app.register_on(EventType.MESSAGE_CREATED)
 async def on_message_miao_1(account: Account, event: Event):
-
-    def send_msg(msg):
-        asyncio.create_task(account.send(event, msg))
-
-    output_manager.set_action(send_msg)
-
-    if msg := cmd_select(event, white_user='1528593481'):
-        if (res := Alconna(['猜数字'],Args['max_int;?', int, 100],meta=CommandMeta(compact=True,description="猜猜数字",)).parse(msg)).matched:
+    output_manager.set_action(lambda msg: asyncio.create_task(account.send(event, msg)))
+    if msg := cmd_select(event):
+        if (res := Alconna(['猜数字', 'csz'],Args['max_int;?', int, 100],meta=CommandMeta(compact=True,description="猜猜数字",)).parse(msg)).matched:
             await account.send(event, f'请输入一个 1-{res.max_int} 之间的整数。')
             number = randint(1, res.max_int)
 
@@ -49,6 +62,9 @@ async def on_message_miao_1(account: Account, event: Event):
                         continue
 
                     if rpl := cmd_select(event_):
+                        if rpl == '不猜了':
+                            await account.send(event_, '不猜就不猜😭')
+                            return
                         if not rpl.isdigit():
                             continue
 
@@ -65,9 +81,8 @@ async def on_message_miao_1(account: Account, event: Event):
             except asyncio.TimeoutError:
                 await account.send(event, '时间到！游戏结束。正确答案是：' + str(number))
         else:
-            if res.head_matched:
-                if str(res.error_info) != 'help':
-                    await account.send(event, '参数错误：' + str(res.error_info))
+            if res.head_matched and str(res.error_info) != 'help':
+                await account.send(event, '参数错误：' + str(res.error_info))
 
 
 
